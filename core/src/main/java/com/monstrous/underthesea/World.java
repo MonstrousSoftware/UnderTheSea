@@ -9,17 +9,18 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class World implements Disposable {
 
-    private Chunk chunk;
+    private Chunks chunks;
     private NoiseSettings noiseSettings;
     private Model modelXYZ;
     private ModelInstance instanceXYZ;
 
     public World() {
-        noiseSettings = new NoiseSettings();
-        GridPoint3 coord = new GridPoint3(0,0,0);
-        chunk = new Chunk("root", coord, noiseSettings);
-        chunk.buildVolume();
-        chunk.buildMesh();
+//        noiseSettings = new NoiseSettings();
+//        GridPoint3 coord = new GridPoint3(0,0,0);
+        chunks = new Chunks();
+//        chunk = new Chunk("root", coord, noiseSettings);
+//        chunk.buildVolume();
+//        chunk.buildMesh();
 
         ModelBuilder modelBuilder = new ModelBuilder();
         modelXYZ = modelBuilder.createXYZCoordinates(10f, new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked);
@@ -30,13 +31,13 @@ public class World implements Disposable {
     public void render(ModelBatch modelBatch, Environment environment){
 
         chunks.render(modelBatch, environment);
-        modelBatch.render(chunk.modelInstance, environment);
+        //modelBatch.render(chunk.modelInstance, environment);
         modelBatch.render(instanceXYZ, environment);
     }
 
     @Override
     public void dispose() {
-        chunk.dispose();
+        chunks.dispose();
         modelXYZ.dispose();
     }
 }

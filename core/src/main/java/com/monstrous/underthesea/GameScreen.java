@@ -27,7 +27,9 @@ public class GameScreen implements Screen {
     private PerspectiveCamera cam;
     private CameraInputController camController;
     private ModelBatch modelBatch;
+    private ModelBatch shadowBatch;
     private Environment environment;
+    private DirectionalShadowLight shadowLight;
     private World world;
 
     @Override
@@ -37,7 +39,7 @@ public class GameScreen implements Screen {
         cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(0, 20, 20);
         cam.lookAt(0, 0, 0);
-        cam.far = 500;
+        cam.far = Chunks.SIZE * Chunk.CHUNK_WIDTH * 2;          // TMP
         cam.near = 1f;
         cam.update();
 
@@ -66,7 +68,6 @@ public class GameScreen implements Screen {
         environment.set(new ColorAttribute(ColorAttribute.Fog, Settings.backgroundColour));			// fog
         if (Settings.shadows) {
             // note that the shadowing system adds light to the scene (except for the shadows)
-            DirectionalShadowLight shadowLight;
             float sl = Settings.shadowLightLevel;
             environment.add((shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize,
                 shadowViewPortSize, shadowViewPortSize,
@@ -77,12 +78,23 @@ public class GameScreen implements Screen {
 
 
         modelBatch = new ModelBatch();
+        shadowBatch = new ModelBatch(new DepthShaderProvider());
         world = new World();
     }
 
     @Override
     public void render(float delta) {
         camController.update();
+
+        //create shadow texture
+        if(Settings.shadows) {
+            shadowLight.begin(cam.position, cam.direction);
+            shadowBatch.begin(shadowLight.getCamera());
+            world.render(shadowBatch, environment);
+            shadowBatch.end();
+            shadowLight.end();
+        }
+
 
         ScreenUtils.clear(Settings.backgroundColour, true);
         modelBatch.begin(cam);

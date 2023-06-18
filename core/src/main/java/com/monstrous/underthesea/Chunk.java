@@ -1,21 +1,16 @@
 package com.monstrous.underthesea;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.GridPoint3;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Chunk implements Disposable {
 
-    static final int CHUNK_WIDTH = 32;    // in block units
-    static final int CHUNK_HEIGHT = 32;
+    public static final int CHUNK_WIDTH = 32;    // in block units
+    public static final int CHUNK_HEIGHT = 32;
 
     public String key;                      // unique identifier for this chunk
     public int cx, cy, cz;                  // chunk coordinate
@@ -26,6 +21,7 @@ public class Chunk implements Disposable {
     private VolumeMap volume;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
+    private Voxels voxels;
 
     public Chunk(String key, GridPoint3 coordinates, NoiseSettings settings) {
         this.key = key;
@@ -39,6 +35,7 @@ public class Chunk implements Disposable {
         //renderables = new Array<>();
 
         mcubes = new MarchingCubes();
+        voxels = new Voxels();
 
     }
 
@@ -55,15 +52,12 @@ public class Chunk implements Disposable {
 
     public void buildMesh() {
 
-//        GreedyMesher.ChunkMesh chunkMesh  = new GreedyMesher().build(volume, chunkResolution, chunkHeightResolution, blockSize,  neighbours);
-        //model  = new GreedyMesher().build(volume, chunkResolution, chunkHeightResolution, blockSize,  neighbours);
-        model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.BLUE);
-//        ModelBuilder mb = new ModelBuilder();
-//
-//        model = mb.createBox(CHUNK_WIDTH, CHUNK_HEIGHT, CHUNK_WIDTH,
-//            new Material(ColorAttribute.createDiffuse(Color.BLUE)),
-//            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        //model = voxels.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.OLIVE);
+        Color color = Color.OLIVE;
+        if((cx % 2 == 1) ^ (cz % 2 == 1))
+            color = Color.GREEN;
 
+        model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 
         Vector3 pos = new Vector3(CHUNK_WIDTH *cx, CHUNK_HEIGHT*cy, CHUNK_WIDTH *cz);
 
@@ -82,7 +76,7 @@ public class Chunk implements Disposable {
         settings.zoffset = cz * settings.PerlinScale;
         settings.yoffset = cy * settings.PerlinScale;
 
-        char [][][] map = noise.makeVolume(CHUNK_WIDTH, CHUNK_HEIGHT, settings);
+        char [][][] map = noise.makeVolume(CHUNK_WIDTH+1, CHUNK_HEIGHT+1, settings);
         return new VolumeMap(map);
     }
 

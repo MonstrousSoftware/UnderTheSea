@@ -274,18 +274,23 @@ public class Noise {
     //
     // width is in x and z dimension
     // height is for y dimension
+    // values are 0-255 for density levels
     //
     public char[][][] makeVolume(final int width, final int height, NoiseSettings settings) {
         final float scale = settings.PerlinScale / (float) (width);
         float scaleY = settings.PerlinScale  / (float) (height);
         scaleY *= (float)Chunk.CHUNK_HEIGHT / (float)Chunk.CHUNK_WIDTH;
+        float chunkY = height * settings.yoffset / settings.PerlinScale;
 
         char[][][] volumeMap = new char[height][width][width];
-        for (int y = 0; y < height; y++) {
+        for (int y = 0; y < height; y++) {      // 0 at the bottom
 
             // density varies with height so that the top is mostly air and the
             // bottom is mostly solid.
-            float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);
+           // float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
+//            float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
+            float targetDensity = (float)(height-y)/((float)(height));
+
 
             for (int x = 0; x < width; x++) {
                 for (int z = 0; z < width; z++) {
@@ -294,12 +299,10 @@ public class Noise {
                             (float) y * scaleY + settings.yoffset,
                             (float) z * scale + settings.zoffset, settings);
 
-                    // use noise value to determine solid vs. air voxels
+                    f *= targetDensity;                 // todo
 
-                    char blockType = 0; // air
-                    if(f < targetDensity)
-                        blockType = 1; // ground
-                    volumeMap[y][x][z] = blockType;     // solid vs. air
+                    char density = (char)(255*f);
+                    volumeMap[y][x][z] = density;     // solid vs. air
                 }
             }
         }

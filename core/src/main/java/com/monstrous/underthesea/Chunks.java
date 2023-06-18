@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class Chunks implements Disposable {
 
-    public int SIZE = 3;
+    public static int SIZE = 3;
 
     private Array<Chunk> chunks;
     private NoiseSettings noiseSettings;
@@ -20,11 +20,15 @@ public class Chunks implements Disposable {
         chunks = new Array<>();
         GridPoint3 coordinate = new GridPoint3();
 
-        for (int x = -SIZE; x <= SIZE; x++) {
-            for (int z = -SIZE; z <= SIZE; z++) {
-                coordinate.set(x, 0, z);
-                Chunk chunk = new Chunk("bla", coordinate, noiseSettings);
-                chunks.add(chunk);
+        for(int y = 0; y <= 0; y++) {
+            for (int x = -SIZE; x <= SIZE; x++) {
+                for (int z = -SIZE; z <= SIZE; z++) {
+                    coordinate.set(x, y, z);
+                    Chunk chunk = new Chunk("bla", coordinate, noiseSettings);
+                    chunk.buildVolume();
+                    chunk.buildMesh();
+                    chunks.add(chunk);
+                }
             }
         }
 
@@ -32,7 +36,7 @@ public class Chunks implements Disposable {
 
     public void render(ModelBatch modelBatch, Environment environment) {
         for(Chunk chunk : chunks )
-            modelBatch.render(chunk.modelInstance,environment);
+            modelBatch.render(chunk.modelInstance, environment);
     }
 
 
