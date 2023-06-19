@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
     private SceneAsset sceneAsset;
     private Scene scene;
     private PerspectiveCamera cam;
-    private CameraInputController camController;
+    private CamController camController;
     private ModelBatch modelBatch;
     private ModelBatch shadowBatch;
     private Environment environment;
@@ -75,12 +75,12 @@ public class GameScreen implements Screen {
         //inputController = new PlayerController(world.getPlayer().transform);
 
         // add camera controller
-        camController = new CameraInputController(cam);
+        camController = new CamController(cam);
         // free up the WASD keys
-        camController.forwardKey = Input.Keys.F3;
-        camController.backwardKey = Input.Keys.F4;
-        camController.rotateRightKey = Input.Keys.F5;
-        camController.rotateLeftKey = Input.Keys.F6;
+//        camController.forwardKey = Input.Keys.F3;
+//        camController.backwardKey = Input.Keys.F4;
+//        camController.rotateRightKey = Input.Keys.F5;
+//        camController.rotateLeftKey = Input.Keys.F6;
 
 
 
@@ -156,7 +156,7 @@ public class GameScreen implements Screen {
             world.rebuild();
         }
 
-        camController.update();
+        camController.update( world.getFocus() );
         world.update(delta);
 
         //create shadow texture
@@ -173,9 +173,11 @@ public class GameScreen implements Screen {
         sceneManager.update(delta);
         sceneManager.render();
 
-//        modelBatch.begin(cam);
-//        world.render(modelBatch, environment);
-//        modelBatch.end();
+
+        // mixing scene manager and instance rendering.....
+        modelBatch.begin(cam);
+        world.render(modelBatch, environment);
+        modelBatch.end();
 
         gui.render(delta);
     }

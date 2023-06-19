@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.GridPoint3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import net.mgsx.gltf.scene3d.scene.Scene;
+import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class Chunks implements Disposable {
 
@@ -31,7 +33,6 @@ public class Chunks implements Disposable {
                 }
             }
         }
-
     }
 
     public void render(ModelBatch modelBatch, Environment environment) {
@@ -39,6 +40,13 @@ public class Chunks implements Disposable {
             modelBatch.render(chunk.modelInstance, environment);
     }
 
+
+    public void addScene(SceneManager sceneManager) {
+        for(Chunk chunk : chunks ) {
+            Scene scene = new Scene(chunk.modelInstance);
+            sceneManager.addScene(scene);
+        }
+    }
 
     @Override
     public void dispose() {

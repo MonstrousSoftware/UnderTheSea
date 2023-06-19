@@ -15,28 +15,67 @@ public class Submarine {
     private Scene sceneSub;
     private Scene sceneScrew;
     private Scene sceneFins;
+    public  Vector3 position;
+    public  Vector3 velocity;
+    public  Vector3 acceleration;
+    private Vector3 step;
+    private float screwAngle;
 
-    public Submarine( SceneManager sceneManager ) {
+    public Submarine( SceneManager sceneManager, float x, float y, float z ) {
         sceneAsset = new GLTFLoader().load(Gdx.files.internal("models/submarine.gltf"));
 
-        // extract some scenery items and add to scene manager
         sceneSub = new Scene(sceneAsset.scene, "submarine");
+        sceneSub.modelInstance.transform.translate(x, y, z);
         sceneManager.addScene(sceneSub);
         sceneScrew = new Scene(sceneAsset.scene, "screw");
+        sceneScrew.modelInstance.transform.translate(x, y, z);
         sceneManager.addScene(sceneScrew);
         sceneFins = new Scene(sceneAsset.scene, "fins");
+        sceneFins.modelInstance.transform.translate(x, y, z);
         sceneManager.addScene(sceneFins);
+
+        position = new Vector3(x, y, z);
+        velocity = new Vector3(0, 0, 1);
+        acceleration = new Vector3(0, 0, 0);
+        step = new Vector3();
     }
 
     Vector3 tmpVec = new Vector3();
 
     public void update( float deltaTime, SubController subController ){
+
         screwSpeed = subController.power;
+        screwAngle +=  4*screwSpeed*deltaTime;
 
-        sceneScrew.modelInstance.transform.rotate(Vector3.Z, 4*screwSpeed*deltaTime);
+        // todo get controls to work
 
-        sceneFins.modelInstance.transform.getTranslation(tmpVec);
+        //velocity.z = screwSpeed / 100f;
+
+        //velocity.rotate(Vector3.Y, subController.steerAngle );
+        //acceleration.x =  subController.steerAngle;
+        acceleration.x = 0.02f * subController.steerAngle;
+        acceleration.y = 0.02f * subController.diveAngle;
+
+        step.set(acceleration).scl(deltaTime);      // v = a . dt
+        velocity.add(step);
+        step.set(velocity).scl(deltaTime);          // x = v * dt
+        position.add(step);
+
+
+        sceneSub.modelInstance.transform.setToRotation(Vector3.Y, subController.steerAngle);
+        sceneSub.modelInstance.transform.rotate(Vector3.X, -2*subController.diveAngle);
+        sceneSub.modelInstance.transform.setTranslation(position);
+
+        sceneScrew.modelInstance.transform.setToRotation(Vector3.Z, screwAngle);
+        sceneScrew.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+
         sceneFins.modelInstance.transform.setToRotation(Vector3.X, 4*subController.diveAngle);
-        sceneFins.modelInstance.transform.setTranslation(tmpVec);
+        sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+
+    }
+
+    public Vector3 getPosition() {
+        sceneSub.modelInstance.transform.getTranslation(tmpVec);
+        return tmpVec;
     }
 }

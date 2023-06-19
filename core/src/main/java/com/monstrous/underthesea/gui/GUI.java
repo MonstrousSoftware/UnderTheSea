@@ -49,7 +49,8 @@ public class GUI implements Disposable {
 
     public void render(float deltaTime) {
 
-        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f", world.subController.diveAngle, world.subController.steerAngle, world.subController.power ));
+        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
+                            world.submarine.velocity.toString()));
 
         stage.act(deltaTime);
         stage.draw();

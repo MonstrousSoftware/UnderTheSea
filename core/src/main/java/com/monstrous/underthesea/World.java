@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.GridPoint3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
@@ -15,7 +16,7 @@ public class World implements Disposable {
     private Model modelXYZ;
     private ModelInstance instanceXYZ;
     private SceneManager sceneManager;
-    private Submarine submarine;
+    public Submarine submarine;
     public SubController subController;
 
     public World( SceneManager sceneManager,  SubController subController ) {
@@ -27,14 +28,18 @@ public class World implements Disposable {
         instanceXYZ = new ModelInstance(modelXYZ, new Vector3(0, 0, 0));
 
         rebuild();
-        submarine = new Submarine(sceneManager);
+        submarine = new Submarine(sceneManager, 0, 30, 0);
+    }
+
+    public Vector3 getFocus() {
+        return submarine.getPosition();
     }
 
     public void rebuild() {
         if(chunks != null)
             chunks.dispose();
         chunks = new Chunks();
-
+//        chunks.addScene(sceneManager);
     }
 
     public void update( float deltaTime ){
@@ -49,7 +54,7 @@ public class World implements Disposable {
 
         chunks.render(modelBatch, environment);
 
-//        modelBatch.render(instanceXYZ, environment);
+        modelBatch.render(instanceXYZ, environment);
     }
 
     @Override
