@@ -59,7 +59,7 @@ public class Chunk implements Disposable {
 
         Vector3 pos = new Vector3(CHUNK_WIDTH *cx, CHUNK_HEIGHT*cy, CHUNK_WIDTH *cz);
 
-        modelInstance =  new ModelInstance(model);          // still need this?
+        modelInstance =  new ModelInstance(model);
         modelInstance.transform.setTranslation(pos);
         hasMesh = true;
         volume.needsRemesh = false;

@@ -196,19 +196,19 @@ public class MarchingCubes {
 
     private void makeTriangle( MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2, MeshPartBuilder.VertexInfo v3 ){
         meshBuilder.ensureVertices(3);
-        final short i1 = meshBuilder.vertex(v1);
-        final short i2 = meshBuilder.vertex(v2);
-        final short i3 = meshBuilder.vertex(v3);
 
         // calculate normal vector from triangle
         du.set(v2.position).sub(v1.position).nor();
         dv.set(v3.position).sub(v1.position).nor();
         nor.set(dv).crs(du).nor();
 
-
         v1.setNor(nor);
         v2.setNor(nor);
         v3.setNor(nor);
+
+        final short i1 = meshBuilder.vertex(v1);
+        final short i2 = meshBuilder.vertex(v2);
+        final short i3 = meshBuilder.vertex(v3);
 
         meshBuilder.ensureTriangleIndices(1);
         meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
