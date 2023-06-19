@@ -17,7 +17,7 @@ public class World implements Disposable {
     public World() {
 //        noiseSettings = new NoiseSettings();
 //        GridPoint3 coord = new GridPoint3(0,0,0);
-        chunks = new Chunks();
+
 //        chunk = new Chunk("root", coord, noiseSettings);
 //        chunk.buildVolume();
 //        chunk.buildMesh();
@@ -26,6 +26,13 @@ public class World implements Disposable {
         modelXYZ = modelBuilder.createXYZCoordinates(10f, new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked);
         instanceXYZ = new ModelInstance(modelXYZ, new Vector3(0, 0, 0));
 
+        rebuild();
+    }
+
+    public void rebuild() {
+        if(chunks != null)
+            chunks.dispose();
+        chunks = new Chunks();
     }
 
     public void render(ModelBatch modelBatch, Environment environment){

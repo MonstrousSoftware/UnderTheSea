@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class Chunk implements Disposable {
 
-    public static final int CHUNK_WIDTH = 32;    // in block units
-    public static final int CHUNK_HEIGHT = 32;
+    public static final int CHUNK_WIDTH = 31;    // in block units
+    public static final int CHUNK_HEIGHT = 31;
 
     public String key;                      // unique identifier for this chunk
     public int cx, cy, cz;                  // chunk coordinate
@@ -31,8 +31,6 @@ public class Chunk implements Disposable {
         this.settings = settings;
         hasVolume = false;
         hasMesh = false;
-        //needsRemesh = false;
-        //renderables = new Array<>();
 
         mcubes = new MarchingCubes();
         voxels = new Voxels();
@@ -54,8 +52,8 @@ public class Chunk implements Disposable {
 
         //model = voxels.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.OLIVE);
         Color color = Color.OLIVE;
-        if((cx % 2 == 1) ^ (cz % 2 == 1))
-            color = Color.GREEN;
+//        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
+//            color = Color.GREEN;
 
         model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 
@@ -72,8 +70,8 @@ public class Chunk implements Disposable {
     private VolumeMap makeVolume3d(NoiseSettings settings, int cx, int cy, int cz) {
         Noise noise = new Noise();
 
-        settings.xoffset = cx * settings.PerlinScale;
-        settings.zoffset = cz * settings.PerlinScale;
+        settings.xoffset = cx * settings.PerlinScale *(CHUNK_WIDTH)/(float)(CHUNK_WIDTH+1);
+        settings.zoffset = cz * settings.PerlinScale *(CHUNK_WIDTH)/(float)(CHUNK_WIDTH+1);
         settings.yoffset = cy * settings.PerlinScale;
 
         char [][][] map = noise.makeVolume(CHUNK_WIDTH+1, CHUNK_HEIGHT+1, settings);

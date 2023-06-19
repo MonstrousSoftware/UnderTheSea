@@ -96,6 +96,7 @@ public class MarchingCubes {
     private int chunkResolution;
     private int chunkHeight;
     private VolumeMap volumeMap;
+    public static int primitive = GL20.GL_TRIANGLES;
 
     public Model build(VolumeMap volumeMap, int chunkResolution, int chunkHeight, Color color) {
         this.volumeMap = volumeMap;
@@ -103,8 +104,8 @@ public class MarchingCubes {
         this.chunkHeight = chunkHeight;
         Material mat = new Material(ColorAttribute.createDiffuse(color));
 
-        int primitive = GL20.GL_TRIANGLES;
-         //   primitive = GL20.GL_LINES;
+       // int primitive = GL20.GL_TRIANGLES;
+        //    primitive = GL20.GL_LINES;
 
 
 
@@ -191,6 +192,7 @@ public class MarchingCubes {
 
     private Vector3 du = new Vector3();
     private Vector3 dv = new Vector3();
+    private Vector3 nv = new Vector3();
 
     private void makeTriangle( MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2, MeshPartBuilder.VertexInfo v3 ){
         meshBuilder.ensureVertices(3);
@@ -201,9 +203,8 @@ public class MarchingCubes {
         // calculate normal vector from triangle
         du.set(v2.position).sub(v1.position).nor();
         dv.set(v3.position).sub(v1.position).nor();
-        nor.set(dv).crs(du);
-        if(nor.y < 0)
-            nor.scl(-1);    // hack
+        nor.set(dv).crs(du).nor();
+
 
         v1.setNor(nor);
         v2.setNor(nor);
@@ -211,6 +212,15 @@ public class MarchingCubes {
 
         meshBuilder.ensureTriangleIndices(1);
         meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
+
+        if(primitive == GL20.GL_LINES) {
+            meshBuilder.ensureVertices(2);
+            v1.position.add(v2.position).add(v3.position).scl(0.333f);
+            final short c = meshBuilder.vertex(v1);
+            v2.position.set(v1.position).add(nor);
+            final short n = meshBuilder.vertex(v2);
+            meshBuilder.line(c, n);
+        }
     }
 
 

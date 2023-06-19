@@ -302,6 +302,11 @@ public class Noise {
                     f *= targetDensity;                 // todo
 
                     char density = (char)(255*f);
+
+//                    density = 255;
+//                    if(y > 16)
+//                        density = 0;
+
                     volumeMap[y][x][z] = density;     // solid vs. air
                 }
             }

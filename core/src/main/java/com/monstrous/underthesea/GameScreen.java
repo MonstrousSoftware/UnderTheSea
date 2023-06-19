@@ -1,9 +1,11 @@
 package com.monstrous.underthesea;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -84,6 +86,15 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if(Gdx.input.isKeyPressed(Input.Keys.F1)) {
+            MarchingCubes.primitive = GL20.GL_TRIANGLES;
+            world.rebuild();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.F2)) {
+            MarchingCubes.primitive = GL20.GL_LINES;
+            world.rebuild();
+        }
+
         camController.update();
 
         //create shadow texture
