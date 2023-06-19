@@ -20,7 +20,7 @@ public class Chunks implements Disposable {
         chunks = new Array<>();
         GridPoint3 coordinate = new GridPoint3();
 
-        for(int y = 0; y <= 0; y++) {
+        for(int y = -1; y <= 0; y++) {
             for (int x = -SIZE; x <= SIZE; x++) {
                 for (int z = -SIZE; z <= SIZE; z++) {
                     coordinate.set(x, y, z);

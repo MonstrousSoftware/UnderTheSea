@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class MarchingCubes {
 
-    static final char THRESHOLD = 64;
+    public static char isoThreshold = 64;
 
     public static final int[][] triangulationTable = { {}, { 0, 8, 3 }, { 0, 1, 9 }, { 1, 8, 3, 9, 8, 1 }, { 1, 2, 10 }, { 0, 8, 3, 1, 2, 10 }, { 9, 2, 10, 0, 2, 9 },
         { 2, 8, 3, 2, 10, 8, 10, 9, 8 }, { 3, 11, 2 }, { 0, 11, 2, 8, 11, 0 }, { 1, 9, 0, 2, 3, 11 }, { 1, 11, 2, 1, 9, 11, 9, 8, 11 }, { 3, 10, 1, 11, 10, 3 },
@@ -96,7 +96,8 @@ public class MarchingCubes {
     private int chunkResolution;
     private int chunkHeight;
     private VolumeMap volumeMap;
-    public static int primitive = GL20.GL_TRIANGLES;
+    public static boolean wireframeMode = false;
+
 
     public Model build(VolumeMap volumeMap, int chunkResolution, int chunkHeight, Color color) {
         this.volumeMap = volumeMap;
@@ -104,8 +105,9 @@ public class MarchingCubes {
         this.chunkHeight = chunkHeight;
         Material mat = new Material(ColorAttribute.createDiffuse(color));
 
-       // int primitive = GL20.GL_TRIANGLES;
-        //    primitive = GL20.GL_LINES;
+       int primitive = GL20.GL_TRIANGLES;
+       if(wireframeMode)
+            primitive = GL20.GL_LINES;
 
 
 
@@ -162,28 +164,28 @@ public class MarchingCubes {
     private int classifyCube(int x, int y, int z) {
 
         int value = 0;
-        if(volumeMap.data[y+1][x][z] > THRESHOLD )
+        if(volumeMap.data[y+1][x][z] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y+1][x+1][z] > THRESHOLD )
+        if(volumeMap.data[y+1][x+1][z] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y+1][x+1][z+1] > THRESHOLD )
+        if(volumeMap.data[y+1][x+1][z+1] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y+1][x][z+1] > THRESHOLD )
+        if(volumeMap.data[y+1][x][z+1] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y][x][z] > THRESHOLD )
+        if(volumeMap.data[y][x][z] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y][x+1][z] > THRESHOLD )
+        if(volumeMap.data[y][x+1][z] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y][x+1][z+1] > THRESHOLD )
+        if(volumeMap.data[y][x+1][z+1] > isoThreshold )
             value++;
         value <<= 1;
-        if(volumeMap.data[y][x][z+1] > THRESHOLD )
+        if(volumeMap.data[y][x][z+1] > isoThreshold )
             value++;
         return value;
     }
@@ -213,7 +215,7 @@ public class MarchingCubes {
         meshBuilder.ensureTriangleIndices(1);
         meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
 
-        if(primitive == GL20.GL_LINES) {
+        if(wireframeMode) {
             meshBuilder.ensureVertices(2);
             v1.position.add(v2.position).add(v3.position).scl(0.333f);
             final short c = meshBuilder.vertex(v1);

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class Chunk implements Disposable {
 
     public static final int CHUNK_WIDTH = 31;    // in block units
-    public static final int CHUNK_HEIGHT = 31;
+    public static final int CHUNK_HEIGHT = 127;
 
     public String key;                      // unique identifier for this chunk
     public int cx, cy, cz;                  // chunk coordinate
@@ -70,9 +70,12 @@ public class Chunk implements Disposable {
     private VolumeMap makeVolume3d(NoiseSettings settings, int cx, int cy, int cz) {
         Noise noise = new Noise();
 
+        // if a chunk is N blocks wide, we'll need to generate N+1 vertices
+        // where the last vertex is the same as the first of the next chunk.
+
         settings.xoffset = cx * settings.PerlinScale *(CHUNK_WIDTH)/(float)(CHUNK_WIDTH+1);
         settings.zoffset = cz * settings.PerlinScale *(CHUNK_WIDTH)/(float)(CHUNK_WIDTH+1);
-        settings.yoffset = cy * settings.PerlinScale;
+        settings.yoffset = cy * settings.PerlinScale *(CHUNK_HEIGHT)/(float)(CHUNK_HEIGHT+1);
 
         char [][][] map = noise.makeVolume(CHUNK_WIDTH+1, CHUNK_HEIGHT+1, settings);
         return new VolumeMap(map);

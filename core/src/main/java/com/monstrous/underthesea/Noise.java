@@ -1,6 +1,7 @@
 package com.monstrous.underthesea;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -289,7 +290,7 @@ public class Noise {
             // bottom is mostly solid.
            // float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
 //            float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
-            float targetDensity = (float)(height-y)/((float)(height));
+            float targetDensity = 1f*(float)(chunkY + ((float)(height-y)/(float)(height)));
 
 
             for (int x = 0; x < width; x++) {
@@ -300,6 +301,7 @@ public class Noise {
                             (float) z * scale + settings.zoffset, settings);
 
                     f *= targetDensity;                 // todo
+                    f = MathUtils.clamp(f, 0f, 1f);
 
                     char density = (char)(255*f);
 
