@@ -50,7 +50,7 @@ public class Chunks implements Disposable {
         // todo could be sped up with some lookup map
         for(Chunk chunk : chunks ) {
             if(chunk.cx == cx && chunk.cz == cz && chunk.cy == cy) {
-                Gdx.app.log("check chunk", "cx: "+cx + " cy: "+ cy + "cz: "+ cz);
+               // Gdx.app.log("check chunk", "cx: "+cx + " cy: "+ cy + "cz: "+ cz);
                 return chunk.collides(point);
             }
         }

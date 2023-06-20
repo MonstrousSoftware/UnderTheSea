@@ -59,9 +59,6 @@ public class GameScreen implements Screen {
 
         SubController subController = new SubController();
 
-        world = new World(sceneManager, subController);
-        gui = new GUI(world);
-
         // create perspective camera
         cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(0, 20, 20);
@@ -70,6 +67,11 @@ public class GameScreen implements Screen {
         cam.near = 1f;
         cam.update();
         sceneManager.setCamera(cam);
+
+        world = new World(sceneManager, subController, cam);
+        gui = new GUI(world);
+
+
 
 
         //inputController = new PlayerController(world.getPlayer().transform);

@@ -2,6 +2,7 @@ package com.monstrous.underthesea;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.scene.Scene;
@@ -117,5 +118,9 @@ public class Submarine {
         tail.set(0,0, -2.5f);     // tail of the model, used for collision test
         tail.mul(sceneSub.modelInstance.transform);
         return tail;
+    }
+
+    public Matrix4 getScrewTransform() {
+        return sceneScrew.modelInstance.transform;
     }
 }
