@@ -1,10 +1,9 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -13,8 +12,11 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
@@ -27,13 +29,14 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.scene.SceneSkybox;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
-public class GameScreen implements Screen {
+public class GameScreen extends ScreenAdapter {
 
     private static final int SHADOW_MAP_SIZE = 2048;
     public static int shadowMapSize = 1024;         // resolution of shadow
     public static int shadowViewPortSize = 1024;    // area where shadows are cast
 
 
+    private Main game;
     private SceneManager sceneManager;
     private SceneAsset sceneAsset;
     private Scene scene;
@@ -44,13 +47,21 @@ public class GameScreen implements Screen {
     private Environment environment;
     private DirectionalShadowLight shadowLight;
     private World world;
-    private GUI gui;
+  //  private GUI gui;
     private Cubemap diffuseCubemap;
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
     private Texture brdfLUT;
     private SceneSkybox skybox;
     private DirectionalLightEx light;
+    private SpriteBatch batch;
+    private ShaderProgram vignetteProgram;
+    private FrameBuffer fbo = null;
+
+    public GameScreen(Main game) {
+        Gdx.app.log("GameScreen constructor", "");
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -68,8 +79,8 @@ public class GameScreen implements Screen {
         cam.update();
         sceneManager.setCamera(cam);
 
-        world = new World(sceneManager, subController, cam);
-        gui = new GUI(world);
+        world = new World(game.assets, sceneManager, subController, cam);
+       // gui = new GUI(world);
 
 
 
@@ -89,7 +100,7 @@ public class GameScreen implements Screen {
         // input multiplexer
         InputMultiplexer im = new InputMultiplexer();
         Gdx.input.setInputProcessor(im);
-        im.addProcessor(gui.stage);
+       // im.addProcessor(gui.stage);
         im.addProcessor(subController);
         im.addProcessor(camController);
 
@@ -145,6 +156,17 @@ public class GameScreen implements Screen {
         skybox = new SceneSkybox(environmentCubemap);
         sceneManager.setSkyBox(skybox);
 
+        batch = new SpriteBatch();
+
+        // full screen post processing shader
+        //ShaderProgram.pedantic = true;
+        vignetteProgram = new ShaderProgram(
+            Gdx.files.internal("shaders\\vignette.vertex.glsl"),
+            Gdx.files.internal("shaders\\vignette.fragment.glsl"));
+        if (!vignetteProgram.isCompiled())
+            throw new GdxRuntimeException(vignetteProgram.getLog());
+        ShaderProgram.pedantic = false;
+
     }
 
     @Override
@@ -171,9 +193,15 @@ public class GameScreen implements Screen {
 //        }
 
 
-        ScreenUtils.clear(Settings.backgroundColour, true);
         sceneManager.update(delta);
-        sceneManager.render();
+        sceneManager.renderShadows();
+        sceneManager.renderMirror();
+        sceneManager.renderTransmission();
+
+        fbo.begin();
+        ScreenUtils.clear(Settings.backgroundColour, true);
+
+        sceneManager.renderColors();
 
 
         // mixing scene manager and instance rendering.....
@@ -181,14 +209,36 @@ public class GameScreen implements Screen {
         world.render(modelBatch, environment);
         modelBatch.end();
 
-        gui.render(delta);
+        fbo.end();
+
+
+        // post-processing of game screen content : vignette effect
+        Sprite s = new Sprite(fbo.getColorBufferTexture());
+        s.flip(false,  true); // coordinate system in buffer differs from screen
+
+        batch.begin();
+        batch.setShader(vignetteProgram);						// post-processing shader
+        batch.draw(s,  0,  0); 	// draw frame buffer as screen filling texture
+        batch.end();
+        batch.setShader(null);
+
+ //       gui.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
+        cam.viewportWidth = width;
+        cam.viewportHeight = height;
+        cam.update();
+        batch.getProjectionMatrix().setToOrtho2D(0,0, width, height);   // resize the sprite batch
+
         sceneManager.updateViewport(width, height);
-        gui.resize(width, height);
+    //    gui.resize(width, height);
+        if(fbo != null)
+            fbo.dispose();
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
+
     }
 
     @Override
@@ -218,6 +268,6 @@ public class GameScreen implements Screen {
 
         world.dispose();
         modelBatch.dispose();
-        gui.dispose();
+    //    gui.dispose();
     }
 }

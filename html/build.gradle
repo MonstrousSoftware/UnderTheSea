@@ -19,18 +19,20 @@ gwt {
   src = files(file('src/main/java')) // Needs to be in front of "modules" below.
   modules 'com.monstrous.underthesea.GdxDefinition'
   devModules 'com.monstrous.underthesea.GdxDefinitionSuperdev'
+
   project.webAppDirName = 'webapp'
 
   compiler.strict = true
   compiler.disableCastChecking = true
   //// The next line can be useful to uncomment if you want output that hasn't been obfuscated.
-//  compiler.style = org.wisepersist.gradle.plugins.gwt.Style.DETAILED
+  compiler.style = org.wisepersist.gradle.plugins.gwt.Style.DETAILED
 }
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
   implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
   implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+  api "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion:sources"
   implementation project(':core')
 
 //// You can use the lines below instead of the "com.badlogicgames.gdx:gdx-backend-gwt" dependencies.
@@ -132,7 +134,7 @@ task dist(dependsOn: [clean, compileGwt]) {
 task addSource {
   doLast {
     sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
-    
+
   }
 }
 

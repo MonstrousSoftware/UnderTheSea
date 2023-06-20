@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 
@@ -132,32 +133,38 @@ public class MarchingCubes {
 
 
     private void marchCube(int x, int y, int z){
-        // centre the chunk on the origin
-        float fy = y; // - chunkHeight/2f;
-        float fx = x;// - chunkResolution/2f;
-        float fz = z;// - chunkResolution/2f;
 
         int code = classifyCube(x, y, z);
         int [] triangulation = triangulationTable[code];
         for(int i = 0; i < triangulation.length; i += 3){
-            setVertex( fx, fy, fz, vertTmp0, triangulation[i] );
-            setVertex( fx, fy, fz, vertTmp1, triangulation[i+1] );
-            setVertex( fx, fy, fz, vertTmp2, triangulation[i+2] );
+            setVertex( x, y, z, vertTmp0, triangulation[i] );
+            setVertex( x, y, z, vertTmp1, triangulation[i+1] );
+            setVertex( x, y, z, vertTmp2, triangulation[i+2] );
             makeTriangle( vertTmp0, vertTmp1, vertTmp2);
         }
     }
 
-    private void setVertex( float cx, float cy, float cz, MeshPartBuilder.VertexInfo vertInfo, int edgeIndex ) {
+    private void setVertex( int cx, int cy, int cz, MeshPartBuilder.VertexInfo vertInfo, int edgeIndex ) {
         int v0 = edges[edgeIndex][0];
         int v1 = edges[edgeIndex][1];
 
-        float y = vertexOffsets[v0][0] + vertexOffsets[v1][0];
-        float x = vertexOffsets[v0][1] + vertexOffsets[v1][1];
-        float z = vertexOffsets[v0][2] + vertexOffsets[v1][2];
-        y *= 0.5f;
-        x *= 0.5f;
-        z *= 0.5f;
-        vertInfo.setPos(cx+x, cy+y, cz+z);
+
+        int y = vertexOffsets[v0][0];
+        int x = vertexOffsets[v0][1];
+        int z = vertexOffsets[v0][2];
+        int y2 = vertexOffsets[v1][0];
+        int x2 = vertexOffsets[v1][1];
+        int z2 = vertexOffsets[v1][2];
+        char val0 = volumeMap.data[cy+y][cx+x][cz+z];
+        char val1 = volumeMap.data[cy+y2][cx+x2][cz+z2];
+        float a = (isoThreshold - val0)/(float)(val1 - val0);
+
+        //float a = 0.5f;
+        float yf = MathUtils.lerp(y, y2, a);
+        float xf = MathUtils.lerp(x, x2, a);
+        float zf = MathUtils.lerp(z, z2, a);
+
+        vertInfo.setPos(cx+xf, cy+yf, cz+zf);
     }
 
 

@@ -1,0 +1,54 @@
+package com.monstrous.underthesea;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Disposable;
+import net.mgsx.gltf.loaders.gltf.GLTFAssetLoader;
+import net.mgsx.gltf.scene3d.scene.SceneAsset;
+
+public class Assets implements Disposable {
+
+    public AssetManager assets;
+
+    public Assets() {
+        Gdx.app.log("Assets constructor", "");
+        assets = new AssetManager();
+
+        assets.setLoader(SceneAsset.class, ".gltf", new GLTFAssetLoader());
+
+        assets.load("models/submarine.gltf", SceneAsset.class);
+//        //assets.load("models/cook.gltf", SceneAsset.class);
+//
+//
+        assets.load("blue-pixel-skin/blue-pixel.json", Skin.class);
+//
+//        assets.load("sounds/open-doors-114615.mp3", Sound.class);
+//        assets.load("sounds/item-equip-6904.mp3", Sound.class);
+//        assets.load("sounds/punch-140236.mp3", Sound.class);
+//        assets.load("sounds/click-for-game-menu-131903.mp3", Sound.class);
+//        assets.load("sounds/footsteps.mp3", Sound.class);
+//
+//        assets.load(Settings.gameMusic, Music.class);
+//        assets.load(Settings.winMusic, Music.class);
+
+    }
+
+    public boolean update() {
+        return assets.update();
+    }
+
+    public <T> T get(String name ) {
+        return assets.get(name);
+    }
+
+
+    @Override
+    public void dispose() {
+        Gdx.app.log("Assets dispose()", "");
+        assets.dispose();
+        assets = null;
+    }
+}

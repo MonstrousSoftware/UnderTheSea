@@ -20,7 +20,7 @@ public class World implements Disposable {
     public SubController subController;
     public ParticleEffects particleEffects;
 
-    public World( SceneManager sceneManager,  SubController subController, Camera cam ) {
+    public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
         this.subController = subController;
 
@@ -29,7 +29,7 @@ public class World implements Disposable {
         instanceXYZ = new ModelInstance(modelXYZ, new Vector3(0, 0, 0));
 
         rebuild();
-        submarine = new Submarine(sceneManager, 0, 70, 0);
+        submarine = new Submarine(assets, sceneManager, 0, 70, 0);
         particleEffects = new ParticleEffects(cam);
         particleEffects.addBubbles( submarine.getScrewTransform() );
 

@@ -53,8 +53,8 @@ public class Chunk implements Disposable {
 
         //model = voxels.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.OLIVE);
         Color color = Color.OLIVE;
-        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
-            color = Color.GREEN;
+//        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
+//            color = Color.GREEN;
 
         model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 

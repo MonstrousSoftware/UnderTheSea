@@ -3,7 +3,7 @@ package com.monstrous.underthesea.gwt;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.monstrous.underthesea.Main;
+import com.monstrous.underthesea.screens.Main;
 
 /** Launches the GWT application. */
 public class GwtLauncher extends GwtApplication {

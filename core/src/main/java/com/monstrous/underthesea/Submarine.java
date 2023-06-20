@@ -28,8 +28,9 @@ public class Submarine {
     private boolean collided = false;
     private boolean rearCollided = false;
 
-    public Submarine( SceneManager sceneManager, float x, float y, float z ) {
-        sceneAsset = new GLTFLoader().load(Gdx.files.internal("models/submarine.gltf"));
+    public Submarine( Assets assets, SceneManager sceneManager, float x, float y, float z ) {
+        //sceneAsset = new GLTFLoader().load(Gdx.files.internal("models/submarine.gltf"));
+        sceneAsset = assets.get("models/submarine.gltf");
 
         sceneSub = new Scene(sceneAsset.scene, "submarine");
         sceneSub.modelInstance.transform.translate(x, y, z);
@@ -55,6 +56,9 @@ public class Submarine {
     Vector3 tmpVec = new Vector3();
 
     public void update( float deltaTime, SubController subController ){
+
+        // todo still allow screw turning and fin turning when collided
+
         if(collided && subController.power > 0)
             return; // freeze position, unless power is reversed
         collided = false;
