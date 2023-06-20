@@ -1,8 +1,10 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.GridPoint3;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.scene3d.scene.Scene;
@@ -38,6 +40,21 @@ public class Chunks implements Disposable {
     public void render(ModelBatch modelBatch, Environment environment) {
         for(Chunk chunk : chunks )
             modelBatch.render(chunk.modelInstance, environment);
+    }
+
+    public boolean collides( Vector3 point ){
+        int cx = (int)Math.floor(point.x / Chunk.CHUNK_WIDTH);
+        int cz = (int)Math.floor(point.z / Chunk.CHUNK_WIDTH);
+        int cy = (int)Math.floor(point.y / Chunk.CHUNK_HEIGHT);
+
+        // todo could be sped up with some lookup map
+        for(Chunk chunk : chunks ) {
+            if(chunk.cx == cx && chunk.cz == cz && chunk.cy == cy) {
+                Gdx.app.log("check chunk", "cx: "+cx + " cy: "+ cy + "cz: "+ cz);
+                return chunk.collides(point);
+            }
+        }
+        return false;
     }
 
 

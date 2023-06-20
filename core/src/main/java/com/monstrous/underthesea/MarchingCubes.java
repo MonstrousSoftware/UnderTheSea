@@ -133,9 +133,9 @@ public class MarchingCubes {
 
     private void marchCube(int x, int y, int z){
         // centre the chunk on the origin
-        float fy = y - chunkHeight/2f;
-        float fx = x - chunkResolution/2f;
-        float fz = z - chunkResolution/2f;
+        float fy = y; // - chunkHeight/2f;
+        float fx = x;// - chunkResolution/2f;
+        float fz = z;// - chunkResolution/2f;
 
         int code = classifyCube(x, y, z);
         int [] triangulation = triangulationTable[code];

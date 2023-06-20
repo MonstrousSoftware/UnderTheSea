@@ -36,7 +36,7 @@ public class GUI implements Disposable {
 
         Table screenTable = new Table();
         screenTable.setFillParent(true);
-        screenTable.add(settingsWindow).top().right().expand();
+        screenTable.add().top().right().expand();
         screenTable.row();
         screenTable.add(statusLabel).bottom().left();
 

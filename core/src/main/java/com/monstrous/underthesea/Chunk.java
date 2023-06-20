@@ -1,5 +1,6 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -52,8 +53,8 @@ public class Chunk implements Disposable {
 
         //model = voxels.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.OLIVE);
         Color color = Color.OLIVE;
-//        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
-//            color = Color.GREEN;
+        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
+            color = Color.GREEN;
 
         model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 
@@ -79,6 +80,20 @@ public class Chunk implements Disposable {
 
         char [][][] map = noise.makeVolume(CHUNK_WIDTH+1, CHUNK_HEIGHT+1, settings);
         return new VolumeMap(map);
+    }
+
+    public boolean collides( Vector3 point ){
+        char [][][] data = volume.data;
+
+        int x = (int)(point.x - cx * CHUNK_WIDTH);
+        int z = (int)(point.z - cz * CHUNK_WIDTH);
+        int y = (int)(point.y - cy * CHUNK_HEIGHT);
+
+        if( x < 0 || y < 0 || z < 0)
+            Gdx.app.error("Negative index", "");
+
+        char density = data[y][x][z];
+        return density > MarchingCubes.isoThreshold;
     }
 
     @Override

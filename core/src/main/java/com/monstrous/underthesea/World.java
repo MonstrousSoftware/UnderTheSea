@@ -1,10 +1,9 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.GridPoint3;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
@@ -28,7 +27,8 @@ public class World implements Disposable {
         instanceXYZ = new ModelInstance(modelXYZ, new Vector3(0, 0, 0));
 
         rebuild();
-        submarine = new Submarine(sceneManager, 0, 30, 0);
+        submarine = new Submarine(sceneManager, 0, 70, 0);
+
     }
 
     public Vector3 getFocus() {
@@ -46,7 +46,19 @@ public class World implements Disposable {
         subController.update(deltaTime);
 
         submarine.update(deltaTime, subController);
+
+        // very basic N point collision
+        if(chunks.collides(submarine.getTipPosition())) {
+            Gdx.app.log("COLLISION", "OUCH");
+            submarine.collide();
+        }
+        if(chunks.collides(submarine.getTailPosition())) {
+            Gdx.app.log("COLLISION", "OUCH");
+            submarine.rearCollide();
+        }
     }
+
+    private Vector3 tmpVec = new Vector3();
 
     public void render(ModelBatch modelBatch, Environment environment){
 
