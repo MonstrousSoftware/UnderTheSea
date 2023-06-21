@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.MarchingCubes;
+import com.monstrous.underthesea.SubController;
 import com.monstrous.underthesea.World;
 
 public class GUI implements Disposable {
@@ -20,6 +21,12 @@ public class GUI implements Disposable {
     private Label statusLabel;
     private World world;
     private Image steerGauge;
+    private Slider sliderDive;
+    private Slider sliderRudder;
+    private Slider sliderPower;
+    private Image collision;
+    private Label message;
+    private TextButton confirmButton;
 
 
     public GUI( World world) {
@@ -36,23 +43,24 @@ public class GUI implements Disposable {
 
         steerGauge = new Image( new Texture("images/gauge.png"));
 
+        collision = new Image( new Texture("images/collision.png"));
 
 
-        statusLabel = new Label("Status", skin, "subtitle");
+        statusLabel = new Label("Status", skin, "window");
+
+        message = new Label("TEST", skin, "window");
+        message.setVisible(false);
 
 
 
 
-
-
-
-        final Slider sliderHDG = new Slider(-25, 25, 1, false, skin);
-        sliderHDG.setAnimateDuration(0.1f);
-        sliderHDG.setValue((int)world.subController.steerAngle);
-        sliderHDG.addListener(new ChangeListener() {
+        sliderRudder = new Slider(-SubController.MAX_STEER_ANGLE, SubController.MAX_STEER_ANGLE, 1, false, skin);
+        sliderRudder.setAnimateDuration(0.1f);
+        sliderRudder.setValue((int)world.subController.steerAngle);
+        sliderRudder.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                world.subController.steerAngle = sliderHDG.getValue();
+                world.subController.steerAngle = sliderRudder.getValue();
             }
         });
 
@@ -61,12 +69,12 @@ public class GUI implements Disposable {
 
         Stack stackHDG = new Stack();
         stackHDG.add(new Image(new Texture("images/gauge.png")));
-        stackHDG.add(sliderHDG);
+        stackHDG.add(sliderRudder);
         t1.add(stackHDG);
         t1.pack();
 
 
-        final Slider sliderDive = new Slider(-25, 25, 1, true, skin);
+        sliderDive = new Slider(-SubController.MAX_DIVE_ANGLE, SubController.MAX_DIVE_ANGLE, 1, true, skin);
         sliderDive.setAnimateDuration(0.1f);
         sliderDive.setValue((int)world.subController.diveAngle);
         sliderDive.addListener(new ChangeListener() {
@@ -86,7 +94,7 @@ public class GUI implements Disposable {
 
 
 
-        final Slider sliderPower = new Slider(-100, 100, 10, true, skin);
+        sliderPower = new Slider(-SubController.MAX_POWER, SubController.MAX_POWER, 10, true, skin);
         sliderPower.setAnimateDuration(0.1f);
         sliderPower.setValue((int)world.subController.power);
         sliderPower.addListener(new ChangeListener() {
@@ -109,23 +117,70 @@ public class GUI implements Disposable {
         screenTable.setFillParent(true);
 
         screenTable.add(t2).left().bottom();
+        screenTable.add(statusLabel).width(100).bottom();
         screenTable.add(t1).center().bottom().expand();
         screenTable.add(t3).right().bottom();
         screenTable.pack();
 
 
+        Table msg = new Table();
+        confirmButton = new TextButton("CONFIRM", skin);
+        confirmButton.setDisabled(true);
+        confirmButton.setVisible(false);
+
+        confirmButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                message.setVisible(false);
+                confirmButton.setDisabled(true);
+                confirmButton.setVisible(false);
+            }
+        });
+        msg.add(message).row();
+        msg.add(confirmButton).center();
+        msg.pack();
+
+
+        Table screenTable2 = new Table();
+        screenTable2.setFillParent(true);
+
+        screenTable2.add(collision).pad(5).top().row();
+        screenTable2.add(msg).right().pad(20).center().expand();
+
+        //screenTable2.add(confirmButton).pad(5).top().expand().row();
+       // screenTable2.add(statusLabel).pad(20).center();
+        screenTable2.pack();
 
         stage.addActor(screenTable);
+        stage.addActor(screenTable2);
+
         //stage.addActor(settingsWindow);
 
     }
 
 
+    public void setCollision( boolean value ){
+        collision.setVisible(value);
+    }
+
+    public void setMessage( String text ){
+        message.setText(text);
+//        if(message.isVisible())
+//            return;
+        message.setVisible(true);
+        confirmButton.setDisabled(false);
+        confirmButton.setVisible(true);
+    }
 
     public void render(float deltaTime) {
 
 //        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
 //                            world.submarine.velocity.toString()));
+        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %.2f", 128-(int)world.submarine.position.y, world.capsuleDistance));
+
+        sliderRudder.setValue(world.subController.steerAngle);
+        sliderDive.setValue(world.subController.diveAngle);
+        sliderPower.setValue(world.subController.power);
 
         stage.act(deltaTime);
         stage.draw();

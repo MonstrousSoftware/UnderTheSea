@@ -81,6 +81,7 @@ public class GameScreen extends ScreenAdapter {
 
         world = new World(game.assets, sceneManager, subController, cam);
         gui = new GUI(world);
+        world.setGUI(gui);
 
 
 
@@ -89,12 +90,6 @@ public class GameScreen extends ScreenAdapter {
 
         // add camera controller
         camController = new CamController(cam);
-        // free up the WASD keys
-//        camController.forwardKey = Input.Keys.F3;
-//        camController.backwardKey = Input.Keys.F4;
-//        camController.rotateRightKey = Input.Keys.F5;
-//        camController.rotateLeftKey = Input.Keys.F6;
-
 
 
         // input multiplexer
@@ -182,6 +177,7 @@ public class GameScreen extends ScreenAdapter {
 
         camController.update( world.getFocus() );
         world.update(delta);
+        gui.setCollision( world.submarine.inCollision() );
 
         //create shadow texture
 //        if(Settings.shadows) {

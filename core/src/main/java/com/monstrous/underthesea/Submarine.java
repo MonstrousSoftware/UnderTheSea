@@ -15,6 +15,7 @@ public class Submarine {
     private Scene sceneSub;
     private Scene sceneScrew;
     private Scene sceneFins;
+    private Scene sceneRudder;
     public  Vector3 position;
     public  Vector3 targetVelocity;
     public  Vector3 velocity;
@@ -29,7 +30,7 @@ public class Submarine {
     private boolean rearCollided = false;
 
     public Submarine( Assets assets, SceneManager sceneManager, float x, float y, float z ) {
-        //sceneAsset = new GLTFLoader().load(Gdx.files.internal("models/submarine.gltf"));
+
         sceneAsset = assets.get("models/submarine.gltf");
 
         sceneSub = new Scene(sceneAsset.scene, "submarine");
@@ -41,6 +42,9 @@ public class Submarine {
         sceneFins = new Scene(sceneAsset.scene, "fins");
         sceneFins.modelInstance.transform.translate(x, y, z);
         sceneManager.addScene(sceneFins);
+        sceneRudder = new Scene(sceneAsset.scene, "rudder");
+        sceneRudder.modelInstance.transform.translate(x, y, z);
+        sceneManager.addScene(sceneRudder);
 
         position = new Vector3(x, y, z);
         targetVelocity = new Vector3(0, 0, 1);
@@ -55,35 +59,40 @@ public class Submarine {
 
     Vector3 tmpVec = new Vector3();
 
+    public boolean inCollision() {
+        return collided || rearCollided;
+    }
+
     public void update( float deltaTime, SubController subController ){
 
         // todo still allow screw turning and fin turning when collided
 
-        if(collided && subController.power > 0)
-            return; // freeze position, unless power is reversed
-        collided = false;
+        if(collided && subController.power < 0)
+            collided = false;
 
-        if(rearCollided && subController.power < 0)
-            return; // freeze position, unless power is reversed
-        rearCollided = false;
+        if(rearCollided && subController.power > 0)
+            rearCollided = false;
 
         screwSpeed = subController.power;
         screwAngle +=  4*screwSpeed*deltaTime;
 
 
-        // sub reacts with some lag on the inputs to give some inertia
-        heading += subController.steerAngle * deltaTime;
-        diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
+        if(!inCollision()) {
 
-        targetVelocity.set(0,0,screwSpeed/50f);
-        targetVelocity.rotate(Vector3.X, -diveAngle);
-        targetVelocity.rotate(Vector3.Y, heading);
+            // sub reacts with some lag on the inputs to give some inertia
+            heading += subController.steerAngle * deltaTime;
+            diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
-        // actual movement velocity lags on target velocity
-        velocity.slerp(targetVelocity, deltaTime);
+            targetVelocity.set(0,0,screwSpeed/50f);
+            targetVelocity.rotate(Vector3.X, -diveAngle);
+            targetVelocity.rotate(Vector3.Y, heading);
 
-        step.set(velocity).scl(deltaTime);          // x = v * dt
-        position.add(step);
+            // actual movement velocity lags on target velocity
+            velocity.slerp(targetVelocity, deltaTime);
+
+            step.set(velocity).scl(deltaTime);          // x = v * dt
+            position.add(step);
+        }
 
 
         sceneSub.modelInstance.transform.setToRotation(Vector3.Y, heading);
@@ -95,6 +104,11 @@ public class Submarine {
 
         sceneFins.modelInstance.transform.setToRotation(Vector3.X, -4*subController.diveAngle);
         sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+
+        sceneRudder.modelInstance.transform.idt().translate(0,0,-1.6f);
+        sceneRudder.modelInstance.transform.rotate(Vector3.Y, -subController.steerAngle);
+        sceneRudder.modelInstance.transform.translate(0,0,1.6f);
+        sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
     }
 
