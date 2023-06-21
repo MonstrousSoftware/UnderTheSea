@@ -12,6 +12,7 @@ public class Settings {
     static public Color     backgroundColour = new Color(0.4f, 0.9f, 0.9f, 1f);
 
     static public float     titleScreenTime = 2f;
+    static public boolean   enableParticleEffects = false;
 
     static public boolean   renderSkyBox = false;
     static public boolean   chunkDebugColors = false;   // broken

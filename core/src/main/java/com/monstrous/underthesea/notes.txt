@@ -1,0 +1,3 @@
+HTML versions struggle with loading particle effects file and with loading skin.
+Perhaps because they refer to external files.
+

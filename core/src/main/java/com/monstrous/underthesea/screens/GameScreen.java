@@ -47,7 +47,7 @@ public class GameScreen extends ScreenAdapter {
     private Environment environment;
     private DirectionalShadowLight shadowLight;
     private World world;
-  //  private GUI gui;
+    private GUI gui;
     private Cubemap diffuseCubemap;
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
@@ -80,7 +80,7 @@ public class GameScreen extends ScreenAdapter {
         sceneManager.setCamera(cam);
 
         world = new World(game.assets, sceneManager, subController, cam);
-       // gui = new GUI(world);
+        gui = new GUI(world);
 
 
 
@@ -100,7 +100,7 @@ public class GameScreen extends ScreenAdapter {
         // input multiplexer
         InputMultiplexer im = new InputMultiplexer();
         Gdx.input.setInputProcessor(im);
-       // im.addProcessor(gui.stage);
+        im.addProcessor(gui.stage);
         im.addProcessor(subController);
         im.addProcessor(camController);
 
@@ -222,7 +222,7 @@ public class GameScreen extends ScreenAdapter {
         batch.end();
         batch.setShader(null);
 
- //       gui.render(delta);
+        gui.render(delta);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class GameScreen extends ScreenAdapter {
         batch.getProjectionMatrix().setToOrtho2D(0,0, width, height);   // resize the sprite batch
 
         sceneManager.updateViewport(width, height);
-    //    gui.resize(width, height);
+        gui.resize(width, height);
         if(fbo != null)
             fbo.dispose();
         fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
@@ -268,6 +268,6 @@ public class GameScreen extends ScreenAdapter {
 
         world.dispose();
         modelBatch.dispose();
-    //    gui.dispose();
+        gui.dispose();
     }
 }

@@ -30,8 +30,10 @@ public class World implements Disposable {
 
         rebuild();
         submarine = new Submarine(assets, sceneManager, 0, 70, 0);
-        particleEffects = new ParticleEffects(cam);
-        particleEffects.addBubbles( submarine.getScrewTransform() );
+        if(Settings.enableParticleEffects) {
+            particleEffects = new ParticleEffects(cam);
+            particleEffects.addBubbles(submarine.getScrewTransform());
+        }
 
     }
 
@@ -60,8 +62,10 @@ public class World implements Disposable {
             Gdx.app.log("COLLISION", "OUCH");
             submarine.rearCollide();
         }
-        particleEffects.setBubblesOrigin( submarine.getTailPosition() );
-        particleEffects.update(deltaTime);
+        if(Settings.enableParticleEffects) {
+            particleEffects.setBubblesOrigin(submarine.getTailPosition());
+            particleEffects.update(deltaTime);
+        }
 
     }
 
@@ -73,13 +77,15 @@ public class World implements Disposable {
 
         modelBatch.render(instanceXYZ, environment);
 
-        particleEffects.render(modelBatch);
+        if(Settings.enableParticleEffects)
+            particleEffects.render(modelBatch);
     }
 
     @Override
     public void dispose() {
         chunks.dispose();
         modelXYZ.dispose();
+        if(particleEffects != null)
         particleEffects.dispose();
     }
 }
