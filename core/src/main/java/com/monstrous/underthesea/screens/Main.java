@@ -7,7 +7,7 @@ import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.screens.GameScreen;
 
 public class Main extends Game {
-    public final boolean RELEASE_BUILD = false;
+    public final boolean RELEASE_BUILD = true;
     public final String VERSION = "Under The Sea - June 2023";
 
     public Assets assets;

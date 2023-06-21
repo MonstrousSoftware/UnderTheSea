@@ -42,10 +42,13 @@ public class ShowCaseScreen extends ScreenAdapter {
     private Stage stage;
     private Skin skin;
     private float angle = 0;
+    private boolean banana;
+    private Vector3 cameraOffset;
 
-    public ShowCaseScreen(Main game) {
+    public ShowCaseScreen(Main game, boolean banana) {
 
         this.game = game;
+        this.banana = banana;
     }
 
     @Override
@@ -54,14 +57,24 @@ public class ShowCaseScreen extends ScreenAdapter {
         sceneManager = new SceneManager();
 
         // create scene
-        SceneAsset sceneAsset = game.assets.get("models/submarine.gltf");
+        if(banana) {
+            SceneAsset sceneAsset = game.assets.get("models/AnthroBanana.gltf");
 
-        Scene sceneSub = new Scene(sceneAsset.scene, "submarine");
-        sceneManager.addScene(sceneSub);
-        Scene sceneScrew = new Scene(sceneAsset.scene, "screw");
-        sceneManager.addScene(sceneScrew);
-        Scene sceneFins = new Scene(sceneAsset.scene, "fins");
-        sceneManager.addScene(sceneFins);
+            Scene sceneSub = new Scene(sceneAsset.scene, "banana");
+            sceneManager.addScene(sceneSub);
+            cameraOffset = new Vector3(1.2f, 3.3f, 12.2f);
+        }
+        else {
+            SceneAsset sceneAsset = game.assets.get("models/submarine.gltf");
+
+            Scene sceneSub = new Scene(sceneAsset.scene, "submarine");
+            sceneManager.addScene(sceneSub);
+            Scene sceneScrew = new Scene(sceneAsset.scene, "screw");
+            sceneManager.addScene(sceneScrew);
+            Scene sceneFins = new Scene(sceneAsset.scene, "fins");
+            sceneManager.addScene(sceneFins);
+            cameraOffset = new Vector3(1.2f, 3.3f, 8.2f);
+        }
 
 //        scene = new Scene(sceneAsset.scene, "backdrop");
 //        sceneManager.addScene(scene);
@@ -143,13 +156,14 @@ public class ShowCaseScreen extends ScreenAdapter {
     public void render( float deltaTime ) {
         // on key press go to game screen
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            banana = true;
             game.setScreen(new GameScreen(game));
             return;
         }
         // rotate model
 
         angle += 20f*deltaTime;
-        camDist.set(1.2f, 3.3f, 8.2f);
+        camDist.set(cameraOffset);
         camDist.rotate(Vector3.Y, angle);
 
         camera.position.set(camDist);

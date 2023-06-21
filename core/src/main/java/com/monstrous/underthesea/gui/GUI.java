@@ -2,11 +2,15 @@ package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.MarchingCubes;
@@ -27,6 +31,7 @@ public class GUI implements Disposable {
     private Image collision;
     private Label message;
     private TextButton confirmButton;
+    public boolean escapePressed;
 
 
     public GUI( World world) {
@@ -36,6 +41,7 @@ public class GUI implements Disposable {
         stage = new Stage(new ScreenViewport());
 
         settingsWindow = new SettingsWindow("Settings", skin, world);
+        escapePressed = false;
     }
 
     private void rebuild() {
@@ -51,7 +57,14 @@ public class GUI implements Disposable {
         message = new Label("TEST", skin, "window");
         message.setVisible(false);
 
-
+        ImageButton backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/b_exit.png")))));
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                escapePressed = true;
+            }
+        });
 
 
         sliderRudder = new Slider(-SubController.MAX_STEER_ANGLE, SubController.MAX_STEER_ANGLE, 1, false, skin);
@@ -115,7 +128,7 @@ public class GUI implements Disposable {
 
         Table screenTable = new Table();
         screenTable.setFillParent(true);
-
+        screenTable.add(backButton).top().left().row();
         screenTable.add(t2).left().bottom();
         screenTable.add(statusLabel).width(100).bottom();
         screenTable.add(t1).center().bottom().expand();

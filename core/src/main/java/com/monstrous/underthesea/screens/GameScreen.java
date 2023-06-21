@@ -166,6 +166,11 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        if(gui.escapePressed){
+            game.setScreen( new ShowCaseScreen(game, true) );
+            return;
+        }
+
         if(Gdx.input.isKeyPressed(Input.Keys.F1)) {
             MarchingCubes.wireframeMode = false;
             world.rebuild();

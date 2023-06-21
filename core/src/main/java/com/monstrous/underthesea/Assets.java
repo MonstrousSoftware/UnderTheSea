@@ -20,6 +20,7 @@ public class Assets implements Disposable {
         assets.setLoader(SceneAsset.class, ".gltf", new GLTFAssetLoader());
 
         assets.load("models/submarine.gltf", SceneAsset.class);
+        assets.load("models/AnthroBanana.gltf", SceneAsset.class);
 //        //assets.load("models/cook.gltf", SceneAsset.class);
 //
 //
