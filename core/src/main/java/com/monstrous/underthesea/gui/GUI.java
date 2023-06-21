@@ -189,7 +189,7 @@ public class GUI implements Disposable {
 
 //        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
 //                            world.submarine.velocity.toString()));
-        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %.2f", 128-(int)world.submarine.position.y, world.capsuleDistance));
+        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance));
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);

@@ -14,6 +14,8 @@ public class Settings {
     static public float titleScreenTime = 2f;
     static public boolean enableParticleEffects = false;
 
+    static public String preferencesName = "underthesea";
+
     static public boolean renderSkyBox = false;
     static public boolean chunkDebugColors = false;   // broken
     static public boolean chunkOutlines = false;
@@ -41,7 +43,9 @@ public class Settings {
     static public String[] messages = {
         "RADIO BROADCAST:\n\tSUBCOM TO GX-25.\n\tPROCEED TO PICK UP CAPSULE IN YOUR IMMEDIATE VICINITY.",
         "MESSAGE FROM CAPSULE #1\n\tSUBCOM TO GX-25.\n\tALL RADIO COMMUNICATIONS ARE COMPROMISED.\n\tMAINTAIN RADIO SILENCE AND IGNORE FURTHER RADIO MESSAGES.\n\tFURTHER INSTRUCTIONS EXCLUSIVELY BY MESSAGE CAPSULES.\n\tPROCEED TO NEXT CAPSULE.",
-        "MESSAGE FROM CAPSULE #2\n\tSUBCOM TO GX-25.\n\tEND OF EXERCISE.\n\tMISSION COMPLETED.\n\tRADIO COMMUNICATIONS ARE RESTORED.",
+        "MESSAGE FROM CAPSULE #2\n\tSUBCOM TO GX-25.\n\tSITUATION IS ESCALATING\n\tLAUNCH ALL NUCLEAR MISSILES TO DESIGNATED TARGETS.\n\tJUST KIDDING.\n\tPROCEED TO NEXT CAPSULE.",
+        "RADIO BROADCAST:\n\tHIGH COMMAND TO THE YELLOW SUBMARINE.\n\tSURFACE IMMEDIATELY TO MAKE RENDEZ-VOUS WITH THE FRIENDLY WARSHIPS.\n\t",
+        "MESSAGE FROM CAPSULE #3\n\tSUBCOM TO GX-25.\n\tEND OF EXERCISE.\n\tMISSION COMPLETED.\n\tRADIO COMMUNICATIONS ARE FULLY RESTORED.\n\tCONGRATS BANANA MAN.",
     };
 
 

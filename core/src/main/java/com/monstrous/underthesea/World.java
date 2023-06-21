@@ -24,12 +24,15 @@ public class World implements Disposable {
     public float capsuleDistance;
     public int capsuleCount;
     private GUI gui;
-    private float time = 0;
+    private float timer;
     private int messagesShown = 0;
+    private Sounds sounds;
 
     public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
         this.subController = subController;
+
+        sounds = new Sounds(assets);
 
         ModelBuilder modelBuilder = new ModelBuilder();
         modelXYZ = modelBuilder.createXYZCoordinates(10f, new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked);
@@ -39,11 +42,13 @@ public class World implements Disposable {
         submarine = new Submarine(assets, sceneManager, 0, 70, 0);
         capsule = new Capsule(assets, sceneManager, 0,70,20);
         capsuleCount = 1;
+        timer = 5f;
 
         if(Settings.enableParticleEffects) {
             particleEffects = new ParticleEffects(cam);
             particleEffects.addBubbles(submarine.getScrewTransform());
         }
+        Sounds.playSoundLoop(Sounds.SONAR_PING);
     }
 
     public void setGUI( GUI gui ){
@@ -63,7 +68,7 @@ public class World implements Disposable {
     }
 
     public void update( float deltaTime ){
-        time += deltaTime;
+        timer -= deltaTime;
 
         subController.update(deltaTime);
 
@@ -88,9 +93,10 @@ public class World implements Disposable {
             }
         }
 
-        if(time > 5 && messagesShown== 0){
-            gui.setMessage(Settings.messages[0] );
+        if(timer < 0 && messagesShown== 0){
+            gui.setMessage(Settings.messages[messagesShown] );
             messagesShown++;
+            timer = 9999999f;
         }
 
         if(Settings.enableParticleEffects) {
@@ -119,9 +125,12 @@ public class World implements Disposable {
 
     @Override
     public void dispose() {
+        Sounds.stopSound(Sounds.SONAR_PING);
+
         chunks.dispose();
         modelXYZ.dispose();
         if(particleEffects != null)
         particleEffects.dispose();
+        sounds.dispose();
     }
 }
