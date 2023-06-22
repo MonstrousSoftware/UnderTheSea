@@ -63,7 +63,7 @@ public class World implements Disposable {
     public void rebuild() {
         if(chunks != null)
             chunks.dispose();
-        chunks = new Chunks();
+        chunks = new Chunks(sceneManager);
 //        chunks.addScene(sceneManager);
     }
 

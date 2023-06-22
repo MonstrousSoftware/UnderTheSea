@@ -16,9 +16,11 @@ public class Chunks implements Disposable {
 
     private Array<Chunk> chunks;
     private NoiseSettings noiseSettings;
+    private SceneManager sceneManager;
 
 
-    public Chunks() {
+    public Chunks( SceneManager sceneManager ) {
+        this.sceneManager = sceneManager;
         noiseSettings = new NoiseSettings();
 
         chunks = new Array<>();
@@ -32,14 +34,15 @@ public class Chunks implements Disposable {
                     chunk.buildVolume();
                     chunk.buildMesh();
                     chunks.add(chunk);
+                    sceneManager.addScene(chunk.scene);
                 }
             }
         }
     }
 
     public void render(ModelBatch modelBatch, Environment environment) {
-        for(Chunk chunk : chunks )
-            modelBatch.render(chunk.modelInstance, environment);
+//        for(Chunk chunk : chunks )
+//            modelBatch.render(chunk.modelInstance, environment);
     }
 
     public boolean collides( Vector3 point ){

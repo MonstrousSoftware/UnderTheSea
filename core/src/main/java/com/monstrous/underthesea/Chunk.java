@@ -2,11 +2,17 @@ package com.monstrous.underthesea;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.GridPoint3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import net.mgsx.gltf.scene3d.attributes.PBRColorAttribute;
+import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
+import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
+import net.mgsx.gltf.scene3d.scene.Scene;
 
 public class Chunk implements Disposable {
 
@@ -19,10 +25,14 @@ public class Chunk implements Disposable {
     public boolean hasMesh;                 // has mesh been generated yet?
     private Model model;
     public ModelInstance modelInstance;
+    public Scene scene;
     private VolumeMap volume;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
-    private Voxels voxels;
+    private PBRColorAttribute baseColor;
+    private PBRFloatAttribute metallic;
+    private PBRFloatAttribute roughness;
+
 
     public Chunk(String key, GridPoint3 coordinates, NoiseSettings settings) {
         this.key = key;
@@ -34,7 +44,6 @@ public class Chunk implements Disposable {
         hasMesh = false;
 
         mcubes = new MarchingCubes();
-        voxels = new Voxels();
 
     }
 
@@ -62,6 +71,15 @@ public class Chunk implements Disposable {
 
         modelInstance =  new ModelInstance(model);
         modelInstance.transform.setTranslation(pos);
+        scene = new Scene(modelInstance);
+        Material material = modelInstance.materials.first();
+        material.set(baseColor = new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, Color.OLIVE));
+        material.set(metallic = new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
+        material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
+        Texture img = new Texture(Gdx.files.internal("images/badlogic.jpg"), true);
+        material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
+
+
         hasMesh = true;
         volume.needsRemesh = false;
     }

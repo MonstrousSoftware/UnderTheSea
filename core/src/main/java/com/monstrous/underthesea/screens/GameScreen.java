@@ -43,16 +43,16 @@ public class GameScreen extends ScreenAdapter {
     private PerspectiveCamera cam;
     private CamController camController;
     private ModelBatch modelBatch;
-    private ModelBatch shadowBatch;
-    private Environment environment;
-    private DirectionalShadowLight shadowLight;
+    //private ModelBatch shadowBatch;
+    //ivate Environment environment;
+    //private DirectionalShadowLight shadowLight;
     private World world;
     private GUI gui;
     private Cubemap diffuseCubemap;
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
     private Texture brdfLUT;
-    private SceneSkybox skybox;
+    //private SceneSkybox skybox;
     private DirectionalLightEx light;
     private SpriteBatch batch;
     private ShaderProgram vignetteProgram;
@@ -99,29 +99,9 @@ public class GameScreen extends ScreenAdapter {
         im.addProcessor(subController);
         im.addProcessor(camController);
 
-        environment = new Environment();
-
-        // define some lighting
-        Vector3 lightVector = new Vector3(-.2f, -.8f, -.4f).nor();
-
-        float al = Settings.ambientLightLevel;
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, al, al, al, 1f));
-        float dl = Settings.directionalLightLevel;
-        environment.add(new DirectionalLight().set(new Color(dl, dl, dl, 1), lightVector));
-        environment.set(new ColorAttribute(ColorAttribute.Fog, Settings.backgroundColour));			// fog
-        if (Settings.shadows) {
-            // note that the shadowing system adds light to the scene (except for the shadows)
-            float sl = Settings.shadowLightLevel;
-            environment.add((shadowLight = new DirectionalShadowLight(shadowMapSize, shadowMapSize,
-                shadowViewPortSize, shadowViewPortSize,
-                1f, 500f))
-                .set(new Color(sl, sl, sl, 1), lightVector));
-            environment.shadowMap = shadowLight;
-        }
-
 
         modelBatch = new ModelBatch();
-        shadowBatch = new ModelBatch(new DepthShaderProvider());
+        //shadowBatch = new ModelBatch(new DepthShaderProvider());
 
         sceneManager.environment.set(new PBRFloatAttribute(PBRFloatAttribute.ShadowBias, 0.001f));
 
@@ -142,14 +122,15 @@ public class GameScreen extends ScreenAdapter {
         // This texture is provided by the library, no need to have it in your assets.
         brdfLUT = new Texture(Gdx.files.classpath("net/mgsx/gltf/shaders/brdfLUT.png"));
 
-        sceneManager.setAmbientLight(0.1f);
+        sceneManager.setAmbientLight(Settings.ambientLightLevel);
         sceneManager.environment.set(new PBRTextureAttribute(PBRTextureAttribute.BRDFLUTTexture, brdfLUT));
         sceneManager.environment.set(PBRCubemapAttribute.createSpecularEnv(specularCubemap));
         sceneManager.environment.set(PBRCubemapAttribute.createDiffuseEnv(diffuseCubemap));
+        sceneManager.environment.set(new ColorAttribute(ColorAttribute.Fog, Settings.backgroundColour));
 
         // setup skybox
-        skybox = new SceneSkybox(environmentCubemap);
-        sceneManager.setSkyBox(skybox);
+//        skybox = new SceneSkybox(environmentCubemap);
+//        sceneManager.setSkyBox(skybox);
 
         batch = new SpriteBatch();
 
@@ -184,15 +165,6 @@ public class GameScreen extends ScreenAdapter {
         world.update(delta);
         gui.setCollision( world.submarine.inCollision() );
 
-        //create shadow texture
-//        if(Settings.shadows) {
-//            shadowLight.begin(cam.position, cam.direction);
-//            shadowBatch.begin(shadowLight.getCamera());
-//            world.render(shadowBatch, environment);
-//            shadowBatch.end();
-//            shadowLight.end();
-//        }
-
 
         sceneManager.update(delta);
         sceneManager.renderShadows();
@@ -206,9 +178,9 @@ public class GameScreen extends ScreenAdapter {
 
 
         // mixing scene manager and instance rendering.....
-        modelBatch.begin(cam);
-        world.render(modelBatch, environment);
-        modelBatch.end();
+//        modelBatch.begin(cam);
+//        world.render(modelBatch, environment);
+//        modelBatch.end();
 
         fbo.end();
 
@@ -265,7 +237,7 @@ public class GameScreen extends ScreenAdapter {
         diffuseCubemap.dispose();
         specularCubemap.dispose();
         brdfLUT.dispose();
-        skybox.dispose();
+        //skybox.dispose();
 
         world.dispose();
         modelBatch.dispose();
