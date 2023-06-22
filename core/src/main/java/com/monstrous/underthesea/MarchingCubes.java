@@ -114,9 +114,9 @@ public class MarchingCubes {
        if(wireframeMode)
             primitive = GL20.GL_LINES;
 
-        vertTmp0.setUV(0,0);
-        vertTmp1.setUV(1,0);
-        vertTmp2.setUV(0,1);
+//        vertTmp0.setUV(0,0);
+//        vertTmp1.setUV(1,0);
+//        vertTmp2.setUV(0,1);
 
         // create model
 
@@ -172,6 +172,7 @@ public class MarchingCubes {
         float zf = MathUtils.lerp(z, z2, a);
 
         vertInfo.setPos(cx+xf, cy+yf, cz+zf);
+        vertInfo.setUV(xf, zf);
     }
 
 

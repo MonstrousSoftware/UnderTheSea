@@ -57,6 +57,8 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private ShaderProgram vignetteProgram;
     private FrameBuffer fbo = null;
+    private int u_time;
+    private float time;
 
     public GameScreen(Main game) {
         Gdx.app.log("GameScreen constructor", "");
@@ -137,16 +139,21 @@ public class GameScreen extends ScreenAdapter {
         // full screen post processing shader
         //ShaderProgram.pedantic = true;
         vignetteProgram = new ShaderProgram(
-            Gdx.files.internal("shaders\\vignette.vertex.glsl"),
-            Gdx.files.internal("shaders\\vignette.fragment.glsl"));
+            Gdx.files.internal("shaders\\underwater.vertex.glsl"),
+            Gdx.files.internal("shaders\\underwater.fragment.glsl"));
+//            Gdx.files.internal("shaders\\vignette.vertex.glsl"),
+//            Gdx.files.internal("shaders\\vignette.fragment.glsl"));
         if (!vignetteProgram.isCompiled())
             throw new GdxRuntimeException(vignetteProgram.getLog());
         ShaderProgram.pedantic = false;
+        u_time = vignetteProgram.getUniformLocation("u_time");
 
     }
 
     @Override
     public void render(float delta) {
+        time += delta;
+
         if(gui.escapePressed){
             game.setScreen( new ShowCaseScreen(game, true) );
             return;
@@ -185,12 +192,15 @@ public class GameScreen extends ScreenAdapter {
         fbo.end();
 
 
-        // post-processing of game screen content : vignette effect
+        // post-processing of game screen content : vignette effect and underwater wavy effect
+
+
         Sprite s = new Sprite(fbo.getColorBufferTexture());
         s.flip(false,  true); // coordinate system in buffer differs from screen
 
         batch.begin();
         batch.setShader(vignetteProgram);						// post-processing shader
+        vignetteProgram.setUniformf(u_time, time);
         batch.draw(s,  0,  0); 	// draw frame buffer as screen filling texture
         batch.end();
         batch.setShader(null);

@@ -76,7 +76,7 @@ public class Chunk implements Disposable {
         material.set(baseColor = new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, Color.OLIVE));
         material.set(metallic = new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
         material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
-        Texture img = new Texture(Gdx.files.internal("images/badlogic.jpg"), true);
+        Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
         material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
 
 
