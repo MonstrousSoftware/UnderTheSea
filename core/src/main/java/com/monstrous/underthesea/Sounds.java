@@ -32,10 +32,15 @@ public class Sounds implements Disposable  {
         return s;
     }
 
-    public static Sound playSoundLoop(int code) {
+    public static long playSoundLoop(int code) {
         Sound s = sounds.get(code);
-        s.loop(soundVolume);
-        return s;
+        long id = s.loop(soundVolume);
+        return id;
+    }
+
+    public static void stopLoop(int code, long id) {
+        Sound s = sounds.get(code);
+        s.stop(id);
     }
 
     public static void stopSound(int code) {
@@ -52,6 +57,8 @@ public class Sounds implements Disposable  {
 
     @Override
     public void dispose() {
+        for(Sound sound : sounds)
+            sound.stop();
         sounds.clear();
         // save sound settings for next time
         preferences.putFloat("soundVolume", soundVolume);   // save

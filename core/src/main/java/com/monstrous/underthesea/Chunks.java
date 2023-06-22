@@ -35,6 +35,7 @@ public class Chunks implements Disposable {
                     chunk.buildMesh();
                     chunks.add(chunk);
                     sceneManager.addScene(chunk.scene);
+                    //sceneManager.addScene(chunk.sceneWater);
                 }
             }
         }

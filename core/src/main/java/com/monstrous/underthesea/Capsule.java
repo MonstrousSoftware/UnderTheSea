@@ -1,5 +1,7 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.scene3d.scene.Scene;
@@ -17,6 +19,7 @@ public class Capsule {
     private SceneAsset sceneAsset;
     public Scene sceneCapsule;
     public Vector3 position;
+    private PointLight light;
 
 
     public Capsule(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
@@ -25,15 +28,15 @@ public class Capsule {
         position = new Vector3();
 
         sceneCapsule = new Scene(sceneAsset.scene, "capsule");
+
+        light = new PointLight();
+        light.set(Color.RED, x, y, z, 100f);
+        sceneManager.environment.add(light);
+
         setPosition(x, y, z);
         sceneManager.addScene(sceneCapsule);
     }
 
-
-
-    public boolean inReach( Vector3 subposition ){
-        return subposition.dst(position) < PICKUP_DISTANCE;
-    }
 
     public float getDistance( Vector3 subposition ){
         return subposition.dst(position);
@@ -48,5 +51,6 @@ public class Capsule {
     public void setPosition( float x, float y, float z) {
         position.set(x, y, z);
         sceneCapsule.modelInstance.transform.setToTranslation(x, y, z);
+        light.setPosition(x, y, z);
     }
 }

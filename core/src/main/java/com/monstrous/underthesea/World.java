@@ -1,10 +1,7 @@
 package com.monstrous.underthesea;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.monstrous.underthesea.gui.GUI;
@@ -13,9 +10,6 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 public class World implements Disposable {
 
     private Chunks chunks;
-    private NoiseSettings noiseSettings;
-    private Model modelXYZ;
-    private ModelInstance instanceXYZ;
     private SceneManager sceneManager;
     public Submarine submarine;
     public Capsule capsule;
@@ -24,9 +18,10 @@ public class World implements Disposable {
     public float capsuleDistance;
     public int capsuleCount;
     private GUI gui;
-    private float timer;
-    private int messagesShown = 0;
+    public float timer;
+    private int radioMessagesShown = 0;
     private Sounds sounds;
+    private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } , };
 
     public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
@@ -34,15 +29,11 @@ public class World implements Disposable {
 
         sounds = new Sounds(assets);
 
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelXYZ = modelBuilder.createXYZCoordinates(10f, new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked);
-        instanceXYZ = new ModelInstance(modelXYZ, new Vector3(0, 0, 0));
-
         rebuild();
-        submarine = new Submarine(assets, sceneManager, 0, 70, 0);
-        capsule = new Capsule(assets, sceneManager, 0,70,20);
-        capsuleCount = 1;
-        timer = 5f;
+        submarine = new Submarine(assets, sceneManager, 0,75,0);
+        capsuleCount = 0;
+        capsule = new Capsule(assets, sceneManager, capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
+        timer = 10f;
 
         if(Settings.enableParticleEffects) {
             particleEffects = new ParticleEffects(cam);
@@ -51,9 +42,9 @@ public class World implements Disposable {
         Sounds.playSoundLoop(Sounds.SONAR_PING);
     }
 
+    // need this hack so that World can send radio messages to GUI
     public void setGUI( GUI gui ){
         this.gui = gui;
-        //gui.setMessage( "RADIO BROADCAST: SUBCOM TO GX-25. PROCEED TO PICK UP CAPSULE IN YOUR IMMEDIATE VICINITY."); //Settings.messages[0] );
     }
 
     public Vector3 getFocus() {
@@ -64,7 +55,6 @@ public class World implements Disposable {
         if(chunks != null)
             chunks.dispose();
         chunks = new Chunks(sceneManager);
-//        chunks.addScene(sceneManager);
     }
 
     public void update( float deltaTime ){
@@ -75,27 +65,28 @@ public class World implements Disposable {
         submarine.update(deltaTime, subController);
 
         // very basic N point collision
-        if(chunks.collides(submarine.getTipPosition())) {
-            //Gdx.app.log("COLLISION", "OUCH");
-            submarine.collide();
-        }
-        if(chunks.collides(submarine.getTailPosition())) {
-            //Gdx.app.log("COLLISION", "OUCH");
-            submarine.rearCollide();
-        }
+//        if(chunks.collides(submarine.getTipPosition())) {
+//            submarine.collide();
+//        }
+//        if(chunks.collides(submarine.getTailPosition())) {
+//            submarine.rearCollide();
+//        }
 
         capsuleDistance = capsule.getDistance(submarine.position);
-        if(capsuleDistance < Capsule.PICKUP_DISTANCE){
-            gui.setMessage(Settings.messages[capsuleCount] );
+        if(capsuleDistance < Capsule.PICKUP_DISTANCE){                      // close enough to pick up?
+            gui.setMessage(Settings.capsuleMessages[capsuleCount] );        // show the message from the canister
             if(capsuleCount < Settings.capsuleNumber) {
-                dropNewCapsule();
                 capsuleCount++;
+                positionCapsule();
+
+            } else {
+                // you win!
             }
         }
 
-        if(timer < 0 && messagesShown== 0){
-            gui.setMessage(Settings.messages[messagesShown] );
-            messagesShown++;
+        if(timer < 0 ){
+            gui.setMessage(Settings.radioMessages[radioMessagesShown] );
+            radioMessagesShown++;
             timer = 9999999f;
         }
 
@@ -105,9 +96,10 @@ public class World implements Disposable {
         }
     }
 
-    public void dropNewCapsule() {
-        float y = capsule.getPosition().y;
-        capsule.setPosition(0, y+5, 15);
+    public void positionCapsule() {
+        capsule.setPosition(capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
+        if(capsuleCount == 1)
+            timer = 20; // start timer after first capsule is picked up
     }
 
 
@@ -115,9 +107,7 @@ public class World implements Disposable {
 
     public void render(ModelBatch modelBatch, Environment environment){
 
-        chunks.render(modelBatch, environment);
-
-        modelBatch.render(instanceXYZ, environment);
+        //chunks.render(modelBatch, environment);
 
         if(Settings.enableParticleEffects)
             particleEffects.render(modelBatch);
@@ -128,9 +118,8 @@ public class World implements Disposable {
         Sounds.stopSound(Sounds.SONAR_PING);
 
         chunks.dispose();
-        modelXYZ.dispose();
         if(particleEffects != null)
-        particleEffects.dispose();
+            particleEffects.dispose();
         sounds.dispose();
     }
 }

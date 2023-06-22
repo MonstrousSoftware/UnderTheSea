@@ -128,10 +128,10 @@ public class GUI implements Disposable {
 
         Table screenTable = new Table();
         screenTable.setFillParent(true);
-        screenTable.add(backButton).top().left().row();
+        screenTable.add(backButton).colspan(4).bottom().expandY().left().row();
         screenTable.add(t2).left().bottom();
         screenTable.add(statusLabel).width(100).bottom();
-        screenTable.add(t1).center().bottom().expand();
+        screenTable.add(t1).center().bottom().expandX();
         screenTable.add(t3).right().bottom();
         screenTable.pack();
 
@@ -189,7 +189,8 @@ public class GUI implements Disposable {
 
 //        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
 //                            world.submarine.velocity.toString()));
-        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance));
+        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d [%d,%d,%d] T=%d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance,
+            (int)world.submarine.position.x, (int)world.submarine.position.y, (int)world.submarine.position.z, (int)world.timer));
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);

@@ -4,10 +4,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.monstrous.underthesea.Assets;
+import com.monstrous.underthesea.Settings;
 import com.monstrous.underthesea.screens.GameScreen;
 
 public class Main extends Game {
-    public final boolean RELEASE_BUILD = false;
+    public final boolean RELEASE_BUILD = true;
     public final String VERSION = "Under The Sea - June 2023";
 
     public Assets assets;
@@ -24,6 +25,10 @@ public class Main extends Game {
 
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         Gdx.app.log("OpenGL version", Gdx.gl.glGetString(Gdx.gl.GL_VERSION));
+
+        if(Gdx.app.getType() == Application.ApplicationType.WebGL) {
+            Settings.enableParticleEffects = false;
+        }
 
 
         if(RELEASE_BUILD)

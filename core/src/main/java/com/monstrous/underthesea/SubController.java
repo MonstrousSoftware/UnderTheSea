@@ -7,7 +7,7 @@ import com.badlogic.gdx.InputAdapter;
 
 public class SubController extends InputAdapter {
 
-    public static float MAX_DIVE_ANGLE =  15;        // degrees
+    public static float MAX_DIVE_ANGLE =  25;        // degrees
     public static float MAX_STEER_ANGLE =  15;        // degrees
     public static float MAX_POWER = 100f;
 

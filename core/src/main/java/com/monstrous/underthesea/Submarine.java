@@ -1,10 +1,11 @@
 package com.monstrous.underthesea;
 
-import com.badlogic.gdx.Gdx;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
@@ -28,6 +29,7 @@ public class Submarine {
     private float diveAngle;
     private boolean collided = false;
     private boolean rearCollided = false;
+    private PointLight light;           // should be a spotlight but these are not well-supported
 
     public Submarine( Assets assets, SceneManager sceneManager, float x, float y, float z ) {
 
@@ -55,17 +57,19 @@ public class Submarine {
         diveAngle = 0;
 
         step = new Vector3();
+
+        light = new PointLight();
+
+        light.set(Color.WHITE, getTipPosition(), 300f);
+        sceneManager.environment.add(light);
     }
 
-    Vector3 tmpVec = new Vector3();
 
     public boolean inCollision() {
         return collided || rearCollided;
     }
 
     public void update( float deltaTime, SubController subController ){
-
-        // todo still allow screw turning and fin turning when collided
 
         if(collided && subController.power < 0)
             collided = false;
@@ -110,6 +114,7 @@ public class Submarine {
         sceneRudder.modelInstance.transform.translate(0,0,1.6f);
         sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
+        light.setPosition(getLightPosition());
     }
 
     public void collide() {
@@ -130,6 +135,14 @@ public class Submarine {
         tip.set(0,0, 2.5f);     // front tip of the model, used for collision test
         tip.mul(sceneSub.modelInstance.transform);
         return tip;
+    }
+
+    private Vector3 lightPos = new Vector3();
+
+    private Vector3 getLightPosition() {
+        lightPos.set(0,0, 4f);     // position just in front of the sub
+        lightPos.mul(sceneSub.modelInstance.transform);
+        return lightPos;
     }
 
     public Vector3 getTailPosition() {

@@ -4,21 +4,14 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
-import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
@@ -26,7 +19,6 @@ import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
-import net.mgsx.gltf.scene3d.scene.SceneSkybox;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 public class GameScreen extends ScreenAdapter {
@@ -38,7 +30,7 @@ public class GameScreen extends ScreenAdapter {
 
     private Main game;
     private SceneManager sceneManager;
-    private SceneAsset sceneAsset;
+    //private SceneAsset sceneAsset;
     private Scene scene;
     private PerspectiveCamera cam;
     private CamController camController;
@@ -55,7 +47,7 @@ public class GameScreen extends ScreenAdapter {
     //private SceneSkybox skybox;
     private DirectionalLightEx light;
     private SpriteBatch batch;
-    private ShaderProgram vignetteProgram;
+    private ShaderProgram shaderProgram;
     private FrameBuffer fbo = null;
     private int u_time;
     private float time;
@@ -138,15 +130,13 @@ public class GameScreen extends ScreenAdapter {
 
         // full screen post processing shader
         //ShaderProgram.pedantic = true;
-        vignetteProgram = new ShaderProgram(
+        shaderProgram = new ShaderProgram(
             Gdx.files.internal("shaders\\underwater.vertex.glsl"),
             Gdx.files.internal("shaders\\underwater.fragment.glsl"));
-//            Gdx.files.internal("shaders\\vignette.vertex.glsl"),
-//            Gdx.files.internal("shaders\\vignette.fragment.glsl"));
-        if (!vignetteProgram.isCompiled())
-            throw new GdxRuntimeException(vignetteProgram.getLog());
+        if (!shaderProgram.isCompiled())
+            throw new GdxRuntimeException(shaderProgram.getLog());
         ShaderProgram.pedantic = false;
-        u_time = vignetteProgram.getUniformLocation("u_time");
+        u_time = shaderProgram.getUniformLocation("u_time");
 
     }
 
@@ -183,11 +173,10 @@ public class GameScreen extends ScreenAdapter {
 
         sceneManager.renderColors();
 
+        modelBatch.begin(cam);
+        world.render(modelBatch, sceneManager.environment);
+        modelBatch.end();
 
-        // mixing scene manager and instance rendering.....
-//        modelBatch.begin(cam);
-//        world.render(modelBatch, environment);
-//        modelBatch.end();
 
         fbo.end();
 
@@ -199,8 +188,8 @@ public class GameScreen extends ScreenAdapter {
         s.flip(false,  true); // coordinate system in buffer differs from screen
 
         batch.begin();
-        batch.setShader(vignetteProgram);						// post-processing shader
-        vignetteProgram.setUniformf(u_time, time);
+        batch.setShader(shaderProgram);						// post-processing shader
+        shaderProgram.setUniformf(u_time, time);
         batch.draw(s,  0,  0); 	// draw frame buffer as screen filling texture
         batch.end();
         batch.setShader(null);
@@ -237,12 +226,13 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void hide() {
         // This method is called when another screen replaces this one.
+        dispose();
     }
 
     @Override
     public void dispose() {
         sceneManager.dispose();
-        sceneAsset.dispose();
+        //sceneAsset.dispose();
         environmentCubemap.dispose();
         diffuseCubemap.dispose();
         specularCubemap.dispose();

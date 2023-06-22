@@ -2,10 +2,14 @@ package com.monstrous.underthesea;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.GridPoint3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
@@ -25,7 +29,9 @@ public class Chunk implements Disposable {
     public boolean hasMesh;                 // has mesh been generated yet?
     private Model model;
     public ModelInstance modelInstance;
+    //public ModelInstance modelInstanceWater;
     public Scene scene;
+    //public Scene sceneWater;
     private VolumeMap volume;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
@@ -79,6 +85,20 @@ public class Chunk implements Disposable {
         Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
         material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
 
+//        ModelBuilder modelBuilder = new ModelBuilder();
+//        //modelBuilder.begin();
+//        Material mat = new Material(ColorAttribute.createDiffuse(Color.WHITE));
+//        Model modelWater = modelBuilder.createRect(0, 0, 0, CHUNK_WIDTH, 0, 0,
+//            CHUNK_WIDTH, 0, CHUNK_WIDTH,  0, 0, CHUNK_WIDTH,
+//            0,-1,0,
+//            GL20.GL_TRIANGLES, mat,
+//            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
+//       // Model model = modelBuilder.end();
+//        modelInstanceWater =  new ModelInstance(modelWater);
+//        pos.y = 80f;
+//        modelInstanceWater.transform.setTranslation(pos);
+//        pos.y = 0;
+//        sceneWater = new Scene(modelInstanceWater);
 
         hasMesh = true;
         volume.needsRemesh = false;
