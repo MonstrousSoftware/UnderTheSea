@@ -10,6 +10,7 @@ public class Settings {
 
     static public float titleScreenTime = 2f;
     static public boolean enableParticleEffects = true;
+    static public boolean collisionCheat = false;
 
     static public String preferencesName = "underthesea";
 

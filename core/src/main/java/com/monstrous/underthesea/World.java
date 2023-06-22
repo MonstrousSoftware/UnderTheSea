@@ -2,6 +2,7 @@ package com.monstrous.underthesea;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.monstrous.underthesea.gui.GUI;
@@ -58,19 +59,21 @@ public class World implements Disposable {
     }
 
     public void update( float deltaTime ){
-        timer -= deltaTime;
+        timer -= Math.max(deltaTime, 0.1f);
 
         subController.update(deltaTime);
 
         submarine.update(deltaTime, subController);
 
         // very basic N point collision
-//        if(chunks.collides(submarine.getTipPosition())) {
-//            submarine.collide();
-//        }
-//        if(chunks.collides(submarine.getTailPosition())) {
-//            submarine.rearCollide();
-//        }
+        if(!Settings.collisionCheat) {
+            if (chunks.collides(submarine.getTipPosition())) {
+                submarine.collide();
+            }
+            if (chunks.collides(submarine.getTailPosition())) {
+                submarine.rearCollide();
+            }
+        }
 
         capsuleDistance = capsule.getDistance(submarine.position);
         if(capsuleDistance < Capsule.PICKUP_DISTANCE){                      // close enough to pick up?

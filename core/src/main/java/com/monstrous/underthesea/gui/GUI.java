@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.monstrous.underthesea.MarchingCubes;
 import com.monstrous.underthesea.SubController;
 import com.monstrous.underthesea.World;
 
@@ -189,8 +188,9 @@ public class GUI implements Disposable {
 
 //        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
 //                            world.submarine.velocity.toString()));
-        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d [%d,%d,%d] T=%d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance,
-            (int)world.submarine.position.x, (int)world.submarine.position.y, (int)world.submarine.position.z, (int)world.timer));
+//        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d [%d,%d,%d] T=%d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance,
+//            (int)world.submarine.position.x, (int)world.submarine.position.y, (int)world.submarine.position.z, (int)world.timer));
+        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance));
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);
