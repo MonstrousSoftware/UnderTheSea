@@ -107,7 +107,7 @@ public class Submarine {
         sceneScrew.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         sceneFins.modelInstance.transform.idt().translate(0,0,-1f);
-        sceneFins.modelInstance.transform.setToRotation(Vector3.X, 4*subController.diveAngle);
+        sceneFins.modelInstance.transform.rotate(Vector3.X, 4*subController.diveAngle);
         sceneFins.modelInstance.transform.translate(0,0,1f);
         sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 

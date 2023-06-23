@@ -1,5 +1,7 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.math.Vector3;
@@ -22,7 +24,7 @@ public class World implements Disposable {
     public float timer;
     private int radioMessagesShown = 0;
     private Sounds sounds;
-    private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } , };
+    private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } };
 
     public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
@@ -31,12 +33,13 @@ public class World implements Disposable {
         sounds = new Sounds(assets);
 
         rebuild();
-        submarine = new Submarine(assets, sceneManager, 0,75,0);
+        submarine = new Submarine(assets, sceneManager, 0,75,-30);
+        //submarine = new Submarine(assets, sceneManager, 36,51,-43);
         capsuleCount = 0;
         canister = new Canister(assets, sceneManager, capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
         timer = 10f;
 
-        bananaMan = new BananaMan(assets, sceneManager, 0, 75, 5);
+        bananaMan = new BananaMan(assets, sceneManager, 58, 53, -22);
 
         if(Settings.enableParticleEffects) {
             particleEffects = new ParticleEffects(cam);
@@ -62,6 +65,21 @@ public class World implements Disposable {
 
     public void update( float deltaTime ){
         timer -= Math.max(deltaTime, 0.1f);
+
+        if(Gdx.input.isKeyPressed(Input.Keys.I)) {
+            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z+1);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.M)) {
+            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z-1);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.J)) {
+            bananaMan.setPosition(bananaMan.position.x-1, bananaMan.position.y, bananaMan.position.z);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.K)) {
+            bananaMan.setPosition(bananaMan.position.x+1, bananaMan.position.y, bananaMan.position.z);
+        }
+        Gdx.app.error("banana", "at "+bananaMan.position.toString());
+
 
         subController.update(deltaTime);
 
@@ -92,6 +110,12 @@ public class World implements Disposable {
                 // you win!
             }
         }
+
+        float distance = bananaMan.getDistance(submarine.position);
+        if(distance < BananaMan.PICKUP_DISTANCE){
+            bananaMan.remove();
+        }
+
 
         if(timer < 0 ){
             gui.setMessage(Settings.radioMessages[radioMessagesShown] );
