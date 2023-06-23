@@ -46,13 +46,14 @@ public class CreditsScreen implements Screen {
     private void rebuild() {
         String explanation = "This game was made for the\n" +
                 "LibGDX Game Jam of June 2023 with\n" +
-                "the theme: Under Water\n\n" +
+                "the theme: Under Water.\n\n" +
                 "Models were created with Blender 3.5.\n\n" +
-				"GDX-GLTF library by mgsx for model loading and PBR rendering\n\n"+
-				"GDX-TeaVM library by xpenatan used for for the HTML version\n\n"+
-                "UI Skin: Particle Park by Raeleus\n\n"+
-				"Inspiration: Marching Cubes by Sebastian Lague on YouTube\n\n"+
-                "Play testing: Jake Snake\n\n";
+				"GDX-GLTF library by mgsx for model loading and PBR rendering.\n\n"+
+				"GDX-TeaVM library by xpenatan used for for the HTML version.\n\n"+
+                "UI Skin: Particle Park by Raeleus.\n\n"+
+				"Inspiration: Marching Cubes by Sebastian Lague on YouTube.\n\n"+
+                "Sound effects from Pixabay.\n\n"+
+                "Play testing: Jake Snake.\n\n";
 
 
         stage.clear();

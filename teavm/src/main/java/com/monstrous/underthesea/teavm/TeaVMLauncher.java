@@ -19,6 +19,8 @@ public class TeaVMLauncher {
         // change these to both 0 to use all available space, or both -1 for the canvas size.
         config.width = 0;
         config.height = 0;
+        config.antialiasing = true;
+
 
         new WebApplication(new Main(), config);
     }

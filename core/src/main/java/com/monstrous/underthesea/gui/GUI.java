@@ -1,6 +1,8 @@
 package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -182,7 +184,7 @@ public class GUI implements Disposable {
             protected void result(Object object) {
                 Gdx.app.log("exit dialog", "");
                 if(object.equals(1)){
-                    game.setScreen( new MenuScreen(game, true));
+                    game.setScreen( new MenuScreen(game, world.bananaManTaken));
                 }
                 else {
                     remove();
@@ -206,18 +208,15 @@ public class GUI implements Disposable {
 //        if(message.isVisible())
 //            return;
         message.setVisible(true);
+
         confirmButton.setDisabled(false);
         confirmButton.setVisible(true);
     }
 
     public void render(float deltaTime) {
 
-//        statusLabel.setText(String.format("Elev: %.0f HDG: %.0f PWR: %.0f v=(%s)", world.subController.diveAngle, world.subController.steerAngle, world.subController.power,
-//                            world.submarine.velocity.toString()));
-         depthLabel.setText("DEPTH: "+(128-(int)world.submarine.position.y));
-        distanceLabel.setText(String.format("DISTANCE: %d [%d,%d,%d] T=%d", (int)world.capsuleDistance,
-            (int)world.submarine.position.x, (int)world.submarine.position.y, (int)world.submarine.position.z, (int)world.timer));
-        //  distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
+        depthLabel.setText("DEPTH: "+(128-(int)world.submarine.position.y));
+        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);

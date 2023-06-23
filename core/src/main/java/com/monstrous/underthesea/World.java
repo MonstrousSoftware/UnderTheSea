@@ -1,12 +1,15 @@
 package com.monstrous.underthesea;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.monstrous.underthesea.entities.BananaMan;
+import com.monstrous.underthesea.entities.Canister;
+import com.monstrous.underthesea.entities.Submarine;
 import com.monstrous.underthesea.gui.GUI;
+import com.monstrous.underthesea.terrain.Chunks;
+import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class World implements Disposable {
@@ -23,7 +26,10 @@ public class World implements Disposable {
     private GUI gui;
     public float timer;
     private int radioMessagesShown = 0;
+    public boolean bananaManTaken = false;
+    public boolean gameComplete = false;
     private Sounds sounds;
+    private ModelInstance waterInstance;
     private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } };
 
     public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
@@ -46,6 +52,8 @@ public class World implements Disposable {
             particleEffects.addBubbles(submarine.getScrewTransform());
         }
         Sounds.playSoundLoop(Sounds.SONAR_PING);
+
+
     }
 
     // need this hack so that World can send radio messages to GUI
@@ -61,24 +69,25 @@ public class World implements Disposable {
         if(chunks != null)
             chunks.dispose();
         chunks = new Chunks(sceneManager);
+
     }
 
     public void update( float deltaTime ){
-        timer -= Math.max(deltaTime, 0.1f);
+        timer -= Math.min(deltaTime, 0.1f);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.I)) {
-            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z+1);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.M)) {
-            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z-1);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.J)) {
-            bananaMan.setPosition(bananaMan.position.x-1, bananaMan.position.y, bananaMan.position.z);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.K)) {
-            bananaMan.setPosition(bananaMan.position.x+1, bananaMan.position.y, bananaMan.position.z);
-        }
-        Gdx.app.error("banana", "at "+bananaMan.position.toString());
+//        if(Gdx.input.isKeyPressed(Input.Keys.I)) {
+//            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z+1);
+//        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.M)) {
+//            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z-1);
+//        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.J)) {
+//            bananaMan.setPosition(bananaMan.position.x-1, bananaMan.position.y, bananaMan.position.z);
+//        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.K)) {
+//            bananaMan.setPosition(bananaMan.position.x+1, bananaMan.position.y, bananaMan.position.z);
+//        }
+//        Gdx.app.error("banana", "at "+bananaMan.position.toString());
 
 
         subController.update(deltaTime);
@@ -99,27 +108,43 @@ public class World implements Disposable {
            }
         }
 
-        capsuleDistance = canister.getDistance(submarine.position);
-        if(capsuleDistance < Canister.PICKUP_DISTANCE){                      // close enough to pick up?
-            gui.setMessage(Settings.capsuleMessages[capsuleCount] );        // show the message from the canister
-            if(capsuleCount < Settings.numberOfCapsules -1 ) {
-                capsuleCount++;
-                positionCapsule();
+        if(gameComplete) {
+            capsuleDistance = 0;    // for the GUI
+        }
+        else {
+            capsuleDistance = canister.getDistance(submarine.position);
+            if (capsuleDistance < Canister.PICKUP_DISTANCE) {                      // close enough to pick up?
+                gui.setMessage(Settings.capsuleMessages[capsuleCount]);        // show the message from the canister
+                if (capsuleCount < Settings.numberOfCapsules - 1) {
+                    capsuleCount++;
+                    positionCapsule();
 
-            } else {
-                // you win!
+                } else {
+                    // you win!
+                    if (!gameComplete) {
+                        Sounds.playSound(Sounds.FANFARE);
+                        Sounds.playSound(Sounds.CHEER);
+                    }
+                    gameComplete = true;
+                    canister.setPosition(0, -999, 0);     // hide canister
+                }
             }
         }
 
-        float distance = bananaMan.getDistance(submarine.position);
-        if(distance < BananaMan.PICKUP_DISTANCE){
-            bananaMan.remove();
+        if(!bananaManTaken) {
+            if (bananaMan.getDistance(submarine.position) < BananaMan.PICKUP_DISTANCE) {
+                bananaMan.remove();
+                bananaManTaken = true;
+                Sounds.playSound(Sounds.BONUS);
+            }
         }
+
 
 
         if(timer < 0 ){
             gui.setMessage(Settings.radioMessages[radioMessagesShown] );
             radioMessagesShown++;
+            Sounds.playSound(Sounds.MORSE);
             timer = 9999999f;
         }
 

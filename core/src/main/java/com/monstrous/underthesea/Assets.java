@@ -28,11 +28,13 @@ public class Assets implements Disposable {
 //
        assets.load("sounds/sonar-ping.wav", Sound.class);
        assets.load("sounds/crash.mp3", Sound.class);
-//        assets.load("sounds/punch-140236.mp3", Sound.class);
-//        assets.load("sounds/click-for-game-menu-131903.mp3", Sound.class);
-//        assets.load("sounds/footsteps.mp3", Sound.class);
-//
-//        assets.load(Settings.gameMusic, Music.class);
+       assets.load("sounds/game-level-complete-143022.mp3", Sound.class);
+        assets.load("sounds/success-fanfare-trumpets-6185.mp3", Sound.class);
+        assets.load("sounds/crowd-cheer-ii-6263.mp3", Sound.class);
+        assets.load("sounds/click-for-game-menu.mp3", Sound.class);
+        assets.load("sounds/morse-code.mp3", Sound.class);
+
+        //        assets.load(Settings.gameMusic, Music.class);
 //        assets.load(Settings.winMusic, Music.class);
 
     }

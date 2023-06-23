@@ -1,13 +1,11 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.terrain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
@@ -107,16 +105,12 @@ public class MarchingCubes {
         this.chunkResolution = chunkResolution;
         this.chunkHeight = chunkHeight;
         Material mat = new Material(ColorAttribute.createDiffuse(color));
-//        Texture img = new Texture("images/badlogic.jpg");
-//        Material mat = new Material(TextureAttribute.createDiffuse(img));
 
        int primitive = GL20.GL_TRIANGLES;
        if(wireframeMode)
             primitive = GL20.GL_LINES;
 
-//        vertTmp0.setUV(0,0);
-//        vertTmp1.setUV(1,0);
-//        vertTmp2.setUV(0,1);
+
 
         // create model
 
@@ -124,7 +118,8 @@ public class MarchingCubes {
         modelBuilder.begin();
 
         meshBuilder = modelBuilder.part("part1", primitive,
-            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates, mat);
+            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal |
+                    VertexAttributes.Usage.TextureCoordinates, mat);
 
         for(int x = 0; x < chunkResolution; x++) {
             for (int z = 0; z < chunkResolution; z++) {

@@ -1,4 +1,4 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.terrain;
 
 public class NoiseSettings {
         public float PerlinScale = 1;

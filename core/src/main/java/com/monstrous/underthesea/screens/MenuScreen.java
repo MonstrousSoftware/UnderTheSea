@@ -1,8 +1,10 @@
 package com.monstrous.underthesea.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.monstrous.underthesea.Sounds;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
@@ -44,11 +47,13 @@ public class MenuScreen extends ScreenAdapter {
     private float angle = 0;
     private boolean banana;
     private Vector3 cameraOffset;
+    private Sound click;
 
     public MenuScreen(Main game, boolean banana) {
 
         this.game = game;
         this.banana = banana;
+        click = game.assets.get("sounds/click-for-game-menu.mp3");
     }
 
     @Override
@@ -128,15 +133,24 @@ public class MenuScreen extends ScreenAdapter {
         TextButton creditsButton = new TextButton("CREDITS", skin, "big" );
         TextButton exitButton = new TextButton("EXIT", skin, "big" );
 
+
+        float ht = 50f;
+        float pd = 20f;
+        Table menuTable = new Table();
+        menuTable.add(startButton).height(ht).bottom().center().pad(pd).row();
+        menuTable.add(instructionsButton).height(ht).bottom().center().pad(pd).row();
+        menuTable.add(creditsButton).height(ht).bottom().center().pad(pd).row();
+        if(Gdx.app.getType() != Application.ApplicationType.WebGL) {
+            menuTable.add(exitButton).height(ht).bottom().center().pad(pd).row();
+        }
+        menuTable.pack();
+
         // root table that fills the whole screen
         Table screenTable = new Table();
         screenTable.setFillParent(true);        // size to match stage size
-        screenTable.add(label).colspan(2).top().left().expandX().expandY().row();
-        screenTable.add(startButton).bottom().center().pad(50);
+        //screenTable.add(label).colspan(2).top().left().expandX().row();
+        screenTable.add(menuTable).center().pad(pd);
         screenTable.add().expandX().row();
-        screenTable.add(instructionsButton).bottom().center().pad(50).row();
-        screenTable.add(creditsButton).bottom().center().pad(50).row();
-        screenTable.add(exitButton).bottom().center().pad(50).row();
         screenTable.pack();
 
         stage.addActor(screenTable);
@@ -145,7 +159,7 @@ public class MenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //Sounds.playSound(Sounds.MENU_CLICK);
+                click.play();
                 game.setScreen(new PreGameScreen( game ));
             }
         });
@@ -155,7 +169,7 @@ public class MenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //Sounds.playSound(Sounds.MENU_CLICK);
+                click.play();
                 game.setScreen(new InstructionsScreen( game ));
             }
         });
@@ -164,7 +178,7 @@ public class MenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //Sounds.playSound(Sounds.MENU_CLICK);
+                click.play();
                 game.setScreen(new CreditsScreen( game ));
             }
         });
@@ -173,6 +187,7 @@ public class MenuScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                click.play();
                 Gdx.app.exit();
             }
         });
@@ -208,7 +223,7 @@ public class MenuScreen extends ScreenAdapter {
 
         // render
         //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        ScreenUtils.clear(0.8f, 0.8f, 1.0f, 1, true);
+        ScreenUtils.clear(45f/255f, 98f/255f, 200f/255f, 1, true);
         sceneManager.update(deltaTime);
         sceneManager.render();
 

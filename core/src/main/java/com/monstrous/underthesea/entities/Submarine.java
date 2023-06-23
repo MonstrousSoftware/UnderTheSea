@@ -1,4 +1,4 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.entities;
 
 
 import com.badlogic.gdx.graphics.Color;
@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.monstrous.underthesea.Assets;
+import com.monstrous.underthesea.SubController;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
@@ -31,7 +33,7 @@ public class Submarine {
     private boolean rearCollided = false;
     private PointLight light;           // should be a spotlight but these are not well-supported
 
-    public Submarine( Assets assets, SceneManager sceneManager, float x, float y, float z ) {
+    public Submarine(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
 
         sceneAsset = assets.get("models/submarine.gltf");
 
@@ -80,12 +82,11 @@ public class Submarine {
         screwSpeed = subController.power;
         screwAngle +=  4*screwSpeed*deltaTime;
 
+        // sub reacts with some lag on the inputs to give some inertia
+        heading += subController.steerAngle * deltaTime;
+        diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
         if(!inCollision()) {
-
-            // sub reacts with some lag on the inputs to give some inertia
-            heading += subController.steerAngle * deltaTime;
-            diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
             targetVelocity.set(0,0,screwSpeed/50f);
             targetVelocity.rotate(Vector3.X, -diveAngle);

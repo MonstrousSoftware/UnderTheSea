@@ -2,6 +2,7 @@ package com.monstrous.underthesea.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ public class InstructionsScreen implements Screen {
     private Skin skin;
     private String texts[];
     private int pageIndex = 0;
+    private Sound click;
 
     public InstructionsScreen(Main game) {
         this.game = game;
@@ -45,6 +47,7 @@ public class InstructionsScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         rebuild();
         Gdx.input.setInputProcessor(stage);
+        click = game.assets.get("sounds/click-for-game-menu.mp3");
     }
 
     private void rebuild() {
@@ -90,26 +93,24 @@ public class InstructionsScreen implements Screen {
         buttons.add(nextButton).width(BUTTON_WIDTH).pad(BUTTON_PAD);
         buttons.pack();
 
-        menuTable.add(labelText).width(TEXT_WIDTH).center().expandY().row();
-        menuTable.add(buttons).bottom();
-        menuTable.pack();
-
-
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.YELLOW);
         pixmap.fill();
         screenTable.setBackground( new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))) );
-        screenTable.add(labelTitle).top().pad(50).row();
-        screenTable.add(menuTable);
 
+        screenTable.add(labelTitle).top().pad(50).row();                    // header
+        screenTable.add(labelText).width(TEXT_WIDTH).center().top().expandY().row();    // text
+        screenTable.add(buttons);       // buttons
         screenTable.pack();
+
         prevButton.setVisible(false);   // disable Prev button on first page
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                click.play();
                 game.setScreen( new MenuScreen(game, false) );
             }
         });
@@ -122,6 +123,7 @@ public class InstructionsScreen implements Screen {
                 labelText.setText(texts[pageIndex]);
                 prevButton.setVisible(pageIndex > 0);   // hide Prev and Next button as needed
                 nextButton.setVisible(true);
+                click.play();
             }
         });
         nextButton.addListener(new ClickListener() {
@@ -134,6 +136,7 @@ public class InstructionsScreen implements Screen {
                 menuTable.pack();
                 prevButton.setVisible(true);
                 nextButton.setVisible(pageIndex < NUM_PAGES-1);
+                click.play();
             }
         });
     }

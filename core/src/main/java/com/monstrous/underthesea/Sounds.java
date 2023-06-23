@@ -11,6 +11,11 @@ public class Sounds implements Disposable  {
     // use constants to identify sound effects
     public static int SONAR_PING = 0;
     public static int CRASH = 1;
+    public static int BONUS = 2;
+    public static int FANFARE = 3;
+    public static int CHEER = 4;
+    public static int MENU_CLICK = 5;
+    public static int MORSE = 6;
 
     private static Array<Sound> sounds;
     private final Preferences preferences;
@@ -23,6 +28,11 @@ public class Sounds implements Disposable  {
         // must be in line with constants defined above
         sounds.add( assets.get("sounds/sonar-ping.wav"));
         sounds.add( assets.get("sounds/crash.mp3"));
+        sounds.add( assets.get("sounds/game-level-complete-143022.mp3"));
+        sounds.add( assets.get("sounds/success-fanfare-trumpets-6185.mp3"));
+        sounds.add( assets.get("sounds/crowd-cheer-ii-6263.mp3"));
+        sounds.add( assets.get("sounds/click-for-game-menu.mp3"));
+        sounds.add( assets.get("sounds/morse-code.mp3"));
 
         preferences = Gdx.app.getPreferences(Settings.preferencesName);
         soundVolume = preferences.getFloat("soundVolume", 1.0f);

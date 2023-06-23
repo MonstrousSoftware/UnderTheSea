@@ -1,6 +1,5 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.terrain;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.GridPoint3;

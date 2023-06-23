@@ -1,6 +1,5 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.terrain;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -280,7 +279,7 @@ public class Noise {
     public char[][][] makeVolume(final int width, final int height, NoiseSettings settings) {
         final float scale = settings.PerlinScale / (float) (width);
         float scaleY = settings.PerlinScale  / (float) (height);
-        scaleY *= (float)Chunk.CHUNK_HEIGHT / (float)Chunk.CHUNK_WIDTH;
+        scaleY *= (float) Chunk.CHUNK_HEIGHT / (float)Chunk.CHUNK_WIDTH;
         float chunkY = height * settings.yoffset / settings.PerlinScale;
 
         char[][][] volumeMap = new char[height][width][width];

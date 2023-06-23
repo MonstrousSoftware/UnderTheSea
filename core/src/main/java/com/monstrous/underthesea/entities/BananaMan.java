@@ -1,13 +1,14 @@
-package com.monstrous.underthesea;
+package com.monstrous.underthesea.entities;
 
 import com.badlogic.gdx.math.Vector3;
+import com.monstrous.underthesea.Assets;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class BananaMan {
 
-    public static float PICKUP_DISTANCE = 3f;
+    public static float PICKUP_DISTANCE = 10f;
 
     private SceneManager sceneManager;
     private SceneAsset sceneAsset;

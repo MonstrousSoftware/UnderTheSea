@@ -12,6 +12,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
+import com.monstrous.underthesea.terrain.Chunk;
+import com.monstrous.underthesea.terrain.Chunks;
+import com.monstrous.underthesea.terrain.MarchingCubes;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
@@ -94,7 +97,7 @@ public class GameScreen extends ScreenAdapter {
 
 
         modelBatch = new ModelBatch();
-        //shadowBatch = new ModelBatch(new DepthShaderProvider());
+
 
         sceneManager.environment.set(new PBRFloatAttribute(PBRFloatAttribute.ShadowBias, 0.001f));
 
@@ -121,9 +124,6 @@ public class GameScreen extends ScreenAdapter {
         sceneManager.environment.set(PBRCubemapAttribute.createDiffuseEnv(diffuseCubemap));
         sceneManager.environment.set(new ColorAttribute(ColorAttribute.Fog, Settings.backgroundColour));
 
-        // setup skybox
-//        skybox = new SceneSkybox(environmentCubemap);
-//        sceneManager.setSkyBox(skybox);
 
         batch = new SpriteBatch();
 
@@ -145,15 +145,6 @@ public class GameScreen extends ScreenAdapter {
 
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || gui.exitButtonPressed){
             gui.exitDialog(game);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.F1)) {
-            MarchingCubes.wireframeMode = false;
-            world.rebuild();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.F2)) {
-            MarchingCubes.wireframeMode = true;
-            world.rebuild();
         }
 
         camController.update( world.getFocus() );
@@ -212,16 +203,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
-
-    @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
-
-    @Override
     public void hide() {
         // This method is called when another screen replaces this one.
         dispose();
@@ -230,15 +211,16 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         sceneManager.dispose();
-        //sceneAsset.dispose();
         environmentCubemap.dispose();
         diffuseCubemap.dispose();
         specularCubemap.dispose();
         brdfLUT.dispose();
-        //skybox.dispose();
+
 
         world.dispose();
         modelBatch.dispose();
         gui.dispose();
+        fbo.dispose();
+        batch.dispose();
     }
 }
