@@ -28,7 +28,7 @@ import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 // screen to showcase the hero model
 
-public class ShowCaseScreen extends ScreenAdapter {
+public class MenuScreen extends ScreenAdapter {
 
     private final Main game;
     private SceneManager sceneManager;
@@ -45,7 +45,7 @@ public class ShowCaseScreen extends ScreenAdapter {
     private boolean banana;
     private Vector3 cameraOffset;
 
-    public ShowCaseScreen(Main game, boolean banana) {
+    public MenuScreen(Main game, boolean banana) {
 
         this.game = game;
         this.banana = banana;
@@ -124,12 +124,19 @@ public class ShowCaseScreen extends ScreenAdapter {
         label.setColor(Color.BLACK);
 
         TextButton startButton = new TextButton("START", skin, "big" );
+        TextButton instructionsButton = new TextButton("INSTRUCTIONS", skin, "big" );
+        TextButton creditsButton = new TextButton("CREDITS", skin, "big" );
+        TextButton exitButton = new TextButton("EXIT", skin, "big" );
 
         // root table that fills the whole screen
         Table screenTable = new Table();
         screenTable.setFillParent(true);        // size to match stage size
-        screenTable.add(label).top().left().expandX().expandY().row();
+        screenTable.add(label).colspan(2).top().left().expandX().expandY().row();
         screenTable.add(startButton).bottom().center().pad(50);
+        screenTable.add().expandX().row();
+        screenTable.add(instructionsButton).bottom().center().pad(50).row();
+        screenTable.add(creditsButton).bottom().center().pad(50).row();
+        screenTable.add(exitButton).bottom().center().pad(50).row();
         screenTable.pack();
 
         stage.addActor(screenTable);
@@ -139,7 +146,34 @@ public class ShowCaseScreen extends ScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 //Sounds.playSound(Sounds.MENU_CLICK);
-                game.setScreen(new GameScreen( game ));
+                game.setScreen(new PreGameScreen( game ));
+            }
+        });
+
+
+        instructionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                //Sounds.playSound(Sounds.MENU_CLICK);
+                game.setScreen(new InstructionsScreen( game ));
+            }
+        });
+
+        creditsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                //Sounds.playSound(Sounds.MENU_CLICK);
+                game.setScreen(new CreditsScreen( game ));
+            }
+        });
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                Gdx.app.exit();
             }
         });
     }

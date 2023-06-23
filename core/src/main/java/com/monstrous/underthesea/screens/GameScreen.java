@@ -17,7 +17,6 @@ import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
 import net.mgsx.gltf.scene3d.scene.Scene;
-import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
@@ -144,9 +143,8 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         time += delta;
 
-        if(gui.escapePressed){
-            game.setScreen( new ShowCaseScreen(game, true) );
-            return;
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || gui.exitButtonPressed){
+            gui.exitDialog(game);
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.F1)) {

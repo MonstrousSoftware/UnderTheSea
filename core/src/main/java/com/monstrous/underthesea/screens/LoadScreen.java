@@ -41,7 +41,7 @@ public class LoadScreen extends ScreenAdapter {
             // done loading, proceed...
             game.postLoading();
             if(game.RELEASE_BUILD)
-                game.setScreen(new ShowCaseScreen(game, false));
+                game.setScreen(new MenuScreen(game, false));
             else
                 game.setScreen(new GameScreen(game));
             return;

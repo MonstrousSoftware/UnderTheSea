@@ -2,7 +2,6 @@ package com.monstrous.underthesea;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.monstrous.underthesea.gui.GUI;
@@ -13,7 +12,8 @@ public class World implements Disposable {
     private Chunks chunks;
     private SceneManager sceneManager;
     public Submarine submarine;
-    public Capsule capsule;
+    public Canister canister;
+    private BananaMan bananaMan;
     public SubController subController;
     public ParticleEffects particleEffects;
     public float capsuleDistance;
@@ -33,8 +33,10 @@ public class World implements Disposable {
         rebuild();
         submarine = new Submarine(assets, sceneManager, 0,75,0);
         capsuleCount = 0;
-        capsule = new Capsule(assets, sceneManager, capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
+        canister = new Canister(assets, sceneManager, capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
         timer = 10f;
+
+        bananaMan = new BananaMan(assets, sceneManager, 0, 75, 5);
 
         if(Settings.enableParticleEffects) {
             particleEffects = new ParticleEffects(cam);
@@ -68,17 +70,21 @@ public class World implements Disposable {
         // very basic N point collision
         if(!Settings.collisionCheat) {
             if (chunks.collides(submarine.getTipPosition())) {
+                if(submarine.inCollision()) // ?
+                    Sounds.playSound(Sounds.CRASH);
                 submarine.collide();
             }
             if (chunks.collides(submarine.getTailPosition())) {
+                if(submarine.inCollision())
+                    Sounds.playSound(Sounds.CRASH);
                 submarine.rearCollide();
-            }
+           }
         }
 
-        capsuleDistance = capsule.getDistance(submarine.position);
-        if(capsuleDistance < Capsule.PICKUP_DISTANCE){                      // close enough to pick up?
+        capsuleDistance = canister.getDistance(submarine.position);
+        if(capsuleDistance < Canister.PICKUP_DISTANCE){                      // close enough to pick up?
             gui.setMessage(Settings.capsuleMessages[capsuleCount] );        // show the message from the canister
-            if(capsuleCount < Settings.capsuleNumber) {
+            if(capsuleCount < Settings.numberOfCapsules -1 ) {
                 capsuleCount++;
                 positionCapsule();
 
@@ -100,7 +106,7 @@ public class World implements Disposable {
     }
 
     public void positionCapsule() {
-        capsule.setPosition(capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
+        canister.setPosition(capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
         if(capsuleCount == 1)
             timer = 20; // start timer after first capsule is picked up
     }

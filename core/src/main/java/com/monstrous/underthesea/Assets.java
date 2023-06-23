@@ -27,7 +27,7 @@ public class Assets implements Disposable {
         assets.load("blue-pixel-skin/blue-pixel.json", Skin.class);
 //
        assets.load("sounds/sonar-ping.wav", Sound.class);
-//        assets.load("sounds/item-equip-6904.mp3", Sound.class);
+       assets.load("sounds/crash.mp3", Sound.class);
 //        assets.load("sounds/punch-140236.mp3", Sound.class);
 //        assets.load("sounds/click-for-game-menu-131903.mp3", Sound.class);
 //        assets.load("sounds/footsteps.mp3", Sound.class);

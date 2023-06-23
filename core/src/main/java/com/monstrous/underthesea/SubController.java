@@ -78,9 +78,11 @@ public class SubController extends InputAdapter {
                 rightPressed = state;
                 break;
             case Input.Keys.UP:
+            case Input.Keys.E:
                 upPressed = state;
                 break;
             case Input.Keys.DOWN:
+            case Input.Keys.Q:
                 downPressed = state;
                 break;
             default:

@@ -10,6 +10,7 @@ public class Sounds implements Disposable  {
 
     // use constants to identify sound effects
     public static int SONAR_PING = 0;
+    public static int CRASH = 1;
 
     private static Array<Sound> sounds;
     private final Preferences preferences;
@@ -21,6 +22,7 @@ public class Sounds implements Disposable  {
 
         // must be in line with constants defined above
         sounds.add( assets.get("sounds/sonar-ping.wav"));
+        sounds.add( assets.get("sounds/crash.mp3"));
 
         preferences = Gdx.app.getPreferences(Settings.preferencesName);
         soundVolume = preferences.getFloat("soundVolume", 1.0f);

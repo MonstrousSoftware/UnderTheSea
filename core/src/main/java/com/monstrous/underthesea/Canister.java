@@ -3,7 +3,6 @@ package com.monstrous.underthesea;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
@@ -11,7 +10,7 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 // capsule that needs to be picked up by the submarine
 
-public class Capsule {
+public class Canister {
 
     public static float PICKUP_DISTANCE = 3f;
 
@@ -22,7 +21,7 @@ public class Capsule {
     private PointLight light;
 
 
-    public Capsule(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
+    public Canister(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
         this.sceneManager = sceneManager;
         sceneAsset = assets.get("models/submarine.gltf");
         position = new Vector3();

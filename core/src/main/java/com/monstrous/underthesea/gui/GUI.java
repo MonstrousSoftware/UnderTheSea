@@ -3,7 +3,6 @@ package com.monstrous.underthesea.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,13 +14,16 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.SubController;
 import com.monstrous.underthesea.World;
+import com.monstrous.underthesea.screens.Main;
+import com.monstrous.underthesea.screens.MenuScreen;
 
 public class GUI implements Disposable {
 
     private Skin skin;
     public Stage stage;
     private SettingsWindow settingsWindow;
-    private Label statusLabel;
+    private Label depthLabel;
+    private Label distanceLabel;
     private World world;
     private Image steerGauge;
     private Slider sliderDive;
@@ -30,8 +32,8 @@ public class GUI implements Disposable {
     private Image collision;
     private Label message;
     private TextButton confirmButton;
-    public boolean escapePressed;
-
+    public boolean exitButtonPressed;
+    private Dialog exitDialog;
 
     public GUI( World world) {
         Gdx.app.log("GUI constructor", "");
@@ -40,7 +42,7 @@ public class GUI implements Disposable {
         stage = new Stage(new ScreenViewport());
 
         settingsWindow = new SettingsWindow("Settings", skin, world);
-        escapePressed = false;
+        exitButtonPressed = false;
     }
 
     private void rebuild() {
@@ -51,7 +53,8 @@ public class GUI implements Disposable {
         collision = new Image( new Texture("images/collision.png"));
 
 
-        statusLabel = new Label("Status", skin, "window");
+        depthLabel = new Label("Status", skin, "window");
+        distanceLabel = new Label("Status", skin, "window");
 
         message = new Label("TEST", skin, "window");
         message.setVisible(false);
@@ -61,7 +64,7 @@ public class GUI implements Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                escapePressed = true;
+                exitButtonPressed = true;
             }
         });
 
@@ -129,9 +132,10 @@ public class GUI implements Disposable {
         screenTable.setFillParent(true);
         screenTable.add(backButton).colspan(4).bottom().expandY().left().row();
         screenTable.add(t2).left().bottom();
-        screenTable.add(statusLabel).width(100).bottom();
         screenTable.add(t1).center().bottom().expandX();
-        screenTable.add(t3).right().bottom();
+        screenTable.add(t3).right().bottom().row();
+        screenTable.add(depthLabel).bottom();
+        screenTable.add(distanceLabel).bottom();
         screenTable.pack();
 
 
@@ -170,6 +174,28 @@ public class GUI implements Disposable {
 
     }
 
+    public void exitDialog( Main game ) {
+        if(exitDialog != null)
+            return;
+        exitButtonPressed = false;
+        exitDialog = new Dialog("Exit Game?", skin){
+            protected void result(Object object) {
+                Gdx.app.log("exit dialog", "");
+                if(object.equals(1)){
+                    game.setScreen( new MenuScreen(game, true));
+                }
+                else {
+                    remove();
+                    exitDialog = null;
+                }
+            }
+        };
+        exitDialog.text("\nAre you sure you want to exit?\n");
+        exitDialog.button("Exit", 1);
+        exitDialog.button("Cancel", 2);
+        exitDialog.show(stage);
+    }
+
 
     public void setCollision( boolean value ){
         collision.setVisible(value);
@@ -190,7 +216,8 @@ public class GUI implements Disposable {
 //                            world.submarine.velocity.toString()));
 //        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d [%d,%d,%d] T=%d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance,
 //            (int)world.submarine.position.x, (int)world.submarine.position.y, (int)world.submarine.position.z, (int)world.timer));
-        statusLabel.setText(String.format("DEPTH: %d DISTANCE: %d", 128-(int)world.submarine.position.y, (int)world.capsuleDistance));
+        depthLabel.setText("DEPTH: "+(128-(int)world.submarine.position.y));
+        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);
