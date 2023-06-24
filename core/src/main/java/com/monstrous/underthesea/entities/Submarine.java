@@ -14,6 +14,8 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class Submarine {
 
+    public static final float RADIUS = 1;
+
     private SceneAsset sceneAsset;
     private Scene sceneSub;
     private Scene sceneScrew;
@@ -24,6 +26,8 @@ public class Submarine {
     public  Vector3 velocity;
     private Vector3 step;
     private Vector3 tip;
+    private Vector3 fwd;
+    private Vector3 aft;
     private Vector3 tail;
     private float screwSpeed;     // -100 to 100
     private float screwAngle;
@@ -55,6 +59,8 @@ public class Submarine {
         velocity = new Vector3(0, 0, 1);
         tip = new Vector3();
         tail = new Vector3();
+        fwd = new Vector3();
+        aft = new Vector3();
         heading = 0;
         diveAngle = 0;
 
@@ -82,11 +88,11 @@ public class Submarine {
         screwSpeed = subController.power;
         screwAngle +=  4*screwSpeed*deltaTime;
 
-        // sub reacts with some lag on the inputs to give some inertia
-        heading += subController.steerAngle * deltaTime;
-        diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
         if(!inCollision()) {
+            // sub reacts with some lag on the inputs to give some inertia
+            heading += subController.steerAngle * deltaTime;
+            diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
             targetVelocity.set(0,0,screwSpeed/50f);
             targetVelocity.rotate(Vector3.X, -diveAngle);
@@ -138,6 +144,17 @@ public class Submarine {
         tip.set(0,0, 2.5f);     // front tip of the model, used for collision test
         tip.mul(sceneSub.modelInstance.transform);
         return tip;
+    }
+
+    public Vector3 getForwardPosition() {
+        fwd.set(0,0, 1.5f);     // centre of the front half sphere
+        fwd.mul(sceneSub.modelInstance.transform);
+        return fwd;
+    }
+    public Vector3 getAftPosition() {
+        aft.set(0,0, -1.5f);     //
+        aft.mul(sceneSub.modelInstance.transform);
+        return aft;
     }
 
     private Vector3 lightPos = new Vector3();

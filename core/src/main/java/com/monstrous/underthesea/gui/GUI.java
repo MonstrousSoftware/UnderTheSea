@@ -216,7 +216,8 @@ public class GUI implements Disposable {
     public void render(float deltaTime) {
 
         depthLabel.setText("DEPTH: "+(128-(int)world.submarine.position.y));
-        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
+//        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
+        distanceLabel.setText("DISTANCE: "+ world.rockProximity);
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);

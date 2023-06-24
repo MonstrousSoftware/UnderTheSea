@@ -29,6 +29,7 @@ public class Chunk implements Disposable {
     public Scene scene;
     //public Scene sceneWater;
     private VolumeMap volume;
+    private DistanceField distanceField;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
     private PBRColorAttribute baseColor;
@@ -55,6 +56,8 @@ public class Chunk implements Disposable {
 
         // create volume using noise generator
         volume = makeVolume3d(settings, cx, cy, cz);
+
+        distanceField = new DistanceField(volume, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
 
         hasVolume = true;
         hasMesh = false;
@@ -112,9 +115,16 @@ public class Chunk implements Disposable {
         settings.zoffset = cz * settings.PerlinScale *(CHUNK_WIDTH)/(float)(CHUNK_WIDTH+1);
         settings.yoffset = cy * settings.PerlinScale *(CHUNK_HEIGHT)/(float)(CHUNK_HEIGHT+1);
 
+        // need 1 more than CHUNK_WIDTH because we are generating sample points on the corners
+        // of the cubes.
         char [][][] map = noise.makeVolume(CHUNK_WIDTH+1, CHUNK_HEIGHT+1, settings);
         return new VolumeMap(map);
     }
+
+    public int distanceToRock( GridPoint3 point ){
+        return distanceField.getDistance(point.x,point.y,point.z);
+    }
+
 
     public boolean collides( Vector3 point ){
         char [][][] data = volume.data;

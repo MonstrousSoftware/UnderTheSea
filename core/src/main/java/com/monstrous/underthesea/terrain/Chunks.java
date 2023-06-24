@@ -60,6 +60,28 @@ public class Chunks implements Disposable {
         return false;
     }
 
+    private GridPoint3 relPoint = new GridPoint3();
+    private GridPoint3 gp = new GridPoint3();
+
+    public int distanceToRock( Vector3 point ){
+        gp.set((int)point.x, (int)point.y, (int)point.z);
+
+        int cx = Math.floorDiv(gp.x, Chunk.CHUNK_WIDTH);
+        int cz = Math.floorDiv(gp.z, Chunk.CHUNK_WIDTH);
+        int cy = Math.floorDiv(gp.y , Chunk.CHUNK_HEIGHT);
+
+        // todo could be sped up with some lookup map
+        for(Chunk chunk : chunks ) {
+            if(chunk.cx == cx && chunk.cz == cz && chunk.cy == cy) {
+                relPoint.set(gp);
+                relPoint.sub(cx*Chunk.CHUNK_WIDTH, cy*Chunk.CHUNK_HEIGHT, cz*Chunk.CHUNK_WIDTH);
+                // Gdx.app.log("check chunk", "cx: "+cx + " cy: "+ cy + "cz: "+ cz);
+                return chunk.distanceToRock(relPoint);
+            }
+        }
+        return 255;
+    }
+
 
     public void addScene(SceneManager sceneManager) {
         for(Chunk chunk : chunks ) {

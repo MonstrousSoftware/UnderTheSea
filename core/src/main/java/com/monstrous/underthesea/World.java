@@ -31,6 +31,8 @@ public class World implements Disposable {
     private Sounds sounds;
     private ModelInstance waterInstance;
     private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } };
+    public int rockProximity;
+
 
     public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
@@ -94,14 +96,17 @@ public class World implements Disposable {
 
         submarine.update(deltaTime, subController);
 
+        rockProximity = chunks.distanceToRock(submarine.getForwardPosition());
+
         // very basic N point collision
         if(!Settings.collisionCheat) {
-            if (chunks.collides(submarine.getTipPosition())) {
+            if (rockProximity <= Submarine.RADIUS) { //chunks.collides(submarine.getTipPosition())) {
                 if(submarine.inCollision()) // ?
                     Sounds.playSound(Sounds.CRASH);
                 submarine.collide();
             }
-            if (chunks.collides(submarine.getTailPosition())) {
+            //if (chunks.collides(submarine.getTailPosition())) {
+            if(chunks.distanceToRock(submarine.getAftPosition()) <= Submarine.RADIUS) {
                 if(submarine.inCollision())
                     Sounds.playSound(Sounds.CRASH);
                 submarine.rearCollide();
