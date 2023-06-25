@@ -9,7 +9,6 @@ import com.monstrous.underthesea.entities.Canister;
 import com.monstrous.underthesea.entities.Submarine;
 import com.monstrous.underthesea.gui.GUI;
 import com.monstrous.underthesea.terrain.Chunks;
-import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 
 public class World implements Disposable {
@@ -96,17 +95,18 @@ public class World implements Disposable {
 
         submarine.update(deltaTime, subController);
 
-        rockProximity = chunks.distanceToRock(submarine.getForwardPosition());
+        //rockProximity = chunks.distanceToRock(submarine.getForwardPosition());
 
         // very basic N point collision
         if(!Settings.collisionCheat) {
-            if (rockProximity <= Submarine.RADIUS) { //chunks.collides(submarine.getTipPosition())) {
+            //if (rockProximity <= Submarine.RADIUS) {
+            if (chunks.collides(submarine.getTipPosition())) {
                 if(submarine.inCollision()) // ?
                     Sounds.playSound(Sounds.CRASH);
                 submarine.collide();
             }
-            //if (chunks.collides(submarine.getTailPosition())) {
-            if(chunks.distanceToRock(submarine.getAftPosition()) <= Submarine.RADIUS) {
+            if (chunks.collides(submarine.getTailPosition())) {
+            //if(chunks.distanceToRock(submarine.getAftPosition()) <= Submarine.RADIUS) {
                 if(submarine.inCollision())
                     Sounds.playSound(Sounds.CRASH);
                 submarine.rearCollide();
@@ -170,7 +170,7 @@ public class World implements Disposable {
 
     public void render(ModelBatch modelBatch, Environment environment){
 
-        //chunks.render(modelBatch, environment);
+        chunks.render(modelBatch, environment);
 
         if(Settings.enableParticleEffects)
             particleEffects.render(modelBatch);

@@ -26,9 +26,9 @@ public class Main extends Game {
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         Gdx.app.log("OpenGL version", Gdx.gl.glGetString(Gdx.gl.GL_VERSION));
 
-        if(Gdx.app.getType() == Application.ApplicationType.WebGL) {
-            Settings.enableParticleEffects = false;
-        }
+//        if(Gdx.app.getType() == Application.ApplicationType.WebGL) {
+//            Settings.enableParticleEffects = false;
+//        }
 
 
         if(RELEASE_BUILD)

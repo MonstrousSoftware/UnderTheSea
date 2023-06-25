@@ -1,5 +1,6 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,6 +33,7 @@ public class ParticleEffects implements Disposable {
     public ParticleEffects(Camera cam) {
         // create a particle system
         particleSystem = new ParticleSystem();
+        Gdx.app.debug("ParticleEffects", "constructor");
 
         BillboardParticleBatch billboardParticleBatch = new BillboardParticleBatch();
 
@@ -59,6 +61,7 @@ public class ParticleEffects implements Disposable {
     // bubbles from the screw
     public void addBubbles(Matrix4 transform) {
         // we cannot use the originalEffect, we must make a copy each time we create new particle effect
+        Gdx.app.debug("ParticleEffects", "addBubbles");
         bubbleTrail = addEffect( bubbleEffect.copy(), transform );
     }
 
@@ -69,6 +72,7 @@ public class ParticleEffects implements Disposable {
     }
 
     public void setBubblesOrigin( Vector3 position ){
+        //Gdx.app.debug("ParticleEffects", "origin: "+position.toString());
         tmpMat.idt().translate(position);
         bubbleTrail .setTransform(tmpMat);
     }

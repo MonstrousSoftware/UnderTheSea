@@ -57,7 +57,11 @@ public class Chunk implements Disposable {
         // create volume using noise generator
         volume = makeVolume3d(settings, cx, cy, cz);
 
-        distanceField = new DistanceField(volume, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
+//        distanceField = new DistanceField(volume, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
+//        distanceField.save(cx, cy, cz);
+//
+//        distanceField = new DistanceField(null, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
+//        distanceField.load(cx, cy, cz);
 
         hasVolume = true;
         hasMesh = false;

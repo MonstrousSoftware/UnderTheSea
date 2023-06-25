@@ -23,6 +23,8 @@ public class TeaVMBuilder {
 
         // Register any classes or packages that require reflection here:
         // TeaReflectionSupplier.addReflectionClass("com.monstrous.underthesea.reflect");
+        TeaReflectionSupplier.addReflectionClass("com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch");
+        TeaReflectionSupplier.addReflectionClass("com.badlogic.gdx.graphics.g3d.particles.ParticleShader");
 
         TeaVMTool tool = TeaBuilder.config(teaBuildConfiguration);
         tool.setMainClass(TeaVMLauncher.class.getName());

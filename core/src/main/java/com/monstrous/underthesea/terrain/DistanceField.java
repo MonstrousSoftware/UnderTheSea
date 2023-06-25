@@ -1,21 +1,27 @@
 package com.monstrous.underthesea.terrain;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 public class DistanceField {
-    private char distance[][][];     // distance to rock face, 0 is rock
+    private byte distance[][][];     // distance to rock face, 0 is rock
     private int h, w, d;
 
     public DistanceField(VolumeMap volume, int w, int h, int d) {
         this.h = h;
         this.d = d;
         this.w = w;
-        distance = new char[h][w][d];
+        distance = new byte[h][w][d];
+
+        if(volume == null)
+            return;
 
         // initialize: inside rock is coded as 0, outside as 255
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 for (int z = 0; z < d; z++) {
                     char density = volume.data[y][x][z];    // note: y first
-                    char val = 255;
+                    byte val = (byte) 255;
                     if (density >= MarchingCubes.isoThreshold)
                         val = 0;
                     distance[y][x][z] = val;
@@ -43,7 +49,7 @@ public class DistanceField {
 
     private boolean propagate(int x, int y, int z){
         // check neighbouring density samples
-        char val = distance[y][x][z];
+        byte val = distance[y][x][z];
         if(val == 0)
             return false;
 
@@ -56,16 +62,51 @@ public class DistanceField {
                 continue;
             if(ny >= h || nx >= w || nz >= d )
                 continue;
-            char nval = distance[ny][nx][nz];
+            byte nval = distance[ny][nx][nz];
             if(nval+1  < val) {
-                distance[y][x][z] = (char) (nval + 1);
+                distance[y][x][z] = (byte) (nval + 1);
                 changed = true;
             }
         }
+        //save();
         return changed;
     }
 
+    public String makeFileName(int x, int y, int z){
+        char cx = (char) ('m'+x);
+        char cy = (char) ('m'+y);
+        char cz = (char) ('m'+z);
+        return new String("fields/distance_"+cx+cy+cz+".bin");
+
+    }
+
+    public void save(int cx, int cy, int cz){
+        String fileName = makeFileName(cx, cy, cz);
+        FileHandle file = Gdx.files.local(fileName);
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+
+                file.writeBytes(distance[y][x], x > 0 || y > 0);
+            }
+        }
+    }
+
+    public void load( int cx, int cy, int cz){
+
+        String fileName = makeFileName(cx, cy, cz);
+        FileHandle file = Gdx.files.local(fileName);
+        byte[] data = new byte[w*h*d];
+        file.readBytes(data, 0, data.length);
+
+//        for (int x = 0; x < w; x++) {
+//            for (int y = 0; y < h; y++) {
+//
+//                 file.readBytes(); distance[y][x], y*x*d, d);
+//            }
+//        }
+    }
+
     public int getDistance(int x, int y, int z){
-        return distance[y][x][z];
+        return (char)distance[y][x][z];
     }
 }

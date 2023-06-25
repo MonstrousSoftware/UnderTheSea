@@ -26,27 +26,19 @@ import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 public class GameScreen extends ScreenAdapter {
 
     private static final int SHADOW_MAP_SIZE = 2048;
-    public static int shadowMapSize = 1024;         // resolution of shadow
-    public static int shadowViewPortSize = 1024;    // area where shadows are cast
 
 
     private Main game;
     private SceneManager sceneManager;
-    //private SceneAsset sceneAsset;
-    private Scene scene;
     private PerspectiveCamera cam;
     private CamController camController;
     private ModelBatch modelBatch;
-    //private ModelBatch shadowBatch;
-    //ivate Environment environment;
-    //private DirectionalShadowLight shadowLight;
     private World world;
     private GUI gui;
     private Cubemap diffuseCubemap;
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
     private Texture brdfLUT;
-    //private SceneSkybox skybox;
     private DirectionalLightEx light;
     private SpriteBatch batch;
     private ShaderProgram shaderProgram;
@@ -61,7 +53,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        // load scene asset
         sceneManager = new SceneManager();
 
         SubController subController = new SubController();
@@ -166,7 +157,6 @@ public class GameScreen extends ScreenAdapter {
         world.render(modelBatch, sceneManager.environment);
         modelBatch.end();
 
-
         fbo.end();
 
 
@@ -215,7 +205,6 @@ public class GameScreen extends ScreenAdapter {
         diffuseCubemap.dispose();
         specularCubemap.dispose();
         brdfLUT.dispose();
-
 
         world.dispose();
         modelBatch.dispose();
