@@ -2,6 +2,7 @@ package com.monstrous.underthesea.terrain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -14,6 +15,8 @@ import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import org.ode4j.ode.DTriMesh;
+import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.OdeHelper;
 
 public class Chunk implements Disposable {
 
@@ -28,12 +31,13 @@ public class Chunk implements Disposable {
     public ModelInstance modelInstance;
     public Scene scene;
     private VolumeMap volume;
-    private DistanceField distanceField;
+//    private DistanceField distanceField;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
     private PBRColorAttribute baseColor;
     private PBRFloatAttribute metallic;
     private PBRFloatAttribute roughness;
+    public DTriMeshData triMeshData;
 
 
     public Chunk(String key, GridPoint3 coordinates, NoiseSettings settings) {
@@ -66,12 +70,42 @@ public class Chunk implements Disposable {
     }
 
 
+    public void buildTriMesh() {
+
+        Vector3 v = new Vector3();
+        Vector3 offset = new Vector3(cx*CHUNK_WIDTH,cy*CHUNK_HEIGHT, cz*CHUNK_WIDTH);
+        Mesh mesh = model.meshes.first();
+        int nv = mesh.getNumVertices();
+        int stride = mesh.getVertexSize() / 4;  // size of vertex in number of floats
+        float [] vertices = new float[stride*nv];
+        mesh.getVertices(vertices);
+
+        int ni = mesh.getNumIndices();
+
+        float[] verts = new float[3*nv];        // vertex data with only positions (3 floats/vertex), no UV, normals etc.
+        int[] indices = new int[ni];            // integers instead of shorts
+
+        for(int i = 0 ; i < nv; i++) {
+            v.set(vertices[i * stride], vertices[i * stride + 1], vertices[i * stride + 2]);
+            v.add(offset);
+            verts[3 * i] = v.x;
+            verts[3 * i + 1] = v.y;
+            verts[3 * i + 2] = v.z;
+        }
+        for(int i = 0 ; i < ni; i+=3) {     // we know how marching cubes create indices, so we can just reproduce
+            indices[i] = i+1;               // 1, 0, 2,     4, 3, 5,    7, 6, 8
+            indices[i+1] = i;
+            indices[i+2] = i+2;
+        }
+
+        triMeshData = OdeHelper.createTriMeshData();
+        triMeshData.build(verts, indices);
+        triMeshData.preprocess();
+    }
+
     public void buildMesh() {
 
-        //model = voxels.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, Color.OLIVE);
         Color color = Color.OLIVE;
-//        if(((Math.abs(cx) + Math.abs(cz))% 2 == 1))
-//            color = Color.GREEN;
 
         model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 
@@ -89,6 +123,8 @@ public class Chunk implements Disposable {
 
         hasMesh = true;
         volume.needsRemesh = false;
+
+        buildTriMesh();
     }
 
 
@@ -109,9 +145,9 @@ public class Chunk implements Disposable {
         return new VolumeMap(map);
     }
 
-    public int distanceToRock( GridPoint3 point ){
-        return distanceField.getDistance(point.x,point.y,point.z);
-    }
+//    //public int distanceToRock( GridPoint3 point ){
+//        return distanceField.getDistance(point.x,point.y,point.z);
+//    }
 
 
     public boolean collides( Vector3 point ){

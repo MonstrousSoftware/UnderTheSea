@@ -78,38 +78,33 @@ public class World implements Disposable {
             game.chunks = chunks;
         }
         chunks.addScenes(sceneManager);
+        chunks.addGeoms(space);
 
         submarine = new Submarine(assets, sceneManager, 0,75,-30);
         subBody = OdeHelper.createBody(dworld);
         massInfo.setBox (1, 1, 1, 1);
         massInfo.adjust (1);    // mass
         subBody.setMass(massInfo);
-
-        subBody.setPosition(0, 75, -30);
+        Vector3 pos = submarine.getPosition();
+        subBody.setPosition(pos.x, pos.y, pos.z); //0, 75, -30);
 
         DCapsule subCapsule = OdeHelper.createCapsule(space, 1, 3);
-        Vector3 pos = submarine.getPosition();
-        //subCapsule.setPosition(pos.x, pos.y, pos.z);
         subCapsule.setBody(subBody);
-        //space.add(subCapsule);
 
-        ///
-        //OdeHelper.createPlane (space,0,1,0, 72);
-        float sz = 10;
-        DBody boxBody = OdeHelper.createBody(dworld);
-        boxBody.setPosition(pos.x, pos.y, pos.z+15);
-        DBox box = OdeHelper.createBox (space, sz, sz, sz);
-        //box.setPosition(pos.x, pos.y, pos.z+15);
-        box.setBody(boxBody);
-        //space.add(box);
-
-        ModelBuilder modelBuilder = new ModelBuilder();
-        Model modelBox = modelBuilder.createBox(sz, sz, sz,
-            new Material(ColorAttribute.createDiffuse(Color.BLUE)),
-            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates );
-
-
-        boxInstance = new ModelInstance(modelBox, pos.x, pos.y, pos.z+15);
+//        float sz = 3;
+//        DBody boxBody = OdeHelper.createBody(dworld);
+//        boxBody.setPosition(pos.x, pos.y, pos.z+15);
+//        DBox box = OdeHelper.createBox (space, sz, sz, sz);
+//        //box.setPosition(pos.x, pos.y, pos.z+15);
+//        box.setBody(boxBody);
+//        //space.add(box);
+//
+//        ModelBuilder modelBuilder = new ModelBuilder();
+//        Model modelBox = modelBuilder.createBox(sz, sz, sz,
+//            new Material(ColorAttribute.createDiffuse(Color.BLUE)),
+//            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates );
+//
+//        boxInstance = new ModelInstance(modelBox, pos.x, pos.y, pos.z+15);
 
 
 
@@ -238,7 +233,7 @@ public class World implements Disposable {
     public void render(ModelBatch modelBatch, Environment environment){
 
         chunks.render(modelBatch, environment);
-        modelBatch.render(boxInstance);
+        //modelBatch.render(boxInstance);
 
         if(Settings.enableParticleEffects)
             particleEffects.render(modelBatch);
