@@ -13,6 +13,7 @@ import net.mgsx.gltf.scene3d.attributes.PBRColorAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.scene.Scene;
+import org.ode4j.ode.DTriMesh;
 
 public class Chunk implements Disposable {
 
@@ -65,6 +66,7 @@ public class Chunk implements Disposable {
         hasVolume = true;
         hasMesh = false;
     }
+
 
     public void buildMesh() {
 
