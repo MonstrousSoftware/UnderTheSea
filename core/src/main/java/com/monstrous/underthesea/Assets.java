@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
 import net.mgsx.gltf.loaders.gltf.GLTFAssetLoader;
@@ -21,22 +23,19 @@ public class Assets implements Disposable {
 
         assets.load("models/submarine.gltf", SceneAsset.class);
         assets.load("models/AnthroBanana.gltf", SceneAsset.class);
-//        //assets.load("models/cook.gltf", SceneAsset.class);
-//
-//
+
         assets.load("blue-pixel-skin/blue-pixel.json", Skin.class);
-//
-       assets.load("sounds/sonar-ping.wav", Sound.class);
-       assets.load("sounds/crash.mp3", Sound.class);
-       assets.load("sounds/game-level-complete-143022.mp3", Sound.class);
+
+        assets.load("sounds/sonar-ping.wav", Sound.class);
+        assets.load("sounds/crash.mp3", Sound.class);
+        assets.load("sounds/game-level-complete-143022.mp3", Sound.class);
         assets.load("sounds/success-fanfare-trumpets-6185.mp3", Sound.class);
         assets.load("sounds/crowd-cheer-ii-6263.mp3", Sound.class);
         assets.load("sounds/click-for-game-menu.mp3", Sound.class);
         assets.load("sounds/morse-code.mp3", Sound.class);
 
-        //        assets.load(Settings.gameMusic, Music.class);
-//        assets.load(Settings.winMusic, Music.class);
 
+        //        assets.load(Settings.gameMusic, Music.class);
     }
 
     public boolean update() {

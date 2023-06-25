@@ -47,7 +47,6 @@ public class Chunk implements Disposable {
         hasMesh = false;
 
         mcubes = new MarchingCubes();
-
     }
 
     public void buildVolume( ) {

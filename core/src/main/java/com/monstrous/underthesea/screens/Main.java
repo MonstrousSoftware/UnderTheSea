@@ -5,22 +5,26 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.Settings;
+import com.monstrous.underthesea.World;
 import com.monstrous.underthesea.screens.GameScreen;
+import com.monstrous.underthesea.terrain.Chunks;
 
 public class Main extends Game {
     public final boolean RELEASE_BUILD = true;
     public final String VERSION = "Under The Sea - June 2023";
 
     public Assets assets;
+    public Chunks chunks;         // to persist between restarts
 
     @Override
     public void create() {
         Gdx.app.log("Main create()", "");
         assets = new Assets();
+        chunks = null;
 
-        if(RELEASE_BUILD)
-            Gdx.app.setLogLevel(Application.LOG_ERROR);
-        else
+//        if(RELEASE_BUILD)
+//            Gdx.app.setLogLevel(Application.LOG_ERROR);
+//        else
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
@@ -59,5 +63,7 @@ public class Main extends Game {
 
         Gdx.app.log("assets.dispose()", "");
         assets.dispose();
+        if(chunks != null)
+            chunks.dispose();
     }
 }

@@ -13,7 +13,7 @@ public class CamController extends InputAdapter {
 
     private PerspectiveCamera cam;
     private Vector3 tmpVec = new Vector3();
-    private float distance = 30f;
+    private float distance = 15f;
     private float horizontalAngle = 0;
     private float verticalAngle = 0;
     private Vector3 dist;

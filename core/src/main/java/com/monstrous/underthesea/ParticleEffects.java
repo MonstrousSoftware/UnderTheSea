@@ -52,6 +52,7 @@ public class ParticleEffects implements Disposable {
         assets.finishLoading();
         bubbleEffect = assets.get("particle/bubbles.pfx");
 
+
         activeEffects = new Array<>();
         deleteList = new Array<>();
 

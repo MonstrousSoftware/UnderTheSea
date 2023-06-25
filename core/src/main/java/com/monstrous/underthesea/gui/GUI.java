@@ -26,6 +26,7 @@ public class GUI implements Disposable {
     private SettingsWindow settingsWindow;
     private Label depthLabel;
     private Label distanceLabel;
+    private Label timeLabel;
     private World world;
     private Image steerGauge;
     private Slider sliderDive;
@@ -57,6 +58,7 @@ public class GUI implements Disposable {
 
         depthLabel = new Label("Status", skin, "window");
         distanceLabel = new Label("Status", skin, "window");
+        timeLabel = new Label("Status", skin, "window");
 
         message = new Label("TEST", skin, "window");
         message.setVisible(false);
@@ -138,6 +140,7 @@ public class GUI implements Disposable {
         screenTable.add(t3).right().bottom().row();
         screenTable.add(depthLabel).bottom();
         screenTable.add(distanceLabel).bottom();
+        screenTable.add(timeLabel).width(100).bottom();
         screenTable.pack();
 
 
@@ -156,14 +159,16 @@ public class GUI implements Disposable {
         });
         msg.add(message).row();
         msg.add(confirmButton).center();
+
         msg.pack();
 
 
         Table screenTable2 = new Table();
         screenTable2.setFillParent(true);
 
+
         screenTable2.add(collision).pad(5).top().row();
-        screenTable2.add(msg).right().pad(20).center().expand();
+        screenTable2.add(msg).top().left().pad(20).expand();
 
         //screenTable2.add(confirmButton).pad(5).top().expand().row();
        // screenTable2.add(statusLabel).pad(20).center();
@@ -213,11 +218,29 @@ public class GUI implements Disposable {
         confirmButton.setVisible(true);
     }
 
+    private char[] timeStr = new char[8];
+
+    public String makeTimeString(){
+        int time = (int)world.playTime;
+        int hr = time / 3600;
+        int min = (time -3600*hr) / 60;
+        int sec = time - 60*min - 3600*hr;
+        timeStr[0] = (char) ('0'+ hr /10);
+        timeStr[1] = (char) ('0'+ hr %10);
+        timeStr[2] = ':';
+        timeStr[3] = (char) ('0'+ min /10);
+        timeStr[4] = (char) ('0'+ min %10);
+        timeStr[5] = ':';
+        timeStr[6] = (char) ('0'+ sec /10);
+        timeStr[7] = (char) ('0'+ sec %10);
+        return String.valueOf(timeStr);
+    }
+
     public void render(float deltaTime) {
 
-        depthLabel.setText("DEPTH: "+(128-(int)world.submarine.position.y));
-//        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
-        distanceLabel.setText("DISTANCE: "+ world.rockProximity);
+        depthLabel.setText("DEPTH: "+(1000+(128-(int)world.submarine.position.y)));
+        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
+        timeLabel.setText(makeTimeString());
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);

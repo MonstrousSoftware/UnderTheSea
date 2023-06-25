@@ -18,7 +18,7 @@ public class Chunks implements Disposable {
     private SceneManager sceneManager;
 
 
-    public Chunks( SceneManager sceneManager ) {
+    public Chunks() {
         this.sceneManager = sceneManager;
         noiseSettings = new NoiseSettings();
 
@@ -30,14 +30,34 @@ public class Chunks implements Disposable {
                 for (int z = -SIZE; z <= SIZE; z++) {
                     coordinate.set(x, y, z);
                     Chunk chunk = new Chunk("bla", coordinate, noiseSettings);
-                    chunk.buildVolume();
-                    chunk.buildMesh();
+//                    chunk.buildVolume();
+//                    chunk.buildMesh();
                     chunks.add(chunk);
-                    sceneManager.addScene(chunk.scene);
-                    //sceneManager.addScene(chunk.sceneWater);
                 }
             }
         }
+    }
+
+    // returns -1 when done
+    public int generate(){
+
+        for(int i= 0 ; i < chunks.size; i++){
+            Chunk chunk = chunks.get(i);
+            if(!chunk.hasVolume) {
+                chunk.buildVolume();
+                return i;
+            }
+            if(!chunk.hasMesh) {
+                chunk.buildMesh();
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void addScenes(SceneManager sceneManager){
+        for(Chunk chunk : chunks )
+            sceneManager.addScene(chunk.scene);
     }
 
     public void render(ModelBatch modelBatch, Environment environment) {

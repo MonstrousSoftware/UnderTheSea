@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 public class Settings {
 
     // lighting
-    static public float ambientLightLevel = 0.0f;
+    static public float ambientLightLevel = 0.2f;
     static public Color backgroundColour = new Color(0.4f, 0.9f, 0.9f, 1f);
 
     static public float titleScreenTime = 2f;

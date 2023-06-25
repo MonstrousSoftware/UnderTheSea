@@ -8,6 +8,7 @@ import com.monstrous.underthesea.entities.BananaMan;
 import com.monstrous.underthesea.entities.Canister;
 import com.monstrous.underthesea.entities.Submarine;
 import com.monstrous.underthesea.gui.GUI;
+import com.monstrous.underthesea.screens.Main;
 import com.monstrous.underthesea.terrain.Chunks;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 
@@ -24,27 +25,35 @@ public class World implements Disposable {
     public int capsuleCount;
     private GUI gui;
     public float timer;
+    public float playTime;
     private int radioMessagesShown = 0;
     public boolean bananaManTaken = false;
     public boolean gameComplete = false;
     private Sounds sounds;
-    private ModelInstance waterInstance;
+    //private ModelInstance waterInstance;
     private float [][] capsulePositions = { { -22, 73, 50 }  ,{ 37, 57, 67 }, { 69, 69, 64 }, { 36, 51, -48 } };
     public int rockProximity;
 
 
-    public World( Assets assets, SceneManager sceneManager,  SubController subController, Camera cam ) {
+    public World(Main game, Assets assets, SceneManager sceneManager, SubController subController, Camera cam ) {
         this.sceneManager = sceneManager;
         this.subController = subController;
 
         sounds = new Sounds(assets);
 
-        rebuild();
+        chunks = game.chunks;
+        if(chunks == null) {
+            chunks = new Chunks();
+            game.chunks = chunks;
+        }
+        chunks.addScenes(sceneManager);
+
         submarine = new Submarine(assets, sceneManager, 0,75,-30);
         //submarine = new Submarine(assets, sceneManager, 36,51,-43);
         capsuleCount = 0;
         canister = new Canister(assets, sceneManager, capsulePositions[capsuleCount][0],capsulePositions[capsuleCount][1],capsulePositions[capsuleCount][2]);
         timer = 10f;
+        playTime = 0;
 
         bananaMan = new BananaMan(assets, sceneManager, 58, 53, -22);
 
@@ -66,29 +75,12 @@ public class World implements Disposable {
         return submarine.getPosition();
     }
 
-    public void rebuild() {
-        if(chunks != null)
-            chunks.dispose();
-        chunks = new Chunks(sceneManager);
-
-    }
+    public void rebuild() {}
 
     public void update( float deltaTime ){
         timer -= Math.min(deltaTime, 0.1f);
-
-//        if(Gdx.input.isKeyPressed(Input.Keys.I)) {
-//            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z+1);
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.M)) {
-//            bananaMan.setPosition(bananaMan.position.x, bananaMan.position.y, bananaMan.position.z-1);
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.J)) {
-//            bananaMan.setPosition(bananaMan.position.x-1, bananaMan.position.y, bananaMan.position.z);
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.K)) {
-//            bananaMan.setPosition(bananaMan.position.x+1, bananaMan.position.y, bananaMan.position.z);
-//        }
-//        Gdx.app.error("banana", "at "+bananaMan.position.toString());
+        if(!gameComplete)
+            playTime += Math.min(deltaTime, 0.1f);
 
 
         subController.update(deltaTime);
@@ -101,13 +93,13 @@ public class World implements Disposable {
         if(!Settings.collisionCheat) {
             //if (rockProximity <= Submarine.RADIUS) {
             if (chunks.collides(submarine.getTipPosition())) {
-                if(submarine.inCollision()) // ?
+                if(!submarine.inCollision())
                     Sounds.playSound(Sounds.CRASH);
                 submarine.collide();
             }
             if (chunks.collides(submarine.getTailPosition())) {
             //if(chunks.distanceToRock(submarine.getAftPosition()) <= Submarine.RADIUS) {
-                if(submarine.inCollision())
+                if(!submarine.inCollision())
                     Sounds.playSound(Sounds.CRASH);
                 submarine.rearCollide();
            }
@@ -180,7 +172,7 @@ public class World implements Disposable {
     public void dispose() {
         Sounds.stopSound(Sounds.SONAR_PING);
 
-        chunks.dispose();
+        //chunks.dispose(); to be disposed in Main
         if(particleEffects != null)
             particleEffects.dispose();
         sounds.dispose();
