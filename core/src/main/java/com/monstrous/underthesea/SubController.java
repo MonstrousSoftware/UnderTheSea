@@ -13,7 +13,7 @@ public class SubController extends InputAdapter {
 
 
     public float diveAngle = 0;
-    public float steerAngle = 0;
+    public float steerAngle = 0;            // negative to steer left
     public float power = 50f;
 
     private boolean leftPressed;
@@ -38,10 +38,10 @@ public class SubController extends InputAdapter {
         if(backwardPressed && diveAngle < MAX_DIVE_ANGLE)
             diveAngle += deltaTime * 4f;
 
-        if(leftPressed && steerAngle < MAX_STEER_ANGLE)
-            steerAngle += deltaTime * 20f;
-        if(rightPressed && steerAngle> -MAX_STEER_ANGLE)
+        if(leftPressed && steerAngle > -MAX_STEER_ANGLE)
             steerAngle -= deltaTime * 20f;
+        if(rightPressed && steerAngle < MAX_STEER_ANGLE)
+            steerAngle += deltaTime * 20f;
 
         if(upPressed && power < MAX_POWER)
             power += deltaTime* 40f;

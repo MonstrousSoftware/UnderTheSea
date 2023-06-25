@@ -91,7 +91,7 @@ public class Submarine {
 
         if(!inCollision()) {
             // sub reacts with some lag on the inputs to give some inertia
-            heading += subController.steerAngle * deltaTime;
+            heading += -subController.steerAngle * deltaTime;
             diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
             targetVelocity.set(0,0,screwSpeed/50f);
@@ -99,7 +99,10 @@ public class Submarine {
             targetVelocity.rotate(Vector3.Y, heading);
 
             // actual movement velocity lags on target velocity
-            velocity.slerp(targetVelocity, deltaTime);
+            if(velocity.dot(targetVelocity) < 0)
+                velocity.lerp(targetVelocity, deltaTime);
+            else
+                velocity.slerp(targetVelocity, deltaTime);
 
             step.set(velocity).scl(deltaTime);          // x = v * dt
             position.add(step);
@@ -119,7 +122,7 @@ public class Submarine {
         sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         sceneRudder.modelInstance.transform.idt().translate(0,0,-1.6f);
-        sceneRudder.modelInstance.transform.rotate(Vector3.Y, -subController.steerAngle);
+        sceneRudder.modelInstance.transform.rotate(Vector3.Y, subController.steerAngle);
         sceneRudder.modelInstance.transform.translate(0,0,1.6f);
         sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
