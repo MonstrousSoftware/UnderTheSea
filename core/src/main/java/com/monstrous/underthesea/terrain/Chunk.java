@@ -26,9 +26,7 @@ public class Chunk implements Disposable {
     public boolean hasMesh;                 // has mesh been generated yet?
     private Model model;
     public ModelInstance modelInstance;
-    //public ModelInstance modelInstanceWater;
     public Scene scene;
-    //public Scene sceneWater;
     private VolumeMap volume;
     private DistanceField distanceField;
     private NoiseSettings settings;
@@ -88,21 +86,6 @@ public class Chunk implements Disposable {
         material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
         Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
         material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
-
-//        ModelBuilder modelBuilder = new ModelBuilder();
-//        //modelBuilder.begin();
-//        Material mat = new Material(ColorAttribute.createDiffuse(Color.WHITE));
-//        Model modelWater = modelBuilder.createRect(0, 0, 0, CHUNK_WIDTH, 0, 0,
-//            CHUNK_WIDTH, 0, CHUNK_WIDTH,  0, 0, CHUNK_WIDTH,
-//            0,-1,0,
-//            GL20.GL_TRIANGLES, mat,
-//            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
-//       // Model model = modelBuilder.end();
-//        modelInstanceWater =  new ModelInstance(modelWater);
-//        pos.y = 80f;
-//        modelInstanceWater.transform.setTranslation(pos);
-//        pos.y = 0;
-//        sceneWater = new Scene(modelInstanceWater);
 
         hasMesh = true;
         volume.needsRemesh = false;
