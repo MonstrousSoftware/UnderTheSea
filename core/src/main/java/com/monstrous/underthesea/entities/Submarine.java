@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.monstrous.underthesea.Assets;
+import com.monstrous.underthesea.Sounds;
 import com.monstrous.underthesea.SubController;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
@@ -130,13 +131,19 @@ public class Submarine {
     }
 
     public void collide() {
-        collided = true;
-        velocity.set(0,0,0);
+        if(!collided) {
+            Sounds.playSound(Sounds.CRASH);
+            collided = true;
+            velocity.set(0, 0, 0);
+        }
     }
 
     public void rearCollide() {
-        rearCollided = true;
-        velocity.set(0,0,0);
+        if(!rearCollided) {
+            Sounds.playSound(Sounds.CRASH);
+            rearCollided = true;
+            velocity.set(0, 0, 0);
+        }
     }
 
     public Vector3 getPosition() {

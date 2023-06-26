@@ -14,7 +14,6 @@ import net.mgsx.gltf.scene3d.attributes.PBRColorAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.scene.Scene;
-import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
 
@@ -23,7 +22,6 @@ public class Chunk implements Disposable {
     public static final int CHUNK_WIDTH = 31;    // in block units
     public static final int CHUNK_HEIGHT = 127;
 
-    public String key;                      // unique identifier for this chunk
     public int cx, cy, cz;                  // chunk coordinate
     public boolean hasVolume;               // has volume been generated yet?
     public boolean hasMesh;                 // has mesh been generated yet?
@@ -40,8 +38,7 @@ public class Chunk implements Disposable {
     public DTriMeshData triMeshData;
 
 
-    public Chunk(String key, GridPoint3 coordinates, NoiseSettings settings) {
-        this.key = key;
+    public Chunk(GridPoint3 coordinates, NoiseSettings settings) {
         this.cx = coordinates.x;
         this.cy = coordinates.y;
         this.cz = coordinates.z;

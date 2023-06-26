@@ -14,12 +14,10 @@ import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
 import com.monstrous.underthesea.terrain.Chunk;
 import com.monstrous.underthesea.terrain.Chunks;
-import com.monstrous.underthesea.terrain.MarchingCubes;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
-import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
@@ -61,7 +59,7 @@ public class GameScreen extends ScreenAdapter {
         cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(0, 20, 20);
         cam.lookAt(0, 0, 0);
-        cam.far = Chunks.SIZE * Chunk.CHUNK_WIDTH * 2;          // TMP
+        cam.far = Chunks.SIZE * Chunk.CHUNK_WIDTH;
         cam.near = 1f;
         cam.update();
         sceneManager.setCamera(cam);
@@ -70,11 +68,9 @@ public class GameScreen extends ScreenAdapter {
         gui = new GUI(world);
         world.setGUI(gui);
 
-        //inputController = new PlayerController(world.getPlayer().transform);
 
         // add camera controller
         camController = new CamController(cam);
-
 
         // input multiplexer
         InputMultiplexer im = new InputMultiplexer();
@@ -137,8 +133,6 @@ public class GameScreen extends ScreenAdapter {
 
         camController.update( world.getFocus() );
         world.update(delta);
-        gui.setCollision( world.submarine.inCollision() );
-
 
         sceneManager.update(delta);
         sceneManager.renderShadows();

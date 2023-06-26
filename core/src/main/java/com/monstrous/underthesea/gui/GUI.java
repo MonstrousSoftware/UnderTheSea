@@ -1,8 +1,6 @@
 package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -204,7 +202,7 @@ public class GUI implements Disposable {
     }
 
 
-    public void setCollision( boolean value ){
+    private void setCollision( boolean value ){
         collision.setVisible(value);
     }
 
@@ -239,8 +237,9 @@ public class GUI implements Disposable {
     public void render(float deltaTime) {
 
         depthLabel.setText("DEPTH: "+(1000+(128-(int)world.submarine.position.y)));
-        distanceLabel.setText("DISTANCE: "+ (int)world.capsuleDistance);
+        distanceLabel.setText("DISTANCE: "+ (int)world.canisterDistance);
         timeLabel.setText(makeTimeString());
+        setCollision( world.submarine.inCollision() );
 
         sliderRudder.setValue(world.subController.steerAngle);
         sliderDive.setValue(world.subController.diveAngle);
