@@ -65,7 +65,7 @@ public class GameScreen extends ScreenAdapter {
         sceneManager.setCamera(cam);
 
         world = new World(game, game.assets, sceneManager, subController, cam);
-        gui = new GUI(world);
+        gui = new GUI(game.assets, world);
         world.setGUI(gui);
 
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -25,6 +26,7 @@ public class Assets implements Disposable {
         assets.load("models/AnthroBanana.gltf", SceneAsset.class);
 
         assets.load("blue-pixel-skin/blue-pixel.json", Skin.class);
+        assets.load("Particle Park UI Skin/Particle Park UI.json", Skin.class);
 
         assets.load("sounds/sonar-ping.wav", Sound.class);
         assets.load("sounds/crash.mp3", Sound.class);
@@ -33,6 +35,8 @@ public class Assets implements Disposable {
         assets.load("sounds/crowd-cheer-ii-6263.mp3", Sound.class);
         assets.load("sounds/click-for-game-menu.mp3", Sound.class);
         assets.load("sounds/morse-code.mp3", Sound.class);
+
+        assets.load("images/generating.png", Texture.class);
 
 
         //        assets.load(Settings.gameMusic, Music.class);

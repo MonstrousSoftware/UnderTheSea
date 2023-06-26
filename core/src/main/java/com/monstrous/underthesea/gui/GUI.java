@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.SubController;
 import com.monstrous.underthesea.World;
 import com.monstrous.underthesea.screens.Main;
@@ -36,10 +37,10 @@ public class GUI implements Disposable {
     public boolean exitButtonPressed;
     private Dialog exitDialog;
 
-    public GUI( World world) {
+    public GUI(Assets assets, World world) {
         Gdx.app.log("GUI constructor", "");
         this.world = world;
-        skin = new Skin(Gdx.files.internal("Particle Park UI Skin/Particle Park UI.json"));
+        skin = assets.get("Particle Park UI Skin/Particle Park UI.json");
         stage = new Stage(new ScreenViewport());
 
         settingsWindow = new SettingsWindow("Settings", skin, world);

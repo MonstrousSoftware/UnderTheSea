@@ -1,27 +1,33 @@
 package com.monstrous.underthesea.screens;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.terrain.Chunks;
 
-// this screen is called before the game screen and immediately calls the game screen
-// this in case the game screen takes time to load, then at least there is something on screen
+// This screen is called before the game screen
+// It does the chunk generation because this takes time.
+// It shows a progress bar.
+// The chunks are under Main so that we don't need to regenerate if the user flips back to the menu screen and game screen.
 
 
 public class PreGameScreen extends ScreenAdapter {
 
-    private SpriteBatch batch;
     private Main game;
-    private Texture texture;
-    private float timer;
     private Chunks chunks;
-    private BitmapFont font;
-    private String status;
+    private Stage stage;
+    private Skin skin;
+    private ProgressBar progressBar;
+    private Texture texture;
 
 
     public PreGameScreen(Main game) {
@@ -30,14 +36,23 @@ public class PreGameScreen extends ScreenAdapter {
 
     @Override
     public  void show() {
+        skin = game.assets.get("Particle Park UI Skin/Particle Park UI.json");
+        stage = new Stage(new ScreenViewport());
 
-        Gdx.app.debug("PreGameScreen", "show()");
-        batch = new SpriteBatch();
-        texture = new Texture( Gdx.files.internal("images/generating.png"));
-        font = new BitmapFont();
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        font.getData().setScale(2);
-        timer = 0.5f;
+        progressBar = new ProgressBar(0, 48, 1, false, skin);
+        progressBar.setSize(300, 50);
+        progressBar.setValue(5);
+
+        texture =  game.assets.get("images/generating.png");
+        Image generating = new Image( new TextureRegion(texture));
+
+        Table screenTable = new Table();
+        screenTable.setFillParent(true);
+        screenTable.add(generating).row();
+        screenTable.add(progressBar).top().pad(50);
+        screenTable.pack();
+
+        stage.addActor(screenTable);
 
         chunks = game.chunks;
         if(chunks == null) {
@@ -48,46 +63,34 @@ public class PreGameScreen extends ScreenAdapter {
 
     @Override
     public  void hide() {
-        Gdx.app.debug("PreGameScreen", "hide()");
         dispose();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.debug("PreGameScreen", "dispose()");
-        batch.dispose();
         texture.dispose();
+        stage.dispose();
     }
 
     @Override
     public void render( float deltaTime )
     {
         int n = chunks.generate();
-        Gdx.app.log("Generating:", "chunk: "+n+"//48");
-
-
-        timer -= deltaTime;
         if(n < 0 ) {
             game.setScreen(new GameScreen(game));   // load game screen automatically
             return;
         }
+        progressBar.setValue(n);
 
-        status = ""+n+"/48";
-        float x = (Gdx.graphics.getWidth()-texture.getWidth())/2f;
-
-        // put loading texture centred on a black background
         ScreenUtils.clear(Color.BLACK);
-        batch.begin();
-        batch.draw(texture, x,(Gdx.graphics.getHeight()-texture.getHeight())/2f);
-        font.draw(batch, status, x, (Gdx.graphics.getHeight()-texture.getHeight())/4f);
-        batch.end();
+
+        stage.act(deltaTime);
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
-        Gdx.app.debug("PreGameScreen", "resize("+width+", "+height+")");
-        batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+        stage.getViewport().update(width, height, true);
     }
 
 }
