@@ -68,8 +68,8 @@ public class World implements Disposable {
         chunks.addScenes(sceneManager);
         chunks.addGeoms(dworld, space);
 
-        //submarine = new Submarine(assets, sceneManager, 0,75,-30);
-        submarine = new Submarine(assets, sceneManager, 10,75,10);  // todo
+        submarine = new Submarine(assets, sceneManager, 0,75,-30);
+        //submarine = new Submarine(assets, sceneManager, 10,75,10);  // todo
         subBody = OdeHelper.createBody(dworld);
         massInfo.setBox (1, 1, 1, 1);
         massInfo.adjust (1);    // mass

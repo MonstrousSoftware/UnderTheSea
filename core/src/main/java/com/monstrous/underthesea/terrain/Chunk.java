@@ -84,10 +84,8 @@ public class Chunk implements Disposable {
             verts[3 * i + 1] = v.y;
             verts[3 * i + 2] = v.z;
         }
-        for(int i = 0 ; i < ni; i+=3) {     // we know how marching cubes create indices, so we can just reproduce
-            indices[i] = i+1;               // 1, 0, 2,     4, 3, 5,    7, 6, 8
-            indices[i+1] = i;
-            indices[i+2] = i+2;
+        for(int i = 0 ; i < ni; i++) {
+            indices[i] = shortIndices[i];
         }
 
         triMeshData = OdeHelper.createTriMeshData();
@@ -116,6 +114,7 @@ public class Chunk implements Disposable {
         material.set(metallic = new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
         material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
         Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
+        img.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
 
         hasMesh = true;

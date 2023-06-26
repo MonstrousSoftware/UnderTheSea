@@ -59,7 +59,7 @@ public class GameScreen extends ScreenAdapter {
         cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(0, 20, 20);
         cam.lookAt(0, 0, 0);
-        cam.far = Chunks.SIZE * Chunk.CHUNK_WIDTH;
+        cam.far = Chunks.SIZE * Chunk.CHUNK_WIDTH * 2;  // TMP
         cam.near = 1f;
         cam.update();
         sceneManager.setCamera(cam);

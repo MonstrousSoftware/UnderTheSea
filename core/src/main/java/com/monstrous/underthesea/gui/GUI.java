@@ -261,7 +261,7 @@ public class GUI implements Disposable {
     public void dispose () {
         Gdx.app.log("GUI dispose()", "");
         stage.dispose();
-        skin.dispose();
+
     }
 
 }

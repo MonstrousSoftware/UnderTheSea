@@ -64,7 +64,6 @@ public class Chunks implements Disposable {
     public void addGeoms(DWorld dworld, DSpace space){
         for(Chunk chunk : chunks ) {
 
-
                 DBody body = OdeHelper.createBody(dworld);
                 massInfo.setBox(1, 1, 1, 1);
                 massInfo.adjust(1);    // mass

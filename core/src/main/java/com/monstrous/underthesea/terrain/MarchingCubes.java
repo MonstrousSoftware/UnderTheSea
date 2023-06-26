@@ -1,5 +1,6 @@
 package com.monstrous.underthesea.terrain;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -9,7 +10,13 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import text.formic.Stringf;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 // very basic voxel cube meshing, no greedy meshing etc.
@@ -92,24 +99,34 @@ public class MarchingCubes {
     private Vector3 nor = new Vector3();
 
     protected static final MeshPartBuilder.VertexInfo vertTmp0 = new MeshPartBuilder.VertexInfo();
-    protected static final MeshPartBuilder.VertexInfo vertTmp1 = new MeshPartBuilder.VertexInfo();
-    protected static final MeshPartBuilder.VertexInfo vertTmp2 = new MeshPartBuilder.VertexInfo();
-    private int chunkResolution;
-    private int chunkHeight;
+//    protected static final MeshPartBuilder.VertexInfo vertTmp1 = new MeshPartBuilder.VertexInfo();
+//    protected static final MeshPartBuilder.VertexInfo vertTmp2 = new MeshPartBuilder.VertexInfo();
+
     private VolumeMap volumeMap;
     public static boolean wireframeMode = false;
-
+    private Array<Vector3> vertices;
+    private Array<Vector3> normals;     // normal per vertex
+    private Vector3 du = new Vector3();
+    private Vector3 dv = new Vector3();
+    private Vector3 nv = new Vector3();
+    private Map<String, Integer> vertexMap;
+    private Array<Integer> indices;
+    private Array<Vector2> uv;
 
     public Model build(VolumeMap volumeMap, int chunkResolution, int chunkHeight, Color color) {
         this.volumeMap = volumeMap;
-        this.chunkResolution = chunkResolution;
-        this.chunkHeight = chunkHeight;
+
         Material mat = new Material(ColorAttribute.createDiffuse(color));
 
        int primitive = GL20.GL_TRIANGLES;
        if(wireframeMode)
             primitive = GL20.GL_LINES;
 
+        vertices = new Array<>();
+        indices = new Array<>();
+        normals = new Array<>();
+        vertexMap = new HashMap<>();
+        uv = new Array<>();
 
 
         // create model
@@ -129,7 +146,11 @@ public class MarchingCubes {
                 }
             }
         }
+        calcNormals();
+        deDupe();
+        makeMesh();
         Model model = modelBuilder.end();
+        //Gdx.app.log("made mesh", "verts: "+ model.meshes.first().getNumVertices()+ "indices: "+ model.meshes.first().getNumIndices());
         return model;
     }
 
@@ -139,14 +160,90 @@ public class MarchingCubes {
         int code = classifyCube(x, y, z);
         int [] triangulation = triangulationTable[code];
         for(int i = 0; i < triangulation.length; i += 3){
-            setVertex( x, y, z, vertTmp0, triangulation[i] );
-            setVertex( x, y, z, vertTmp1, triangulation[i+1] );
-            setVertex( x, y, z, vertTmp2, triangulation[i+2] );
-            makeTriangle( vertTmp0, vertTmp1, vertTmp2);
+            setVertex( x, y, z,  triangulation[i] );
+            setVertex( x, y, z,  triangulation[i+1] );
+            setVertex( x, y, z,  triangulation[i+2] );
         }
     }
 
-    private void setVertex( int cx, int cy, int cz, MeshPartBuilder.VertexInfo vertInfo, int edgeIndex ) {
+
+    private void calcNormals() {
+        for(int i = 0; i < vertices.size; i+=3){
+            // calculate normal vector from triangle
+            Vector3 v1, v2, v3;
+            v1 = vertices.get(i);
+            v2 = vertices.get(i+1);
+            v3 = vertices.get(i+2);
+            du.set(v2).sub(v1).nor();
+            dv.set(v3).sub(v1).nor();
+            nor.set(dv).crs(du).nor();
+            normals.add(new Vector3(nor));
+            normals.add(new Vector3(nor));
+            normals.add(new Vector3(nor));
+        }
+    }
+
+    // merge vertices at the same position and create an index array
+    // this gives an almost factor 10 reduction
+    //
+    private void deDupe() {
+        Array<Vector3> newVerts = new Array<>();
+        Array<Vector3> newNormals = new Array<>();
+        Array<Vector2> newUV = new Array<>();
+        indices.clear();
+        int index = 0;
+        for(int i = 0; i < vertices.size; i++){
+            Vector3 v1 = vertices.get(i);
+            String key = "" + (int)(v1.x*100) + ","+(int)(v1.y*100) +","+(int)(v1.z*100);
+            //String key = String.format("%.2f,%.2f,%.2f", v1.x,v1.y, v1.z);
+            Integer ix = vertexMap.get(key);
+            if(ix == null)  {   // new vertex
+                newVerts.add(v1);
+                newNormals.add(normals.get(i));
+                newUV.add(uv.get(i));
+                vertexMap.put(key, index);
+                indices.add(index);
+                index++;
+            }else {
+                indices.add(ix);    // index to earlier vertex
+                newNormals.get(ix).add(normals.get(i));
+            }
+        }
+        //Gdx.app.log("dedupe", "from: "+ vertices.size+ "to: "+ vertexMap.size()+ "index:"+index);
+        vertices.clear();
+        vertices.addAll(newVerts);
+        for(int i = 0; i < newNormals.size; i++)        // renormalize the normals
+            newNormals.get(i).nor();
+        normals.clear();
+        normals.addAll(newNormals);
+        uv.clear();
+        uv.addAll(newUV);
+        //Gdx.app.log("dedupe", "new: "+ vertices.size+ "indices: "+ indices.size);
+//
+    }
+
+
+    private void makeMesh() {
+
+        meshBuilder.ensureVertices(vertices.size);
+        for(int i = 0; i < vertices.size; i++) {
+            Vector3 pos = vertices.get(i);
+            vertTmp0.setPos(pos);
+            vertTmp0.setNor(normals.get(i));
+            //vertTmp0.setUV(  uv.get(i) );
+            vertTmp0.setUV(pos.x, pos.z);
+            meshBuilder.vertex(vertTmp0);
+        }
+        meshBuilder.ensureIndices(indices.size);
+        for(int i = 0; i < indices.size; i+=3) {
+            // reorder for the winding order
+            meshBuilder.index((short) (int)indices.get(i+1));
+            meshBuilder.index((short) (int)indices.get(i));
+            meshBuilder.index((short) (int)indices.get(i+2));
+        }
+    }
+
+    private void setVertex( int cx, int cy, int cz,  int edgeIndex ) {
         int v0 = edges[edgeIndex][0];
         int v1 = edges[edgeIndex][1];
 
@@ -161,13 +258,15 @@ public class MarchingCubes {
         char val1 = volumeMap.data[cy+y2][cx+x2][cz+z2];
         float a = (isoThreshold - val0)/(float)(val1 - val0);
 
-        //float a = 0.5f;
         float yf = MathUtils.lerp(y, y2, a);
         float xf = MathUtils.lerp(x, x2, a);
         float zf = MathUtils.lerp(z, z2, a);
 
-        vertInfo.setPos(cx+xf, cy+yf, cz+zf);
-        vertInfo.setUV(xf, zf);
+        vertices.add(new Vector3(cx+xf, cy+yf, cz+zf));
+        indices.add( indices.size );    // debug
+        uv.add( new Vector2(xf, zf) );
+//        vertInfo.setPos(cx+xf, cy+yf, cz+zf);
+//        vertInfo.setUV(xf, zf);
     }
 
 
@@ -202,38 +301,23 @@ public class MarchingCubes {
 
 
 
-    private Vector3 du = new Vector3();
-    private Vector3 dv = new Vector3();
-    private Vector3 nv = new Vector3();
 
-    private void makeTriangle( MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2, MeshPartBuilder.VertexInfo v3 ){
-        meshBuilder.ensureVertices(3);
 
-        // calculate normal vector from triangle
-        du.set(v2.position).sub(v1.position).nor();
-        dv.set(v3.position).sub(v1.position).nor();
-        nor.set(dv).crs(du).nor();
-
-        v1.setNor(nor);
-        v2.setNor(nor);
-        v3.setNor(nor);
-
-        final short i1 = meshBuilder.vertex(v1);
-        final short i2 = meshBuilder.vertex(v2);
-        final short i3 = meshBuilder.vertex(v3);
-
-        meshBuilder.ensureTriangleIndices(1);
-        meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
-
-        if(wireframeMode) {
-            meshBuilder.ensureVertices(2);
-            v1.position.add(v2.position).add(v3.position).scl(0.333f);
-            final short c = meshBuilder.vertex(v1);
-            v2.position.set(v1.position).add(nor);
-            final short n = meshBuilder.vertex(v2);
-            meshBuilder.line(c, n);
-        }
-    }
+//    private void makeTriangle( int i1, int i2, int i3, MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2, MeshPartBuilder.VertexInfo v3 ){
+//        meshBuilder.ensureVertices(3);
+//
+////        v1.setNor(nor);
+////        v2.setNor(nor);
+////        v3.setNor(nor);
+//
+//        final short i1 = meshBuilder.vertex(v1);
+//        final short i2 = meshBuilder.vertex(v2);
+//        final short i3 = meshBuilder.vertex(v3);
+//
+//        meshBuilder.ensureTriangleIndices(1);
+//        meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
+//
+//    }
 
 
 }
