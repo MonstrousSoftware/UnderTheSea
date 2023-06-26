@@ -78,7 +78,13 @@ public class Submarine {
         return collided || rearCollided;
     }
 
+    public void jolt( Vector3 collisionNormal ){
+        position.add(collisionNormal);
+        velocity.set(collisionNormal);
+    }
+
     public void update( float deltaTime, SubController subController ){
+
 
         if(collided && subController.power < 0)
             collided = false;
@@ -128,23 +134,18 @@ public class Submarine {
         sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         light.setPosition(getLightPosition());
+
     }
 
     public void collide() {
+
         if(!collided) {
             Sounds.playSound(Sounds.CRASH);
             collided = true;
-            velocity.set(0, 0, 0);
+            velocity.scl(-1);
         }
     }
 
-    public void rearCollide() {
-        if(!rearCollided) {
-            Sounds.playSound(Sounds.CRASH);
-            rearCollided = true;
-            velocity.set(0, 0, 0);
-        }
-    }
 
     public Vector3 getPosition() {
         return position;
@@ -156,16 +157,6 @@ public class Submarine {
         return tip;
     }
 
-    public Vector3 getForwardPosition() {
-        fwd.set(0,0, 1.5f);     // centre of the front half sphere
-        fwd.mul(sceneSub.modelInstance.transform);
-        return fwd;
-    }
-    public Vector3 getAftPosition() {
-        aft.set(0,0, -1.5f);     //
-        aft.mul(sceneSub.modelInstance.transform);
-        return aft;
-    }
 
     private Vector3 lightPos = new Vector3();
 

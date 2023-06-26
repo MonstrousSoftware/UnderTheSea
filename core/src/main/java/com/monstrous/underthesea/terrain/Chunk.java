@@ -29,7 +29,6 @@ public class Chunk implements Disposable {
     public ModelInstance modelInstance;
     public Scene scene;
     private VolumeMap volume;
-//    private DistanceField distanceField;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
     private PBRColorAttribute baseColor;
@@ -56,12 +55,6 @@ public class Chunk implements Disposable {
         // create volume using noise generator
         volume = makeVolume3d(settings, cx, cy, cz);
 
-//        distanceField = new DistanceField(volume, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
-//        distanceField.save(cx, cy, cz);
-//
-//        distanceField = new DistanceField(null, CHUNK_WIDTH+1, CHUNK_HEIGHT+1, CHUNK_WIDTH+1);
-//        distanceField.load(cx, cy, cz);
-
         hasVolume = true;
         hasMesh = false;
     }
@@ -70,7 +63,7 @@ public class Chunk implements Disposable {
     public void buildTriMesh() {
 
         Vector3 v = new Vector3();
-        Vector3 offset = new Vector3(cx*CHUNK_WIDTH,cy*CHUNK_HEIGHT, cz*CHUNK_WIDTH);
+        //Vector3 offset = new Vector3(cx*CHUNK_WIDTH,cy*CHUNK_HEIGHT, cz*CHUNK_WIDTH);
         Mesh mesh = model.meshes.first();
         int nv = mesh.getNumVertices();
         int stride = mesh.getVertexSize() / 4;  // size of vertex in number of floats
@@ -78,13 +71,15 @@ public class Chunk implements Disposable {
         mesh.getVertices(vertices);
 
         int ni = mesh.getNumIndices();
+        short [] shortIndices = new short[ni];
+        mesh.getIndices(shortIndices);
 
         float[] verts = new float[3*nv];        // vertex data with only positions (3 floats/vertex), no UV, normals etc.
         int[] indices = new int[ni];            // integers instead of shorts
 
         for(int i = 0 ; i < nv; i++) {
             v.set(vertices[i * stride], vertices[i * stride + 1], vertices[i * stride + 2]);
-            v.add(offset);
+            //v.add(offset);
             verts[3 * i] = v.x;
             verts[3 * i + 1] = v.y;
             verts[3 * i + 2] = v.z;
@@ -103,6 +98,11 @@ public class Chunk implements Disposable {
     public void buildMesh() {
 
         Color color = Color.OLIVE;
+//        if(Math.abs(cx)%2 == 0 || Math.abs(cz)%2 == 0)
+//            color = Color.GREEN;
+//        if(cx == 0 && cz == 0)
+//            color = Color.RED;
+
 
         model = mcubes.build(volume, CHUNK_WIDTH, CHUNK_HEIGHT, color);
 
@@ -112,7 +112,7 @@ public class Chunk implements Disposable {
         modelInstance.transform.setTranslation(pos);
         scene = new Scene(modelInstance);
         Material material = modelInstance.materials.first();
-        material.set(baseColor = new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, Color.OLIVE));
+        material.set(baseColor = new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, color));
         material.set(metallic = new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
         material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
         Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
@@ -142,24 +142,6 @@ public class Chunk implements Disposable {
         return new VolumeMap(map);
     }
 
-//    //public int distanceToRock( GridPoint3 point ){
-//        return distanceField.getDistance(point.x,point.y,point.z);
-//    }
-
-
-    public boolean collides( Vector3 point ){
-        char [][][] data = volume.data;
-
-        int x = (int)(point.x - cx * CHUNK_WIDTH);
-        int z = (int)(point.z - cz * CHUNK_WIDTH);
-        int y = (int)(point.y - cy * CHUNK_HEIGHT);
-
-        if( x < 0 || y < 0 || z < 0)
-            Gdx.app.error("Negative index", "");
-
-        char density = data[y][x][z];
-        return density > MarchingCubes.isoThreshold;
-    }
 
     @Override
     public void dispose() {

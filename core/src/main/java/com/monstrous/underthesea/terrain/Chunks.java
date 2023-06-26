@@ -1,22 +1,27 @@
 package com.monstrous.underthesea.terrain;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.GridPoint3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.monstrous.underthesea.World;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.*;
 
 public class Chunks implements Disposable {
 
     public static int SIZE = 3;
 
     private Array<Chunk> chunks;
+    private DMass massInfo;
+
 
     public Chunks() {
         NoiseSettings noiseSettings = new NoiseSettings();
+
+        massInfo = OdeHelper.createMass();
 
         chunks = new Array<>();
         GridPoint3 coordinate = new GridPoint3();
@@ -29,6 +34,8 @@ public class Chunks implements Disposable {
                 chunks.add(chunk);
             }
         }
+
+
     }
 
     // generate a bit at a time in order not to block the rendering thread.  Call repeatedly until it returns -1.
@@ -54,25 +61,24 @@ public class Chunks implements Disposable {
             sceneManager.addScene(chunk.scene);
     }
 
-    public void addGeoms(DSpace space){
-        //for(Chunk chunk : chunks )        // todo
-        Chunk chunk = chunks.first();
-            OdeHelper.createTriMesh(space, chunk.triMeshData, null, null, null);
-    }
-
-// TO DELETE
-    public boolean collides( Vector3 point ){
-        int cx = (int)Math.floor(point.x / Chunk.CHUNK_WIDTH);
-        int cz = (int)Math.floor(point.z / Chunk.CHUNK_WIDTH);
-        int cy = (int)Math.floor(point.y / Chunk.CHUNK_HEIGHT);
-
-        // todo could be sped up with some lookup map
+    public void addGeoms(DWorld dworld, DSpace space){
         for(Chunk chunk : chunks ) {
-            if(chunk.cx == cx && chunk.cz == cz && chunk.cy == cy) {
-                return chunk.collides(point);
-            }
+
+
+                DBody body = OdeHelper.createBody(dworld);
+                massInfo.setBox(1, 1, 1, 1);
+                massInfo.adjust(1);    // mass
+                body.setMass(massInfo);
+                body.setPosition(Chunk.CHUNK_WIDTH *chunk.cx, Chunk.CHUNK_HEIGHT*chunk.cy, Chunk.CHUNK_WIDTH *chunk.cz);
+
+                DTriMesh triMesh = OdeHelper.createTriMesh(space, chunk.triMeshData, null, null, null);
+                triMesh.setBody(body);
+                triMesh.setCategoryBits(World.CAT_TERRAIN);
+                triMesh.setCollideBits(World.CAT_SUBMARINE);
+
+
+
         }
-        return false;
     }
 
     @Override

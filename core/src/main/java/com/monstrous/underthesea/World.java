@@ -14,7 +14,12 @@ import com.monstrous.underthesea.terrain.Chunks;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 import org.ode4j.ode.*;
 
+import static org.ode4j.ode.OdeConstants.*;
+
 public class World implements Disposable {
+
+    public static int CAT_TERRAIN = 1;
+    public static int CAT_SUBMARINE = 2;
 
     private Chunks chunks;
     private SceneManager sceneManager;
@@ -43,7 +48,7 @@ public class World implements Disposable {
 
         OdeHelper.initODE2(0);
         dworld = OdeHelper.createWorld();
-        space = OdeHelper.createSapSpace( null, DSapSpace.AXES.XZY );//change?? todo
+        space = OdeHelper.createSapSpace( null, DSapSpace.AXES.XYZ );//change?? todo
         massInfo = OdeHelper.createMass();
         contactgroup = OdeHelper.createJointGroup();
 
@@ -61,9 +66,10 @@ public class World implements Disposable {
 
         chunks = game.chunks;           // created in PreGameScreen
         chunks.addScenes(sceneManager);
-        chunks.addGeoms(space);
+        chunks.addGeoms(dworld, space);
 
-        submarine = new Submarine(assets, sceneManager, 0,75,-30);
+        //submarine = new Submarine(assets, sceneManager, 0,75,-30);
+        submarine = new Submarine(assets, sceneManager, 10,75,10);  // todo
         subBody = OdeHelper.createBody(dworld);
         massInfo.setBox (1, 1, 1, 1);
         massInfo.adjust (1);    // mass
@@ -73,6 +79,8 @@ public class World implements Disposable {
 
         DCapsule subCapsule = OdeHelper.createCapsule(space, 1, 3);     // radius of caps, length without caps
         subCapsule.setBody(subBody);
+        subCapsule.setCategoryBits(CAT_SUBMARINE);
+        subCapsule.setCollideBits(CAT_TERRAIN);
 
         canisterCount = 0;
         canister = new Canister(assets, sceneManager, canisterPositions[canisterCount][0], canisterPositions[canisterCount][1], canisterPositions[canisterCount][2]);
@@ -120,20 +128,6 @@ public class World implements Disposable {
         subController.update(deltaTime);
 
         submarine.update(deltaTime, subController);
-
-        //rockProximity = chunks.distanceToRock(submarine.getForwardPosition());
-
-        // very basic N point collision
-        if(!Settings.collisionCheat) {
-            //if (rockProximity <= Submarine.RADIUS) {
-            if (chunks.collides(submarine.getTipPosition())) {
-                submarine.collide();
-            }
-            if (chunks.collides(submarine.getTailPosition())) {
-            //if(chunks.distanceToRock(submarine.getAftPosition()) <= Submarine.RADIUS) {
-                submarine.rearCollide();
-           }
-        }
 
         if(gameComplete) {
             canisterDistance = 0;    // for the GUI
@@ -217,12 +211,13 @@ public class World implements Disposable {
         }
     };
 
+
+
     private void nearCallback (Object data, DGeom o1, DGeom o2) {
         final int N = 4;
         DContactBuffer contacts = new DContactBuffer(N);
         int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
         if (n > 0) {
-            Gdx.app.log("collide", "");
             submarine.collide();
         }
     }
