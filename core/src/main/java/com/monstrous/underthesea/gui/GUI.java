@@ -20,6 +20,8 @@ import com.monstrous.underthesea.screens.MenuScreen;
 
 public class GUI implements Disposable {
 
+    static private final String TEXT_STYLE = "window";  // depends on skin
+
     private Skin skin;
     public Stage stage;
     private SettingsWindow settingsWindow;
@@ -57,11 +59,11 @@ public class GUI implements Disposable {
         collision = new Image( new Texture("images/collision.png"));
 
 
-        depthLabel = new Label("Status", skin, "window");
-        distanceLabel = new Label("Status", skin, "window");
-        timeLabel = new Label("Status", skin, "window");
+        depthLabel = new Label("Status", skin, TEXT_STYLE);
+        distanceLabel = new Label("Status", skin, TEXT_STYLE);
+        timeLabel = new Label("Status", skin, TEXT_STYLE);
 
-        message = new Label("TEST", skin, "window");
+        message = new Label("TEST", skin, TEXT_STYLE);
         message.setVisible(false);
 
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/b_exit.png")))));
@@ -109,7 +111,7 @@ public class GUI implements Disposable {
 
         Table t2 = new Table();
         t2.add(stackDive);
-        t2.add(new Label("I\nN\nC\nL\nI\nN\nE", skin)).pad(4);
+        t2.add(new Label(" I\nN\nC\nL\n I\nN\nE", skin)).pad(4);
         t2.pack();
 
 
@@ -164,7 +166,7 @@ public class GUI implements Disposable {
         msg.pack();
 
 
-        labelF11 = new Label("Press F11 for full-screen", skin, "window");
+        labelF11 = new Label("Press F11 for full-screen", skin, TEXT_STYLE);
 
         Table screenTable2 = new Table();
         screenTable2.setFillParent(true);

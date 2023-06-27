@@ -135,7 +135,7 @@ public class World implements Disposable {
         else {
             canisterDistance = canister.getDistance(submarine.position);
             if (canisterDistance < Canister.PICKUP_DISTANCE) {                      // close enough to pick up?
-                gui.setMessage(Settings.capsuleMessages[canisterCount]);        // show the message from the canister
+                String msg = Settings.capsuleMessages[canisterCount];               // message from the canister
                 if (canisterCount < Settings.numberOfCapsules - 1) {
                     canisterCount++;
                     positionCapsule();
@@ -148,7 +148,9 @@ public class World implements Disposable {
                     }
                     gameComplete = true;
                     canister.setPosition(0, -999, 0);     // hide canister
+                    msg = msg + "\n\nYOUR TIME: "+gui.makeTimeString();             // append time taken
                 }
+                gui.setMessage(msg);        // show the message from the canister
             }
         }
 
