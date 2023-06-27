@@ -31,7 +31,7 @@ import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 // screen to showcase the hero model
 
-public class MenuScreen extends ScreenAdapter {
+public class MenuScreen extends StdScreenAdapter {
 
     private final Main game;
     private SceneManager sceneManager;
@@ -48,6 +48,7 @@ public class MenuScreen extends ScreenAdapter {
     private boolean banana;
     private Vector3 cameraOffset;
     private Sound click;
+    //private boolean isWindowed = true;
 
     public MenuScreen(Main game, boolean banana) {
 
@@ -203,6 +204,8 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void render( float deltaTime ) {
+        super.render(deltaTime);
+
         // on key press go to game screen
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             banana = true;

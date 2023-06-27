@@ -20,7 +20,7 @@ import com.monstrous.underthesea.terrain.Chunks;
 // The chunks are under Main so that we don't need to regenerate if the user flips back to the menu screen and game screen.
 
 
-public class PreGameScreen extends ScreenAdapter {
+public class PreGameScreen extends StdScreenAdapter {
 
     private Main game;
     private Chunks chunks;
@@ -75,6 +75,8 @@ public class PreGameScreen extends ScreenAdapter {
     @Override
     public void render( float deltaTime )
     {
+        super.render(deltaTime);
+
         int n = chunks.generate();
         if(n < 0 ) {
             game.setScreen(new GameScreen(game));   // load game screen automatically

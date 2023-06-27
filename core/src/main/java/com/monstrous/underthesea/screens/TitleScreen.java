@@ -14,7 +14,7 @@ import com.monstrous.underthesea.Settings;
 // note this screen does not rely on Assets being loaded.
 // keeps the image in the screen regardless of resize and aspect ratio (may have letterbox bars where needed)
 //
-public class TitleScreen extends ScreenAdapter {
+public class TitleScreen extends StdScreenAdapter {
 
     private Main game;
     private SpriteBatch batch;
@@ -44,6 +44,7 @@ public class TitleScreen extends ScreenAdapter {
 
     @Override
     public void render(float deltaTime) {
+        super.render(deltaTime);
 
         game.assets.update();   // load assets asynchronously in the meantime
 

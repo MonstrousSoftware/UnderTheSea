@@ -36,6 +36,8 @@ public class GUI implements Disposable {
     private TextButton confirmButton;
     public boolean exitButtonPressed;
     private Dialog exitDialog;
+    private float elapsedTime = 0;
+    private Label labelF11;
 
     public GUI(Assets assets, World world) {
         Gdx.app.log("GUI constructor", "");
@@ -162,10 +164,12 @@ public class GUI implements Disposable {
         msg.pack();
 
 
+        labelF11 = new Label("Press F11 for full-screen", skin, "window");
+
         Table screenTable2 = new Table();
         screenTable2.setFillParent(true);
 
-
+        screenTable2.add(labelF11).pad(3).top().row();
         screenTable2.add(collision).pad(5).top().row();
         screenTable2.add(msg).top().left().pad(20).expand();
 
@@ -236,6 +240,9 @@ public class GUI implements Disposable {
     }
 
     public void render(float deltaTime) {
+        elapsedTime += deltaTime;
+        if(elapsedTime > 3 || Gdx.graphics.isFullscreen())
+            labelF11.setText("");
 
         depthLabel.setText("DEPTH: "+(1000+(128-(int)world.submarine.position.y)));
         distanceLabel.setText("DISTANCE: "+ (int)world.canisterDistance);

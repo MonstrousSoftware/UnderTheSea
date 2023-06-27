@@ -21,7 +21,7 @@ import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
-public class GameScreen extends ScreenAdapter {
+public class GameScreen extends StdScreenAdapter {
 
     private static final int SHADOW_MAP_SIZE = 2048;
 
@@ -125,6 +125,8 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        super.render(delta);
+
         time += delta;
 
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || gui.exitButtonPressed){

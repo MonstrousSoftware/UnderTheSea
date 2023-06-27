@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class LoadScreen extends ScreenAdapter {
+public class LoadScreen extends StdScreenAdapter {
 
     private Main game;
 
@@ -35,6 +35,7 @@ public class LoadScreen extends ScreenAdapter {
 
     @Override
     public void render(float deltaTime) {
+        super.render(deltaTime);
 
         // load assets asynchronously
         if(game.assets.update()) {

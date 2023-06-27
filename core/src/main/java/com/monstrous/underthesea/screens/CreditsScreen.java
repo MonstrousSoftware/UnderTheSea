@@ -2,6 +2,7 @@ package com.monstrous.underthesea.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.screens.Main;
 import com.monstrous.underthesea.screens.MenuScreen;
 
-public class CreditsScreen implements Screen {
+public class CreditsScreen extends StdScreenAdapter {
 
     static public int TEXT_WIDTH = 400;
     static public int BUTTON_WIDTH = 200;
@@ -101,6 +102,7 @@ public class CreditsScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        super.render(delta);
         stage.act(delta);
         stage.draw();
     }
@@ -111,15 +113,6 @@ public class CreditsScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
-    @Override
-    public void pause() {
-        Gdx.app.debug("CreditsScreen", "pause()");
-    }
-
-    @Override
-    public void resume() {
-        Gdx.app.debug("CreditsScreen", "resume()");
-    }
 
     @Override
     public void hide() {

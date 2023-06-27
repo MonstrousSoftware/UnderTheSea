@@ -2,6 +2,7 @@ package com.monstrous.underthesea.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -20,7 +21,7 @@ import com.monstrous.underthesea.screens.Main;
 import com.monstrous.underthesea.screens.MenuScreen;
 
 
-public class InstructionsScreen implements Screen {
+public class InstructionsScreen extends StdScreenAdapter {
 
     static int NUM_PAGES = 2;
     static public int TEXT_WIDTH = 400;
@@ -145,6 +146,7 @@ public class InstructionsScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        super.render(delta);
         stage.act(delta);
         stage.draw();
     }
