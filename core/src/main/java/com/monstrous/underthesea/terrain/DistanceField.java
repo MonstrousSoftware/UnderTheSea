@@ -3,6 +3,8 @@ package com.monstrous.underthesea.terrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+// OBSOLETE
+
 public class DistanceField {
     private byte distance[][][];     // distance to rock face, 0 is rock
     private int h, w, d;

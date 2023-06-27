@@ -1,9 +1,8 @@
 package com.monstrous.underthesea.terrain;
 
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.math.GridPoint3;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.monstrous.underthesea.World;
@@ -15,13 +14,11 @@ public class Chunks implements Disposable {
     public static int SIZE = 3;
 
     private Array<Chunk> chunks;
-    private DMass massInfo;
-
 
     public Chunks() {
         NoiseSettings noiseSettings = new NoiseSettings();
 
-        massInfo = OdeHelper.createMass();
+        //massInfo = OdeHelper.createMass();
 
         chunks = new Array<>();
         GridPoint3 coordinate = new GridPoint3();
@@ -65,18 +62,13 @@ public class Chunks implements Disposable {
         for(Chunk chunk : chunks ) {
 
                 DBody body = OdeHelper.createBody(dworld);
-                massInfo.setBox(1, 1, 1, 1);
-                massInfo.adjust(1);    // mass
-                body.setMass(massInfo);
                 body.setPosition(Chunk.CHUNK_WIDTH *chunk.cx, Chunk.CHUNK_HEIGHT*chunk.cy, Chunk.CHUNK_WIDTH *chunk.cz);
+                body.setKinematic();    // static body with infinite mass
 
                 DTriMesh triMesh = OdeHelper.createTriMesh(space, chunk.triMeshData, null, null, null);
                 triMesh.setBody(body);
                 triMesh.setCategoryBits(World.CAT_TERRAIN);
                 triMesh.setCollideBits(World.CAT_SUBMARINE);
-
-
-
         }
     }
 

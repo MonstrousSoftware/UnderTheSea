@@ -12,31 +12,26 @@ import com.monstrous.underthesea.SubController;
 import net.mgsx.gltf.scene3d.scene.Scene;
 import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
+import org.ode4j.math.DQuaternion;
+import org.ode4j.ode.DBody;
 
 public class Submarine {
 
-    public static final float RADIUS = 1;
-
     private SceneAsset sceneAsset;
-    private Scene sceneSub;
+    public Scene sceneSub;
     private Scene sceneScrew;
     private Scene sceneFins;
     private Scene sceneRudder;
     public  Vector3 position;
-    public  Vector3 targetVelocity;
-    public  Vector3 velocity;
-    private Vector3 step;
     private Vector3 tip;
-    private Vector3 fwd;
-    private Vector3 aft;
     private Vector3 tail;
     private float screwSpeed;     // -100 to 100
     private float screwAngle;
     private float heading;
     private float diveAngle;
     private boolean collided = false;
-    private boolean rearCollided = false;
     private PointLight light;           // should be a spotlight but these are not well-supported
+
 
     public Submarine(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
 
@@ -56,16 +51,13 @@ public class Submarine {
         sceneManager.addScene(sceneRudder);
 
         position = new Vector3(x, y, z);
-        targetVelocity = new Vector3(0, 0, 1);
-        velocity = new Vector3(0, 0, 1);
+
         tip = new Vector3();
         tail = new Vector3();
-        fwd = new Vector3();
-        aft = new Vector3();
+
         heading = 0;
         diveAngle = 0;
 
-        step = new Vector3();
 
         light = new PointLight();
 
@@ -75,56 +67,31 @@ public class Submarine {
 
 
     public boolean inCollision() {
-        return collided || rearCollided;
+        return collided;
     }
 
-    public void jolt( Vector3 collisionNormal ){
-        position.add(collisionNormal);
-        velocity.set(collisionNormal);
-    }
-
-    public void update( float deltaTime, SubController subController ){
-
-
-        if(collided && subController.power < 0)
-            collided = false;
-
-        if(rearCollided && subController.power > 0)
-            rearCollided = false;
+    public void update(DBody subBody, float deltaTime, SubController subController ){
 
         screwSpeed = subController.power;
         screwAngle +=  4*screwSpeed*deltaTime;
 
 
-        if(!inCollision()) {
-            // sub reacts with some lag on the inputs to give some inertia
-            heading += -subController.steerAngle * deltaTime;
-            diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
+        // sub reacts with some lag on the inputs to give some inertia
+        heading += -subController.steerAngle * deltaTime;
+        diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
 
-            targetVelocity.set(0,0,screwSpeed/50f);
-            targetVelocity.rotate(Vector3.X, -diveAngle);
-            targetVelocity.rotate(Vector3.Y, heading);
+        float FORCE = 0.1f;
+        subBody.addRelForce(0,0, FORCE*subController.power);
+        subBody.setLinearDamping(0.9f);
 
-            // actual movement velocity lags on target velocity
-            if(velocity.dot(targetVelocity) < 0)
-                velocity.lerp(targetVelocity, deltaTime);
-            else
-                velocity.slerp(targetVelocity, deltaTime);
-
-            step.set(velocity).scl(deltaTime);          // x = v * dt
-            position.add(step);
-        }
-
-
-        sceneSub.modelInstance.transform.setToRotation(Vector3.Y, heading);
-        sceneSub.modelInstance.transform.rotate(Vector3.X, -2*diveAngle);
-        sceneSub.modelInstance.transform.setTranslation(position);
+        DQuaternion qc = DQuaternion.fromEuler(Math.toRadians(-subController.diveAngle),  Math.toRadians(heading), 0 );  // roll, pitch, yaw
+        subBody.setQuaternion(qc);
 
         sceneScrew.modelInstance.transform.setToRotation(Vector3.Z, screwAngle);
         sceneScrew.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         sceneFins.modelInstance.transform.idt().translate(0,0,-1f);
-        sceneFins.modelInstance.transform.rotate(Vector3.X, 4*subController.diveAngle);
+        sceneFins.modelInstance.transform.rotate(Vector3.X, subController.diveAngle);
         sceneFins.modelInstance.transform.translate(0,0,1f);
         sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
@@ -134,20 +101,77 @@ public class Submarine {
         sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         light.setPosition(getLightPosition());
-
     }
 
-    public void collide() {
+    // without ODE physics
+//    public void updateOriginal( float deltaTime, SubController subController ){
+//
+//
+//        if(collided && subController.power < 0)
+//            collided = false;
+//
+//        if(rearCollided && subController.power > 0)
+//            rearCollided = false;
+//
+//        screwSpeed = subController.power;
+//        screwAngle +=  4*screwSpeed*deltaTime;
+//
+//
+//        if(!inCollision()) {
+//            // sub reacts with some lag on the inputs to give some inertia
+//            heading += -subController.steerAngle * deltaTime;
+//            diveAngle = MathUtils.lerp(diveAngle, subController.diveAngle, deltaTime);
+//
+//            targetVelocity.set(0,0,screwSpeed/50f);
+//            targetVelocity.rotate(Vector3.X, -diveAngle);
+//            targetVelocity.rotate(Vector3.Y, heading);
+//
+//            // actual movement velocity lags on target velocity
+//            if(velocity.dot(targetVelocity) < 0)
+//                velocity.lerp(targetVelocity, deltaTime);
+//            else
+//                velocity.slerp(targetVelocity, deltaTime);
+//
+//            step.set(velocity).scl(deltaTime);          // x = v * dt
+//            position.add(step);
+//        }
+//
+//
+//        sceneSub.modelInstance.transform.setToRotation(Vector3.Y, heading);
+//        sceneSub.modelInstance.transform.rotate(Vector3.X, -2*diveAngle);
+//        sceneSub.modelInstance.transform.setTranslation(position);
+//
+//        sceneScrew.modelInstance.transform.setToRotation(Vector3.Z, screwAngle);
+//        sceneScrew.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+//
+//        sceneFins.modelInstance.transform.idt().translate(0,0,-1f);
+//        sceneFins.modelInstance.transform.rotate(Vector3.X, 4*subController.diveAngle);
+//        sceneFins.modelInstance.transform.translate(0,0,1f);
+//        sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+//
+//        sceneRudder.modelInstance.transform.idt().translate(0,0,-1.6f);
+//        sceneRudder.modelInstance.transform.rotate(Vector3.Y, subController.steerAngle);
+//        sceneRudder.modelInstance.transform.translate(0,0,1.6f);
+//        sceneRudder.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
+//
+//        light.setPosition(getLightPosition());
+//    }
 
+    public void collide() {
         if(!collided) {
             Sounds.playSound(Sounds.CRASH);
             collided = true;
-            velocity.scl(-1);
         }
+    }
+
+    public void uncollide() {
+        collided = false;
     }
 
 
     public Vector3 getPosition() {
+        position.set(0,0,0);
+        position.mul(sceneSub.modelInstance.transform);
         return position;
     }
 
@@ -167,7 +191,7 @@ public class Submarine {
     }
 
     public Vector3 getTailPosition() {
-        tail.set(0,0, -2.5f);     // tail of the model, used for collision test
+        tail.set(0,0, -2.5f);     // tail of the model, used for bubbles particles
         tail.mul(sceneSub.modelInstance.transform);
         return tail;
     }

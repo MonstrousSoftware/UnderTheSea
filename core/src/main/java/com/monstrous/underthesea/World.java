@@ -3,6 +3,7 @@ package com.monstrous.underthesea;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.monstrous.underthesea.entities.BananaMan;
@@ -11,7 +12,9 @@ import com.monstrous.underthesea.entities.Submarine;
 import com.monstrous.underthesea.gui.GUI;
 import com.monstrous.underthesea.screens.Main;
 import com.monstrous.underthesea.terrain.Chunks;
+import com.monstrous.underthesea.utils.Ode2GdxMathUtils;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 
 import static org.ode4j.ode.OdeConstants.*;
@@ -43,21 +46,21 @@ public class World implements Disposable {
     private DMass massInfo;
     private DJointGroup contactgroup;
     private DBody subBody;
+    private DCapsule subCapsule;
 
     public World(Main game, Assets assets, SceneManager sceneManager, SubController subController, Camera cam ) {
 
         OdeHelper.initODE2(0);
         dworld = OdeHelper.createWorld();
-        space = OdeHelper.createSapSpace( null, DSapSpace.AXES.XYZ );//change?? todo
+        space = OdeHelper.createSapSpace( null, DSapSpace.AXES.XYZ );
         massInfo = OdeHelper.createMass();
         contactgroup = OdeHelper.createJointGroup();
 
 
-        dworld.setGravity (0,0,0);
+        dworld.setGravity (0,0,0);      // no gravity
         dworld.setCFM (1e-5);
         dworld.setERP (0.8);
         dworld.setQuickStepNumIterations (20);
-
 
         this.sceneManager = sceneManager;
         this.subController = subController;
@@ -69,15 +72,14 @@ public class World implements Disposable {
         chunks.addGeoms(dworld, space);
 
         submarine = new Submarine(assets, sceneManager, 0,75,-30);
-        //submarine = new Submarine(assets, sceneManager, 10,75,10);  // todo
         subBody = OdeHelper.createBody(dworld);
-        massInfo.setBox (1, 1, 1, 1);
+        massInfo.setCapsule (1, 3, 1, 3);   // capsule in z direction
         massInfo.adjust (1);    // mass
         subBody.setMass(massInfo);
         Vector3 pos = submarine.getPosition();
-        subBody.setPosition(pos.x, pos.y, pos.z); //0, 75, -30);
+        subBody.setPosition(pos.x, pos.y, pos.z);
 
-        DCapsule subCapsule = OdeHelper.createCapsule(space, 1, 3);     // radius of caps, length without caps
+        subCapsule = OdeHelper.createCapsule(space, 1, 3);     // radius of caps, length without caps
         subCapsule.setBody(subBody);
         subCapsule.setCategoryBits(CAT_SUBMARINE);
         subCapsule.setCollideBits(CAT_TERRAIN);
@@ -109,12 +111,20 @@ public class World implements Disposable {
     public void rebuild() {}
 
     public void updatePhysics(){
-        Vector3 pos = submarine.getPosition();
-        subBody.setPosition(pos.x, pos.y, pos.z);
+
         space.collide (null,nearCallback);
         dworld.quickStep (0.05);
         contactgroup.empty ();
 
+
+        ModelInstance instance = submarine.sceneSub.modelInstance;
+        DVector3C position  = subCapsule.getPosition();
+        float x = (float)position.get0();
+        float y = (float)position.get1();
+        float z = (float)position.get2();
+        Quaternion q = Ode2GdxMathUtils.getGdxQuaternion(subCapsule.getQuaternion());
+        instance.transform.set(q);
+        instance.transform.setTranslation(x, y, z);
     }
 
 
@@ -127,10 +137,10 @@ public class World implements Disposable {
 
         subController.update(deltaTime);
 
-        submarine.update(deltaTime, subController);
+        submarine.update(subBody, deltaTime, subController);
 
         if(gameComplete) {
-            canisterDistance = 0;    // for the GUI
+            canisterDistance = 0;    // for the GUI to stop reporting distance
         }
         else {
             canisterDistance = canister.getDistance(submarine.position);
@@ -166,7 +176,7 @@ public class World implements Disposable {
             gui.setMessage(Settings.radioMessages[radioMessagesShown] );
             radioMessagesShown++;
             Sounds.playSound(Sounds.MORSE);
-            radioTimer = 9999999f;
+            radioTimer = 9999999f;      // effectively: disable timer
         }
 
         if(Settings.enableParticleEffects) {
@@ -181,8 +191,6 @@ public class World implements Disposable {
             radioTimer = 20; // start timer after first capsule is picked up
     }
 
-
-    private Vector3 tmpVec = new Vector3();
 
     public void render(ModelBatch modelBatch, Environment environment){
 
@@ -221,7 +229,21 @@ public class World implements Disposable {
         int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
         if (n > 0) {
             submarine.collide();
+            for (int i=0; i<n; i++) {
+                DContact contact = contacts.get(i);
+                contact.surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
+
+                contact.surface.mu = 20;
+                contact.surface.slip1 = 0.0;
+                contact.surface.slip2 = 0.0;
+                contact.surface.soft_erp = 0.8;
+                contact.surface.soft_cfm = 0.01;
+                DJoint c = OdeHelper.createContactJoint(dworld,contactgroup,contact);
+                c.attach (o1.getBody(), o2.getBody());
+            }
         }
+        else
+            submarine.uncollide();
     }
 
 }

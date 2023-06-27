@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-// very basic voxel cube meshing, no greedy meshing etc.
+//  marching cubes
 
 public class MarchingCubes {
 
@@ -99,8 +99,7 @@ public class MarchingCubes {
     private Vector3 nor = new Vector3();
 
     protected static final MeshPartBuilder.VertexInfo vertTmp0 = new MeshPartBuilder.VertexInfo();
-//    protected static final MeshPartBuilder.VertexInfo vertTmp1 = new MeshPartBuilder.VertexInfo();
-//    protected static final MeshPartBuilder.VertexInfo vertTmp2 = new MeshPartBuilder.VertexInfo();
+
 
     private VolumeMap volumeMap;
     public static boolean wireframeMode = false;
@@ -150,7 +149,6 @@ public class MarchingCubes {
         deDupe();
         makeMesh();
         Model model = modelBuilder.end();
-        //Gdx.app.log("made mesh", "verts: "+ model.meshes.first().getNumVertices()+ "indices: "+ model.meshes.first().getNumIndices());
         return model;
     }
 
@@ -209,7 +207,6 @@ public class MarchingCubes {
                 newNormals.get(ix).add(normals.get(i));
             }
         }
-        //Gdx.app.log("dedupe", "from: "+ vertices.size+ "to: "+ vertexMap.size()+ "index:"+index);
         vertices.clear();
         vertices.addAll(newVerts);
         for(int i = 0; i < newNormals.size; i++)        // renormalize the normals
@@ -218,8 +215,8 @@ public class MarchingCubes {
         normals.addAll(newNormals);
         uv.clear();
         uv.addAll(newUV);
-        //Gdx.app.log("dedupe", "new: "+ vertices.size+ "indices: "+ indices.size);
-//
+
+
     }
 
 
@@ -265,8 +262,6 @@ public class MarchingCubes {
         vertices.add(new Vector3(cx+xf, cy+yf, cz+zf));
         indices.add( indices.size );    // debug
         uv.add( new Vector2(xf, zf) );
-//        vertInfo.setPos(cx+xf, cy+yf, cz+zf);
-//        vertInfo.setUV(xf, zf);
     }
 
 
@@ -300,24 +295,6 @@ public class MarchingCubes {
     }
 
 
-
-
-
-//    private void makeTriangle( int i1, int i2, int i3, MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2, MeshPartBuilder.VertexInfo v3 ){
-//        meshBuilder.ensureVertices(3);
-//
-////        v1.setNor(nor);
-////        v2.setNor(nor);
-////        v3.setNor(nor);
-//
-//        final short i1 = meshBuilder.vertex(v1);
-//        final short i2 = meshBuilder.vertex(v2);
-//        final short i3 = meshBuilder.vertex(v3);
-//
-//        meshBuilder.ensureTriangleIndices(1);
-//        meshBuilder.triangle(i2, i1, i3);         // make sure the winding goes the right way
-//
-//    }
 
 
 }
