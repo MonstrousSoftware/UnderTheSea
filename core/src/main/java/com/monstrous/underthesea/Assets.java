@@ -35,6 +35,7 @@ public class Assets implements Disposable {
         assets.load("sounds/crowd-cheer-ii-6263.mp3", Sound.class);
         assets.load("sounds/click-for-game-menu.mp3", Sound.class);
         assets.load("sounds/morse-code.mp3", Sound.class);
+        assets.load("sounds/health-pickup-6860.mp3", Sound.class);
 
         assets.load("images/generating.png", Texture.class);
 

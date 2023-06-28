@@ -16,6 +16,7 @@ public class Sounds implements Disposable  {
     public static int CHEER = 4;
     public static int MENU_CLICK = 5;
     public static int MORSE = 6;
+    public static int PICK_UP = 7;
 
     private static Array<Sound> sounds;
     private final Preferences preferences;
@@ -33,6 +34,8 @@ public class Sounds implements Disposable  {
         sounds.add( assets.get("sounds/crowd-cheer-ii-6263.mp3"));
         sounds.add( assets.get("sounds/click-for-game-menu.mp3"));
         sounds.add( assets.get("sounds/morse-code.mp3"));
+        sounds.add( assets.get("sounds/health-pickup-6860.mp3"));
+
 
         preferences = Gdx.app.getPreferences(Settings.preferencesName);
         soundVolume = preferences.getFloat("soundVolume", 1.0f);

@@ -149,10 +149,12 @@ public class World implements Disposable {
                 if (canisterCount < Settings.numberOfCapsules - 1) {
                     canisterCount++;
                     positionCapsule();
+                    Sounds.playSound(Sounds.PICK_UP);
 
                 } else {
                     // you win!
                     if (!gameComplete) {
+                        Sounds.playSound(Sounds.PICK_UP);
                         Sounds.playSound(Sounds.FANFARE);
                         Sounds.playSound(Sounds.CHEER);
                     }

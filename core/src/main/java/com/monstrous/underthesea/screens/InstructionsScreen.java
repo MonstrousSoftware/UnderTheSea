@@ -44,7 +44,6 @@ public class InstructionsScreen extends StdScreenAdapter {
         Gdx.app.debug("InstructionsScreen", "show()");
 
         skin = new Skin(Gdx.files.internal("blue-pixel-skin/blue-pixel.json"));
-        //skin = new Skin(Gdx.files.internal("sgx.skin/sgx-ui.json"));
         stage = new Stage(new ScreenViewport());
         rebuild();
         Gdx.input.setInputProcessor(stage);
