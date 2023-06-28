@@ -37,9 +37,6 @@ public class ParticleEffects implements Disposable {
 
         BillboardParticleBatch billboardParticleBatch = new BillboardParticleBatch();
 
-//        // create a point sprite batch and add it to the particle system
-//        PointSpriteParticleBatch  pointSpriteBatch = new PointSpriteParticleBatch(1000,  new ParticleShader.Config(ParticleShader.ParticleType.Point),
-//                                new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f), null );
         billboardParticleBatch.setCamera(cam);
         particleSystem.add(billboardParticleBatch);
 

@@ -34,9 +34,9 @@ public class SubController extends InputAdapter {
 
     public void update(float deltaTime) {
         if(forwardPressed && diveAngle > -MAX_DIVE_ANGLE)
-            diveAngle -= deltaTime * 4f;
+            diveAngle -= deltaTime * 20f;
         if(backwardPressed && diveAngle < MAX_DIVE_ANGLE)
-            diveAngle += deltaTime * 4f;
+            diveAngle += deltaTime * 20f;
 
         if(leftPressed && steerAngle > -MAX_STEER_ANGLE)
             steerAngle -= deltaTime * 20f;

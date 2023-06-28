@@ -22,17 +22,13 @@ public class Main extends Game {
         assets = new Assets();
         chunks = null;
 
-//        if(RELEASE_BUILD)
-//            Gdx.app.setLogLevel(Application.LOG_ERROR);
-//        else
+        if(RELEASE_BUILD)
+            Gdx.app.setLogLevel(Application.LOG_ERROR);
+        else
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         Gdx.app.log("OpenGL version", Gdx.gl.glGetString(Gdx.gl.GL_VERSION));
-
-//        if(Gdx.app.getType() == Application.ApplicationType.WebGL) {
-//            Settings.enableParticleEffects = false;
-//        }
 
 
         if(RELEASE_BUILD)
@@ -43,8 +39,6 @@ public class Main extends Game {
 
     // to be called (from LoadingScreen) when asset loading is complete
     public void postLoading() {
-//        musicManager = new MusicManager(assets);
-//        sounds = new Sounds(assets);
     }
 
     public void render() {
@@ -57,9 +51,6 @@ public class Main extends Game {
 
         super.dispose();    // calls screen.hide()
 
-//        musicManager.stopMusic();
-//        musicManager.dispose();
-//        sounds.dispose();
 
         Gdx.app.log("assets.dispose()", "");
         assets.dispose();

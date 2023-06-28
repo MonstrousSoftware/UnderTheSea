@@ -85,12 +85,12 @@ public class MarchingCubes {
 
 
     // vertices per edge, e.g. edge 0 connects vertex 0 and 1
-    public static final int edges[][] = {   {0, 1}, { 1, 2}, {2, 3}, {3, 0},
+    public static final int[][] edges = {   {0, 1}, { 1, 2}, {2, 3}, {3, 0},
                                             {4, 5}, {5, 6} , {6, 7}, {7, 4},
                                             {0, 4}, {1, 5}, {2, 6}, {3,7} };
 
     // note: y, x, z
-    public static final int vertexOffsets[][] = {   {0,0,1}, { 0,1,1}, { 0, 1, 0}, { 0, 0, 0 }, // vertices 0, 1, 2, 3
+    public static final int[][] vertexOffsets = {   {0,0,1}, { 0,1,1}, { 0, 1, 0}, { 0, 0, 0 }, // vertices 0, 1, 2, 3
                                                     {1,0,1}, { 1,1,1}, { 1, 1, 0}, { 1, 0, 0 } }; // vertices 4, 5, 6, 7
 
 

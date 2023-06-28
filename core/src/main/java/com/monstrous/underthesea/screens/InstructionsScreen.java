@@ -31,7 +31,7 @@ public class InstructionsScreen extends StdScreenAdapter {
     private Main game;
     private Stage stage;
     private Skin skin;
-    private String texts[];
+    private String[] texts;
     private int pageIndex = 0;
     private Sound click;
 

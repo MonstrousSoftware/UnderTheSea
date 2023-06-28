@@ -15,16 +15,14 @@ public class Canister {
 
     public static float PICKUP_DISTANCE = 4f;
 
-    private SceneManager sceneManager;
-    private SceneAsset sceneAsset;
     public Scene sceneCapsule;
     public Vector3 position;
     private PointLight light;
 
 
     public Canister(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
-        this.sceneManager = sceneManager;
-        sceneAsset = assets.get("models/submarine.gltf");
+
+        SceneAsset sceneAsset = assets.get("models/submarine.gltf");
         position = new Vector3();
 
         sceneCapsule = new Scene(sceneAsset.scene, "capsule");

@@ -50,16 +50,6 @@ public class SettingsWindow extends Window {
         add(cb).colspan(3).pad(5);
         row();
 
-//        Button reset = new TextButton("Reset", skin);
-//        reset.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                world.rebuild();
-//            }
-//        });
-//        add(reset).colspan(3).pad(5);
-//        row();
-
         pack();
 
     }

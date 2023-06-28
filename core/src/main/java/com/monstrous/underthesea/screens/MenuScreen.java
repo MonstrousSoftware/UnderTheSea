@@ -35,7 +35,6 @@ public class MenuScreen extends StdScreenAdapter {
 
     private final Main game;
     private SceneManager sceneManager;
-    private Scene scene;
     private PerspectiveCamera camera;
     private Cubemap diffuseCubemap;
     private Cubemap environmentCubemap;

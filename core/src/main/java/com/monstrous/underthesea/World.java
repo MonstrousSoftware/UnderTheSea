@@ -1,6 +1,5 @@
 package com.monstrous.underthesea;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.math.Quaternion;
@@ -25,7 +24,6 @@ public class World implements Disposable {
     public static int CAT_SUBMARINE = 2;
 
     private Chunks chunks;
-    private SceneManager sceneManager;
     public Submarine submarine;
     public Canister canister;
     private BananaMan bananaMan;
@@ -62,7 +60,6 @@ public class World implements Disposable {
         dworld.setERP (0.8);
         dworld.setQuickStepNumIterations (20);
 
-        this.sceneManager = sceneManager;
         this.subController = subController;
 
         sounds = new Sounds(assets);

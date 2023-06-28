@@ -37,7 +37,6 @@ public class GameScreen extends StdScreenAdapter {
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
     private Texture brdfLUT;
-    private DirectionalLightEx light;
     private SpriteBatch batch;
     private ShaderProgram shaderProgram;
     private FrameBuffer fbo = null;
@@ -86,7 +85,7 @@ public class GameScreen extends StdScreenAdapter {
         sceneManager.environment.set(new PBRFloatAttribute(PBRFloatAttribute.ShadowBias, 0.001f));
 
         // setup light
-        light = new net.mgsx.gltf.scene3d.lights.DirectionalShadowLight(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE).setViewport(100,100,5,400);
+        DirectionalLightEx light = new net.mgsx.gltf.scene3d.lights.DirectionalShadowLight(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE).setViewport(100,100,5,400);
 
         light.direction.set(1, -3, 1).nor();
         light.color.set(Color.WHITE);

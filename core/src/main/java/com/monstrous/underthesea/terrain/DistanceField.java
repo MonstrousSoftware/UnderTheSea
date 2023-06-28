@@ -6,7 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 // OBSOLETE
 
 public class DistanceField {
-    private byte distance[][][];     // distance to rock face, 0 is rock
+    private byte[][][] distance;     // distance to rock face, 0 is rock
     private int h, w, d;
 
     public DistanceField(VolumeMap volume, int w, int h, int d) {
@@ -44,9 +44,9 @@ public class DistanceField {
         } while (changed);
     }
 
-    private int dy[] = { 1, -1, 0, 0, 0, 0 };
-    private int dx[] = { 0, 0, 1, -1, 0, 0 };
-    private int dz[] = { 0, 0, 0, 0, 1, -1 };
+    private int[] dy = { 1, -1, 0, 0, 0, 0 };
+    private int[] dx = { 0, 0, 1, -1, 0, 0 };
+    private int[] dz = { 0, 0, 0, 0, 1, -1 };
 
 
     private boolean propagate(int x, int y, int z){
@@ -78,7 +78,7 @@ public class DistanceField {
         char cx = (char) ('m'+x);
         char cy = (char) ('m'+y);
         char cz = (char) ('m'+z);
-        return new String("fields/distance_"+cx+cy+cz+".bin");
+        return "fields/distance_"+cx+cy+cz+".bin";
 
     }
 

@@ -174,9 +174,6 @@ public class GUI implements Disposable {
         screenTable2.add(labelF11).pad(3).top().row();
         screenTable2.add(collision).pad(5).top().row();
         screenTable2.add(msg).top().left().pad(20).expand();
-
-        //screenTable2.add(confirmButton).pad(5).top().expand().row();
-       // screenTable2.add(statusLabel).pad(20).center();
         screenTable2.pack();
 
         stage.addActor(screenTable);
@@ -215,8 +212,6 @@ public class GUI implements Disposable {
 
     public void setMessage( String text ){
         message.setText(text);
-//        if(message.isVisible())
-//            return;
         message.setVisible(true);
 
         confirmButton.setDisabled(false);
@@ -243,7 +238,7 @@ public class GUI implements Disposable {
 
     public void render(float deltaTime) {
         elapsedTime += deltaTime;
-        if(elapsedTime > 3 || Gdx.graphics.isFullscreen())
+        if(elapsedTime > 7 || Gdx.graphics.isFullscreen())
             labelF11.setText("");
 
         depthLabel.setText("DEPTH: "+(1000+(128-(int)world.submarine.position.y)));

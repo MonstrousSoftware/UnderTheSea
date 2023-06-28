@@ -54,7 +54,7 @@ public class LoadScreen extends StdScreenAdapter {
 
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
-        font.draw(batch, "Loading...", width/2, height/8);
+        font.draw(batch, "Loading...", width/2f, height/8f);
         batch.end();
     }
 

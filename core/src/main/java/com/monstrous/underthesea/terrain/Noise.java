@@ -11,9 +11,9 @@ public class Noise {
     Vector2 d1 = new Vector2();
     Vector3 a3 = new Vector3();
     Vector3 d3 = new Vector3();
-    int permutation[];
+    int[] permutation;
 
-    final static int permutationInit[] = { 151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36,
+    final static int[] permutationInit = { 151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36,
             103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0,
             26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56,
             87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166,
@@ -29,7 +29,7 @@ public class Noise {
             157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205,
             93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180 };
 
-    static Vector3 gradients[] = {
+    static Vector3[] gradients = {
             new Vector3(1,1,0), new Vector3(-1,1,0),
             new Vector3(1,-1,0), new Vector3(-1,-1, 0),
             new Vector3(1,0,1), new Vector3(-1,0,1),
@@ -41,7 +41,7 @@ public class Noise {
             new Vector3(0,-1,1), new Vector3(0,-1,-1)
     };
 
-    static Vector2 gradients2d[] = {
+    static Vector2[] gradients2d = {
             new Vector2(1,1),
             new Vector2(-1,1),
             new Vector2(-1,-1),
@@ -90,25 +90,6 @@ public class Noise {
 
 
 
-//    private float dotDistanceGradient(int ix, int iy, float fx, float fy){
-//        randomGradient(ix, iy, a);
-//        d1.set(fx,fy);
-//        return a.dot(d1);
-//    }
-
-//    private float dotDistanceGradient(int hash, float fx, float fy){
-//        Vector2 grad = gradients2d[ hash & 3 ];
-//        d1.set(fx,fy);
-//        return grad.dot(d1);
-//    }
-//
-//    private float dotDistanceGradient(int hash, float fx, float fy, float fz){
-//        Vector3 grad = gradients[ permutation[hash] & 15 ];
-//        d3.set(fx, fy, fz);// distance to corner
-//        return grad.dot(d3);
-//
-//    }
-
     // optimization based on the very specific gradients defined
     private float dotDistanceGradientFast(int hash, float x, float y, float z){
         switch(hash & 15) {
@@ -132,30 +113,6 @@ public class Noise {
         return 0;   // never reached
     }
 
-
-//    public float PerlinNoise(float x, float y) {
-//        int ix = (int) Math.floor(x);
-//        int iy = (int) Math.floor(y);
-//        float fx = x-ix;
-//        float fy = y-iy;
-//        int X = ix & 255;
-//        int Y = iy & 255;
-//
-//        int A = permutation[permutation[X+1]+Y+1];
-//        int B = permutation[permutation[X]+Y+1];
-//        int C = permutation[permutation[X+1]+Y];
-//        int D = permutation[permutation[X]+Y];
-//
-//        float f1 = dotDistanceGradient(D, fx, fy);
-//        float f2 = dotDistanceGradient(C, fx-1, fy);
-//        float f3 = dotDistanceGradient(B, fx, fy-1);
-//        float f4 = dotDistanceGradient(A, fx-1, fy-1);
-//
-//        float u1 = smoothstep(f1, f2, fx);	// interpolate between top corners
-//        float u2 = smoothstep(f3, f4, fx);	// between bottom corners
-//        float res = smoothstep(u1, u2, fy); // between previous two points
-//        return res;
-//    }
 
     public float PerlinNoise3d(float x, float y, float z) {
         // integer part of coordinate
@@ -204,42 +161,6 @@ public class Noise {
         return res;
     }
 
-//    public float[][] generatePerlinMap (int width, int height, float xoffset, float yoffset, float PerlinScale) {
-//        float[][] noise = new float[width][height];
-//        float scale = PerlinScale/(float)(width);      // multiplier so that a row corresponds to the same nr of Perlin grid points regardless of LOD scale
-//
-//        for (int y = 0; y < height; y++) {
-//            for (int x = 0; x < width; x++) {
-//                noise[x][y] = PerlinNoise(xoffset+(float)x*scale, yoffset+(float)y*scale);
-//            }
-//        }
-//
-//        // normalize to [0-1]
-//        // use fixed values to avoid seams between chunks
-//        float min = 100f;
-//        float max =  -100f;
-//        for (int y = 0; y < height; y++) {
-//            for (int x = 0; x < width; x++) {
-//                if(noise[x][y] > max)
-//                    max = noise[x][y];
-//                if(noise[x][y] < min)
-//                    min = noise[x][y];
-//                //noise[x][y] = (noise[x][y]-min)/(max - min);
-//            }
-//        }
-////        min = -1f;
-////        max = 1f;
-//        for (int y = 0; y < height; y++) {
-//            for (int x = 0; x < width; x++) {
-//
-//                noise[x][y] = (noise[x][y]-min)/(max - min);
-//            }
-//        }
-//        return noise;
-//    }
-//
-
-
     public float noise(final float x, final float y, final float z, NoiseSettings settings) {
         float frequency = 1;
         float amplitude = 1.0f;
@@ -285,11 +206,7 @@ public class Noise {
         char[][][] volumeMap = new char[height][width][width];
         for (int y = 0; y < height; y++) {      // 0 at the bottom
 
-            // density varies with height so that the top is mostly air and the
-            // bottom is mostly solid.
-           // float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
-//            float targetDensity = 0.6f*(settings.yoffset + (height-y) *scaleY)/(settings.PerlinScale);          // tweak this
-            float targetDensity = 1f*(float)(chunkY + ((float)(height-y)/(float)(height)));
+            float targetDensity = (chunkY + ((float)(height-y)/(float)(height)));
 
 
             for (int x = 0; x < width; x++) {
@@ -303,11 +220,6 @@ public class Noise {
                     f = MathUtils.clamp(f, 0f, 1f);
 
                     char density = (char)(255*f);
-
-//                    density = 255;
-//                    if(y > 16)
-//                        density = 0;
-
                     volumeMap[y][x][z] = density;     // solid vs. air
                 }
             }

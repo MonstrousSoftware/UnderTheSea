@@ -84,14 +84,14 @@ public class Submarine {
         subBody.addRelForce(0,0, FORCE*subController.power);
         subBody.setLinearDamping(0.9f);
 
-        DQuaternion qc = DQuaternion.fromEuler(Math.toRadians(-subController.diveAngle),  Math.toRadians(heading), 0 );  // roll, pitch, yaw
+        DQuaternion qc = DQuaternion.fromEuler(Math.toRadians(-diveAngle),  Math.toRadians(heading), 0 );  // roll, pitch, yaw
         subBody.setQuaternion(qc);
 
         sceneScrew.modelInstance.transform.setToRotation(Vector3.Z, screwAngle);
         sceneScrew.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 
         sceneFins.modelInstance.transform.idt().translate(0,0,-1f);
-        sceneFins.modelInstance.transform.rotate(Vector3.X, subController.diveAngle);
+        sceneFins.modelInstance.transform.rotate(Vector3.X, diveAngle);
         sceneFins.modelInstance.transform.translate(0,0,1f);
         sceneFins.modelInstance.transform.mulLeft(sceneSub.modelInstance.transform);
 

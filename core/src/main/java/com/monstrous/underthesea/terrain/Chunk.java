@@ -31,9 +31,7 @@ public class Chunk implements Disposable {
     private VolumeMap volume;
     private NoiseSettings settings;
     private MarchingCubes mcubes;
-    private PBRColorAttribute baseColor;
-    private PBRFloatAttribute metallic;
-    private PBRFloatAttribute roughness;
+
     public DTriMeshData triMeshData;
 
 
@@ -110,15 +108,14 @@ public class Chunk implements Disposable {
         modelInstance.transform.setTranslation(pos);
         scene = new Scene(modelInstance);
         Material material = modelInstance.materials.first();
-        material.set(baseColor = new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, color));
-        material.set(metallic = new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
-        material.set(roughness = new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
+        material.set( new PBRColorAttribute(PBRColorAttribute.BaseColorFactor, color));
+        material.set( new PBRFloatAttribute(PBRFloatAttribute.Metallic, 0f));
+        material.set( new PBRFloatAttribute(PBRFloatAttribute.Roughness, 1.0f));
         Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
         img.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         material.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
 
         hasMesh = true;
-        volume.needsRemesh = false;
 
         buildTriMesh();
     }

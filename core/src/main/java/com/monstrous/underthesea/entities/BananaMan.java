@@ -11,7 +11,6 @@ public class BananaMan {
     public static float PICKUP_DISTANCE = 10f;
 
     private SceneManager sceneManager;
-    private SceneAsset sceneAsset;
     public Scene scene;
     public Vector3 position;
 
@@ -19,7 +18,7 @@ public class BananaMan {
     public BananaMan(Assets assets, SceneManager sceneManager, float x, float y, float z ) {
         this.sceneManager = sceneManager;
 
-        sceneAsset = assets.get("models/AnthroBanana.gltf");
+        SceneAsset sceneAsset = assets.get("models/AnthroBanana.gltf");
 
         scene = new Scene(sceneAsset.scene, "banana");
 
