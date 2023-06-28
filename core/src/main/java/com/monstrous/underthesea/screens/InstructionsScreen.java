@@ -56,13 +56,13 @@ public class InstructionsScreen extends StdScreenAdapter {
 
         texts[0] = "When radio communications are compromised, submarine command (SUBCOM) may resort to sending messages to submarines by dropping a canister in the ocean. " +
                 "It takes a skilled submariner to retrieve these canisters from the ocean floor\n\n" +
-                "Luckily you are the experienced commander of the nuclear submarine GX-25, nicknamed the Banana Man.\n\n" +
+                "Luckily you are the experienced commander of the nuclear submarine X-25, nicknamed the Banana Man.\n\n" +
                 "Your skills are about to be put to the test.";
 
         texts[1] = "Use the rudder (keys A, D) and the hydroplanes (keys W, S) to navigate.\n\n" +
-                "Use Q and E keys to control engine power.\n\n"+
+                "Use Q and E keys (or Up and Down arrow) to control engine power.\n\n"+
 				"You can also use the sliders on the gauges instead of the keyboard.\n\n"+
-                "Find a canister by monitoring the distance indication. Pick up a canister by moving very close to it.\n\n " +
+                "Locate a canister by monitoring the distance indicator. Pick up a canister by moving very close to it.\n\n " +
 				"In case of collision, reverse the engine power.\n\n"+
 				"Drag with the left mouse button to turn the camera. Scroll wheel to zoom.\n\n"+
                 "Press ESC to exit the game and return to menu.";
