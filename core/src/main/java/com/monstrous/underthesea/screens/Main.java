@@ -3,9 +3,13 @@ package com.monstrous.underthesea.screens;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.utils.Array;
 import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.Settings;
 import com.monstrous.underthesea.World;
+import com.monstrous.underthesea.leaderboard.GameJolt;
+import com.monstrous.underthesea.leaderboard.LeaderBoardEntry;
 import com.monstrous.underthesea.screens.GameScreen;
 import com.monstrous.underthesea.terrain.Chunks;
 
@@ -15,6 +19,10 @@ public class Main extends Game {
 
     public Assets assets;
     public Chunks chunks;         // to persist between restarts
+    public GameJolt gameJolt;
+    public String userName;
+    private Preferences preferences;
+    public Array<LeaderBoardEntry> leaderBoard;
 
     @Override
     public void create() {
@@ -30,6 +38,16 @@ public class Main extends Game {
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         Gdx.app.log("OpenGL version", Gdx.gl.glGetString(Gdx.gl.GL_VERSION));
 
+        preferences = Gdx.app.getPreferences(Settings.preferencesName);
+        userName = preferences.getString("username", "Anon");
+
+        leaderBoard = new Array<>();
+
+
+        if( Gdx.app.getType() != Application.ApplicationType.WebGL) {
+            gameJolt = new GameJolt();              // disabled because doesn't work on web (teavm) version
+            gameJolt.init(leaderBoard);
+        }
 
         if(RELEASE_BUILD)
             setScreen(new TitleScreen(this));
@@ -50,6 +68,10 @@ public class Main extends Game {
         Gdx.app.log("Main dispose()", "");
 
         super.dispose();    // calls screen.hide()
+
+        // save username for next time
+        preferences.putString("username", userName);   // save
+        preferences.flush();
 
 
         Gdx.app.log("assets.dispose()", "");

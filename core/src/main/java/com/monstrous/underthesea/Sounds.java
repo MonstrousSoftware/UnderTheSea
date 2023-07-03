@@ -70,6 +70,16 @@ public class Sounds implements Disposable  {
         soundVolume = vol;
     }
 
+    public void pause() {
+        for(Sound sound : sounds)
+            sound.pause();
+    }
+
+    public void resume() {
+        for(Sound sound : sounds)
+            sound.resume();
+    }
+
     @Override
     public void dispose() {
         for(Sound sound : sounds)

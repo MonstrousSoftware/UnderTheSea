@@ -1,5 +1,6 @@
 package com.monstrous.underthesea;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.math.Quaternion;
@@ -38,6 +39,7 @@ public class World implements Disposable {
     private int radioMessagesShown = 0;
     public boolean bananaManTaken = false;
     public boolean gameComplete = false;
+    public boolean scoreSavedToServer = false;
     private Sounds sounds;
     private DWorld dworld;
     private DSpace space;
@@ -45,6 +47,7 @@ public class World implements Disposable {
     private DJointGroup contactgroup;
     private DBody subBody;
     private DCapsule subCapsule;
+    private boolean paused = false;
 
     public World(Main game, Assets assets, SceneManager sceneManager, SubController subController, Camera cam ) {
 
@@ -126,6 +129,9 @@ public class World implements Disposable {
 
 
     public void update( float deltaTime ){
+        if(paused)
+            return;
+
         radioTimer -= Math.min(deltaTime, 0.1f);
         if(!gameComplete)
             playTime += Math.min(deltaTime, 0.1f);
@@ -157,7 +163,9 @@ public class World implements Disposable {
                     }
                     gameComplete = true;
                     canister.setPosition(0, -999, 0);     // hide canister
-                    msg = msg + "\n\nYOUR TIME: "+gui.makeTimeString();             // append time taken
+                    msg = msg + "\n\nYOUR TIME: "+getTimeString();             // append time taken
+
+                    gui.showLeaderBoard();  // show leader board and allow to add score
                 }
                 gui.setMessage(msg);        // show the message from the canister
             }
@@ -197,6 +205,20 @@ public class World implements Disposable {
             particleEffects.render(modelBatch);
     }
 
+
+    public void pause() {
+        Gdx.app.log("World pause()", "");
+        sounds.pause();
+        paused = true;
+    }
+
+
+    public void resume() {
+        Gdx.app.log("World resume()", "");
+        sounds.resume();
+        paused = false;
+    }
+
     @Override
     public void dispose() {
         Sounds.stopSound(Sounds.SONAR_PING);
@@ -210,6 +232,24 @@ public class World implements Disposable {
         space.destroy();
         dworld.destroy();
         OdeHelper.closeODE();
+    }
+
+    private char[] timeStr = new char[8];
+
+    public String getTimeString(){
+        int time = (int)playTime;
+        int hr = time / 3600;
+        int min = (time -3600*hr) / 60;
+        int sec = time - 60*min - 3600*hr;
+        timeStr[0] = (char) ('0'+ hr /10);
+        timeStr[1] = (char) ('0'+ hr %10);
+        timeStr[2] = ':';
+        timeStr[3] = (char) ('0'+ min /10);
+        timeStr[4] = (char) ('0'+ min %10);
+        timeStr[5] = ':';
+        timeStr[6] = (char) ('0'+ sec /10);
+        timeStr[7] = (char) ('0'+ sec %10);
+        return String.valueOf(timeStr);
     }
 
 

@@ -18,6 +18,7 @@ public class TeaVMBuilder {
         // You can switch this setting during development:
         teaBuildConfiguration.obfuscate = true;
 
+
         // Register any extra classpath assets here:
         // teaBuildConfiguration.additionalAssetsClasspathFiles.add("com/monstrous/underthesea/asset.extension");
 

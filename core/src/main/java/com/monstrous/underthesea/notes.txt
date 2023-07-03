@@ -1,11 +1,9 @@
-HTML versions struggle with loading particle effects file and with loading skin.
-Perhaps because they refer to external files.
-
-
-
 
 sounds:
 https://samplefocus.com/samples/sonar-ping-6c742175-daf2-4f82-8be7-abe0779fbcd6
 
-
 Bonus sound by Universfield (Pixabay)
+
+3/7/2023:
+Implemented a leaderboard using services from GameJolt.
+However, it doesn't work on the TeaVM version, maybe because the network code requires multi-threading? (or it doesn't exist i teh back end?)

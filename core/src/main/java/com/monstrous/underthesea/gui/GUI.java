@@ -10,11 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.SubController;
 import com.monstrous.underthesea.World;
+import com.monstrous.underthesea.leaderboard.LeaderBoardEntry;
 import com.monstrous.underthesea.screens.Main;
 import com.monstrous.underthesea.screens.MenuScreen;
 
@@ -25,6 +27,7 @@ public class GUI implements Disposable {
     private Skin skin;
     public Stage stage;
     private SettingsWindow settingsWindow;
+    public LeaderBoardWindow leaderBoardWindow;
     private Label depthLabel;
     private Label distanceLabel;
     private Label timeLabel;
@@ -40,14 +43,22 @@ public class GUI implements Disposable {
     private Dialog exitDialog;
     private float elapsedTime = 0;
     private Label labelF11;
+    private Main game;
 
-    public GUI(Assets assets, World world) {
+    public GUI(Assets assets, World world,  Main game ) {
         Gdx.app.log("GUI constructor", "");
         this.world = world;
+        this.game = game;
+
+
         skin = assets.get("Particle Park UI Skin/Particle Park UI.json");
         stage = new Stage(new ScreenViewport());
 
         settingsWindow = new SettingsWindow("Settings", skin, world);
+
+        leaderBoardWindow = new LeaderBoardWindow("Leader Board", skin, world, game.leaderBoard, game);
+        leaderBoardWindow.setVisible(false);
+
         exitButtonPressed = false;
     }
 
@@ -179,7 +190,11 @@ public class GUI implements Disposable {
         stage.addActor(screenTable);
         stage.addActor(screenTable2);
 
-        //stage.addActor(settingsWindow);
+        Table screenTable3 = new Table();
+        screenTable3.setFillParent(true);
+        screenTable3.add(leaderBoardWindow);
+        screenTable3.pack();
+        stage.addActor(screenTable3);
 
     }
 
@@ -205,6 +220,11 @@ public class GUI implements Disposable {
         exitDialog.show(stage);
     }
 
+    public void showLeaderBoard() {
+        leaderBoardWindow.refresh();  // refresh table (but without reloading from server)
+        leaderBoardWindow.setVisible(true);
+    }
+
 
     private void setCollision( boolean value ){
         collision.setVisible(value);
@@ -218,23 +238,6 @@ public class GUI implements Disposable {
         confirmButton.setVisible(true);
     }
 
-    private char[] timeStr = new char[8];
-
-    public String makeTimeString(){
-        int time = (int)world.playTime;
-        int hr = time / 3600;
-        int min = (time -3600*hr) / 60;
-        int sec = time - 60*min - 3600*hr;
-        timeStr[0] = (char) ('0'+ hr /10);
-        timeStr[1] = (char) ('0'+ hr %10);
-        timeStr[2] = ':';
-        timeStr[3] = (char) ('0'+ min /10);
-        timeStr[4] = (char) ('0'+ min %10);
-        timeStr[5] = ':';
-        timeStr[6] = (char) ('0'+ sec /10);
-        timeStr[7] = (char) ('0'+ sec %10);
-        return String.valueOf(timeStr);
-    }
 
     public void render(float deltaTime) {
         elapsedTime += deltaTime;
@@ -243,7 +246,7 @@ public class GUI implements Disposable {
 
         depthLabel.setText("DEPTH: "+(1000+(128-(int)world.submarine.position.y)));
         distanceLabel.setText("DISTANCE: "+ (int)world.canisterDistance);
-        timeLabel.setText(makeTimeString());
+        timeLabel.setText(world.getTimeString());
         setCollision( world.submarine.inCollision() );
 
         sliderRudder.setValue(world.subController.steerAngle);

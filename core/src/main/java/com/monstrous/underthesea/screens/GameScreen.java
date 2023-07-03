@@ -50,6 +50,9 @@ public class GameScreen extends StdScreenAdapter {
 
     @Override
     public void show() {
+        if(game.gameJolt != null)
+            game.gameJolt.getScores();  // update score table from server
+
         sceneManager = new SceneManager();
 
         SubController subController = new SubController();
@@ -64,7 +67,7 @@ public class GameScreen extends StdScreenAdapter {
         sceneManager.setCamera(cam);
 
         world = new World(game, game.assets, sceneManager, subController, cam);
-        gui = new GUI(game.assets, world);
+        gui = new GUI(game.assets, world, game);
         world.setGUI(gui);
 
 
@@ -132,6 +135,11 @@ public class GameScreen extends StdScreenAdapter {
             gui.exitDialog(game);
         }
 
+        if(Gdx.input.isKeyPressed(Input.Keys.F2) ){
+            gui.showLeaderBoard();
+        }
+
+
         camController.update( world.getFocus() );
         world.update(delta);
 
@@ -171,6 +179,9 @@ public class GameScreen extends StdScreenAdapter {
     @Override
     public void resize(int width, int height) {
         // Resize your screen here. The parameters represent the new window size.
+        if(width == 0 && height == 0)       // avoid crash on minimize
+            return;
+
         cam.viewportWidth = width;
         cam.viewportHeight = height;
         cam.update();
@@ -188,6 +199,20 @@ public class GameScreen extends StdScreenAdapter {
     public void hide() {
         // This method is called when another screen replaces this one.
         dispose();
+    }
+
+    @Override
+    public void pause() {
+        Gdx.app.log("GameScreen pause()", "");
+        world.pause();
+        super.pause();
+    }
+
+    @Override
+    public void resume() {
+        Gdx.app.log("GameScreen resume()", "");
+        world.resume();
+        super.resume();
     }
 
     @Override
