@@ -20,11 +20,13 @@ public class GameJolt {
     private static final String TABLE_ID = "830523";
     private static final String LIMIT = "10";        // top # scores to show
     private String privateKey;
-    private Array<LeaderBoardEntry> leaderBoard;
+    private LeaderBoard leaderBoard;
+    public boolean onLine;
 
 
-    public void init( Array<LeaderBoardEntry> leaderBoard ) {
+    public void init( LeaderBoard leaderBoard ) {
         this.leaderBoard = leaderBoard;
+        onLine = false;
 
 //        testMD5("Message Digest");
 //        testMD5("abcdefghijklmnopqrstuvwxyz");
@@ -38,6 +40,7 @@ public class GameJolt {
             String text = handle.readString();
             String words[] = text.split("\\r?\\n");
             privateKey = words[0];
+            onLine = true;
 
             getScores();
 
@@ -49,15 +52,10 @@ public class GameJolt {
     }
 
 
-    public void testMD5(String message) {
-
-        byte[] digest = MD5.computeMD5(message.getBytes());
-        String hex = "0x" + MD5.toHexString(digest);
-        Gdx.app.log("MD5 on ["+message+"]", hex);
-
-    }
-
     public void addScore(String username, String score, int timeInSeconds ) {
+        if(!onLine)
+            return;
+
         Map<String, String> params = new HashMap<String, String>();
 
         Integer numScore = timeInSeconds;
@@ -76,6 +74,7 @@ public class GameJolt {
                 String response = httpResponse.getResultAsString();
 
                 Gdx.app.log("GameJolt reply", response);
+                getScores();        // now retrieve new score table
             }
             @Override
             public void failed(Throwable t) {
@@ -91,6 +90,9 @@ public class GameJolt {
 
 
     public void getScores() {
+        if(!onLine)
+            return;
+
         Map<String, String> params = new HashMap<String, String>();
 
         params.put("game_id", GAME_ID);
@@ -105,7 +107,7 @@ public class GameJolt {
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String json = httpResponse.getResultAsString();
 
-                Gdx.app.log("GameJolt replied", "");
+                Gdx.app.log("GameJolt replied", "score table");
 
                 JsonValue response = null;
                 try {
@@ -125,10 +127,7 @@ public class GameJolt {
                             if (entry != null)
                                 leaderBoard.add(entry);
                         }
-
-                        for(LeaderBoardEntry entry : leaderBoard ){
-                            entry.print();
-                        }
+                        leaderBoard.propagate(); // notify listener classes that board is updated
                     }
                 } catch (Throwable t) {
                     Gdx.app.error("GameJolt", "Could not parse answer from GameJolt: " + json, t);

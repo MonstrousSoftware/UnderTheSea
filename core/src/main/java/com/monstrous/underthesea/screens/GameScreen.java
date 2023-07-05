@@ -50,8 +50,6 @@ public class GameScreen extends StdScreenAdapter {
 
     @Override
     public void show() {
-        if(game.gameJolt != null)
-            game.gameJolt.getScores();  // update score table from server
 
         sceneManager = new SceneManager();
 

@@ -221,8 +221,10 @@ public class GUI implements Disposable {
     }
 
     public void showLeaderBoard() {
-        leaderBoardWindow.refresh();  // refresh table (but without reloading from server)
-        leaderBoardWindow.setVisible(true);
+        if(!leaderBoardWindow.isVisible()) {
+            leaderBoardWindow.rebuild();
+            leaderBoardWindow.setVisible(true);
+        }
     }
 
 

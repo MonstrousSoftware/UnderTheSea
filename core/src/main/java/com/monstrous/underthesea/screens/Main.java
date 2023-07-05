@@ -9,6 +9,7 @@ import com.monstrous.underthesea.Assets;
 import com.monstrous.underthesea.Settings;
 import com.monstrous.underthesea.World;
 import com.monstrous.underthesea.leaderboard.GameJolt;
+import com.monstrous.underthesea.leaderboard.LeaderBoard;
 import com.monstrous.underthesea.leaderboard.LeaderBoardEntry;
 import com.monstrous.underthesea.screens.GameScreen;
 import com.monstrous.underthesea.terrain.Chunks;
@@ -22,7 +23,7 @@ public class Main extends Game {
     public GameJolt gameJolt;
     public String userName;
     private Preferences preferences;
-    public Array<LeaderBoardEntry> leaderBoard;
+    public LeaderBoard leaderBoard;
 
     @Override
     public void create() {
@@ -30,9 +31,9 @@ public class Main extends Game {
         assets = new Assets();
         chunks = null;
 
-        if(RELEASE_BUILD)
-            Gdx.app.setLogLevel(Application.LOG_ERROR);
-        else
+//        if(RELEASE_BUILD)
+//            Gdx.app.setLogLevel(Application.LOG_ERROR);
+//        else
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
@@ -41,7 +42,7 @@ public class Main extends Game {
         preferences = Gdx.app.getPreferences(Settings.preferencesName);
         userName = preferences.getString("username", "Anon");
 
-        leaderBoard = new Array<>();
+        leaderBoard = new LeaderBoard();
 
 
         if( Gdx.app.getType() != Application.ApplicationType.WebGL) {
