@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -187,8 +189,12 @@ public class MenuScreen extends StdScreenAdapter {
                         return;
                 }
                 Skin windowSkin = game.assets.get("Particle Park UI Skin/Particle Park UI.json");
-                LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", windowSkin, null, game.leaderBoard, game);
-                leaderBoardWindow.setPosition((stage.getWidth() - leaderBoardWindow.getWidth())/2,(stage.getHeight() - leaderBoardWindow.getHeight())/2);
+                LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", windowSkin, stage, null, game.leaderBoard, game);
+//                float wx = (stage.getWidth() - leaderBoardWindow.getWidth())/2;
+//                float wy = (stage.getHeight() - leaderBoardWindow.getHeight())/2;
+//                // animate that the window drops from the top of the screen
+//                leaderBoardWindow.setPosition(wx,stage.getHeight());
+//                leaderBoardWindow.addAction(Actions.moveTo(wx, wy, .6f, Interpolation.swingOut));
                 stage.addActor(leaderBoardWindow);
             }
         });

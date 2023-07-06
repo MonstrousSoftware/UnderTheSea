@@ -1,7 +1,11 @@
 package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
@@ -26,7 +30,8 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
     private Table nameEntry;
 
     // note: world can be null for a read-only leaderboard
-    public LeaderBoardWindow(String title, Skin skin, World world, LeaderBoard leaderBoard, final Main game ) {
+    // we need to pass the stage for animation calculations, the window is not yet in a stage when it is in the constructor, so we cannot use getParent().
+    public LeaderBoardWindow(String title, Skin skin, Stage stage, World world, LeaderBoard leaderBoard, final Main game ) {
         super(title, skin);
         this.skin = skin;
         this.leaderBoard = leaderBoard;
@@ -40,8 +45,8 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         newScore = new boolean[1];
 
-        if(game.gameJolt != null)
-            game.gameJolt.getScores();  // update score table from server
+//        if(game.gameJolt != null)
+//            game.gameJolt.getScores();  // update score table from server
 
         //newScore[0] =  world.gameComplete && !world.scoreSavedToServer; // completed the game and not saved the score yet?
 
@@ -76,6 +81,13 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         rebuild();
 
+        // centre position for this window
+        float wx = (stage.getWidth() - getWidth())/2;
+        float wy = (stage.getHeight() - getHeight())/2;
+        // animate that the window drops from the top of the screen
+        setPosition(wx, stage.getHeight());     //  place at top of the screen
+        addAction(Actions.moveTo(wx, wy, .4f, Interpolation.swingOut));
+
         saveButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -91,7 +103,17 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
         okButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                remove();   // remove this window
+                setKeepWithinStage(false);  // allow window to go offscreen
+                // swing window up and then remove the window
+                // remove is called as part of the action sequence so that the animation can play
+                addAction(Actions.sequence(Actions.moveTo(wx, stage.getHeight(), .4f, Interpolation.swingIn),
+                    new Action() {
+                        @Override
+                        public boolean act(float delta) {
+                            remove();
+                            return true;
+                        }
+                    }));
             }
         });
     }
@@ -104,9 +126,14 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         board.clear();
         for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
-            board.add( new Label( entry.rank, skin, style) ).pad(10);
-            board.add( new Label( entry.displayName, skin, style) ).width(120).pad(10);
-            board.add( new Label( entry.score, skin, style) ).width(100).pad(10);
+            Table rowTable = new Table();
+            rowTable.add( new Label( entry.rank, skin, style) ).pad(10);
+            rowTable.add( new Label( entry.displayName, skin, style) ).width(120).pad(10);
+            rowTable.add( new Label( entry.score, skin, style) ).width(100).pad(10);
+
+//            rowTable.getColor().a = 0;
+//            rowTable.addAction(Actions.fadeIn(0.1f));
+            board.add(rowTable);
             board.row();
         }
         board.pack();

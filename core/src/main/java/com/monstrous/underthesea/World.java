@@ -167,7 +167,7 @@ public class World implements Disposable {
 
                     gui.showLeaderBoard();  // show leader board and allow to add score
                 }
-                gui.setMessage(msg);        // show the message from the canister
+                gui.setMessage("CANISTER CONTENTS", msg);        // show the message from the canister
             }
         }
 
@@ -180,7 +180,7 @@ public class World implements Disposable {
         }
 
         if(radioTimer < 0 ){
-            gui.setMessage(Settings.radioMessages[radioMessagesShown] );
+            gui.setMessage("RADIO MESSAGE", Settings.radioMessages[radioMessagesShown] );
             radioMessagesShown++;
             Sounds.playSound(Sounds.MORSE);
             radioTimer = 9999999f;      // effectively: disable timer

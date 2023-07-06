@@ -36,8 +36,8 @@ public class GUI implements Disposable {
     private Slider sliderRudder;
     private Slider sliderPower;
     private Image collision;
-    private Label message;
-    private TextButton confirmButton;
+    //private Label message;
+    //private TextButton confirmButton;
     public boolean exitButtonPressed;
     private Dialog exitDialog;
     private float elapsedTime = 0;
@@ -68,9 +68,6 @@ public class GUI implements Disposable {
         depthLabel = new Label("Status", skin, TEXT_STYLE);
         distanceLabel = new Label("Status", skin, TEXT_STYLE);
         timeLabel = new Label("Status", skin, TEXT_STYLE);
-
-        message = new Label("TEST", skin, TEXT_STYLE);
-        message.setVisible(false);
 
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("images/b_exit.png")))));
         backButton.addListener(new ClickListener() {
@@ -153,33 +150,13 @@ public class GUI implements Disposable {
         screenTable.pack();
 
 
-        Table msg = new Table();
-        confirmButton = new TextButton("CONFIRM", skin);
-        confirmButton.setDisabled(true);
-        confirmButton.setVisible(false);
-
-        confirmButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                message.setVisible(false);
-                confirmButton.setDisabled(true);
-                confirmButton.setVisible(false);
-            }
-        });
-        msg.add(message).row();
-        msg.add(confirmButton).center();
-
-        msg.pack();
-
-
         labelF11 = new Label("Press F11 for full-screen", skin, TEXT_STYLE);
 
         Table screenTable2 = new Table();
         screenTable2.setFillParent(true);
 
         screenTable2.add(labelF11).pad(3).top().row();
-        screenTable2.add(collision).pad(5).top().row();
-        screenTable2.add(msg).top().left().pad(20).expand();
+        screenTable2.add(collision).pad(5).top().expand().row();
         screenTable2.pack();
 
         stage.addActor(screenTable);
@@ -215,8 +192,7 @@ public class GUI implements Disposable {
                 return;
         }
 
-        LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", skin, world, game.leaderBoard, game);
-        leaderBoardWindow.setPosition((stage.getWidth() - leaderBoardWindow.getWidth())/2,(stage.getHeight() - leaderBoardWindow.getHeight())/2);
+        LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", skin, stage, world, game.leaderBoard, game);
         stage.addActor(leaderBoardWindow);
         // the window will remove itself when closed
     }
@@ -226,12 +202,9 @@ public class GUI implements Disposable {
         collision.setVisible(value);
     }
 
-    public void setMessage( String text ){
-        message.setText(text);
-        message.setVisible(true);
-
-        confirmButton.setDisabled(false);
-        confirmButton.setVisible(true);
+    public void setMessage( String title, String text ){
+        MessageWindow messageWindow = new MessageWindow(title, skin, stage, text);
+        stage.addActor(messageWindow);
     }
 
 
