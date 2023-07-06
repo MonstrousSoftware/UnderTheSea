@@ -91,14 +91,25 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
         okButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              setVisible(false);  // hide the window
+                remove();   // remove this window
             }
         });
     }
 
-    public void rebuild() {
+    private void rebuild() {
         Gdx.app.log("leader board window", "rebuild");
         newScore[0] = world != null && world.gameComplete && !world.scoreSavedToServer; // completed the game and not saved the score yet?
+
+        String style = "window";
+
+        board.clear();
+        for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
+            board.add( new Label( entry.rank, skin, style) ).pad(10);
+            board.add( new Label( entry.displayName, skin, style) ).width(120).pad(10);
+            board.add( new Label( entry.score, skin, style) ).width(100).pad(10);
+            board.row();
+        }
+        board.pack();
 
         clear();
         add(titleLabel).pad(5);
@@ -116,23 +127,9 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
     }
 
 
-    private void fillTable() {
-        String style = "window";
-
-        board.clear();
-        for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
-            board.add( new Label( entry.rank, skin, style) ).pad(10);
-            board.add( new Label( entry.displayName, skin, style) ).width(120).pad(10);
-            board.add( new Label( entry.score, skin, style) ).width(100).pad(10);
-            board.row();
-        }
-        board.pack();
-    }
-
     @Override
     public void leaderBoardIsUpdated() {
         Gdx.app.log("leader board window", "refresh");
-        fillTable();
         rebuild();
     }
 }

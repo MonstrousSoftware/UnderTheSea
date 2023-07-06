@@ -27,7 +27,6 @@ public class GUI implements Disposable {
     private Skin skin;
     public Stage stage;
     private SettingsWindow settingsWindow;
-    public LeaderBoardWindow leaderBoardWindow;
     private Label depthLabel;
     private Label distanceLabel;
     private Label timeLabel;
@@ -55,10 +54,6 @@ public class GUI implements Disposable {
         stage = new Stage(new ScreenViewport());
 
         settingsWindow = new SettingsWindow("Settings", skin, world);
-
-        leaderBoardWindow = new LeaderBoardWindow("Leader Board", skin, world, game.leaderBoard, game);
-        leaderBoardWindow.setVisible(false);
-
         exitButtonPressed = false;
     }
 
@@ -189,13 +184,6 @@ public class GUI implements Disposable {
 
         stage.addActor(screenTable);
         stage.addActor(screenTable2);
-
-        Table screenTable3 = new Table();
-        screenTable3.setFillParent(true);
-        screenTable3.add(leaderBoardWindow);
-        screenTable3.pack();
-        stage.addActor(screenTable3);
-
     }
 
     public void exitDialog( Main game ) {
@@ -221,10 +209,16 @@ public class GUI implements Disposable {
     }
 
     public void showLeaderBoard() {
-        if(!leaderBoardWindow.isVisible()) {
-            leaderBoardWindow.rebuild();
-            leaderBoardWindow.setVisible(true);
+        // check we don't have a leader board window open yet
+        for(Actor actor : stage.getActors()) {
+            if(actor.getClass().equals(LeaderBoardWindow.class))
+                return;
         }
+
+        LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", skin, world, game.leaderBoard, game);
+        leaderBoardWindow.setPosition((stage.getWidth() - leaderBoardWindow.getWidth())/2,(stage.getHeight() - leaderBoardWindow.getHeight())/2);
+        stage.addActor(leaderBoardWindow);
+        // the window will remove itself when closed
     }
 
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -48,8 +49,7 @@ public class MenuScreen extends StdScreenAdapter {
     private boolean banana;
     private Vector3 cameraOffset;
     private Sound click;
-    private LeaderBoardWindow leaderBoardWindow;
-    //private boolean isWindowed = true;
+
 
     public MenuScreen(Main game, boolean banana) {
 
@@ -128,11 +128,6 @@ public class MenuScreen extends StdScreenAdapter {
     private void rebuild() {
         stage.clear();
 
-        Skin windowSkin = game.assets.get("Particle Park UI Skin/Particle Park UI.json");
-
-        leaderBoardWindow = new LeaderBoardWindow("Leader Board", windowSkin, null, game.leaderBoard, game);
-        leaderBoardWindow.setVisible(false);
-
         TextButton startButton = new TextButton("START", skin, "big" );
         TextButton instructionsButton = new TextButton("INSTRUCTIONS", skin, "big" );
         TextButton scoresButton = new TextButton("SCORES", skin, "big" );
@@ -161,12 +156,6 @@ public class MenuScreen extends StdScreenAdapter {
 
         stage.addActor(screenTable);
 
-        Table winTable = new Table();
-        winTable.setFillParent(true);
-        winTable.add(leaderBoardWindow).center();
-        winTable.pack();
-        stage.addActor(winTable);
-
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -191,8 +180,16 @@ public class MenuScreen extends StdScreenAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 click.play();
-                leaderBoardWindow.setVisible(true);
-                //game.setScreen(new CreditsScreen( game ));
+
+                // check we don't have a leader board window open yet
+                for(Actor actor : stage.getActors()) {
+                    if(actor.getClass().equals(LeaderBoardWindow.class))
+                        return;
+                }
+                Skin windowSkin = game.assets.get("Particle Park UI Skin/Particle Park UI.json");
+                LeaderBoardWindow leaderBoardWindow = new LeaderBoardWindow("Leader Board", windowSkin, null, game.leaderBoard, game);
+                leaderBoardWindow.setPosition((stage.getWidth() - leaderBoardWindow.getWidth())/2,(stage.getHeight() - leaderBoardWindow.getHeight())/2);
+                stage.addActor(leaderBoardWindow);
             }
         });
 
