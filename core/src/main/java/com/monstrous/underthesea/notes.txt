@@ -9,15 +9,8 @@ Implemented a leaderboard using services from GameJolt.
 However, it doesn't work on the TeaVM version, maybe because the network code requires multi-threading? (or it doesn't exist i teh back end?)
 
 
-Error in teavm version:
-app.js:473 java.lang.RuntimeException: (JavaScript) TypeError: Cannot read properties of null (reading '$sendHttpRequest')
-(anonymous) @ app.js:473
-app.js:245 Uncaught TypeError: Cannot read properties of null (reading '$sendHttpRequest')
-    at $java.cmul_GameJolt_getScores (app.js:424702:23)
-    at cmul_GameJolt.$getScores (app.js:554:16)
-    at $java.cmul_GameJolt_init (app.js:424649:19)
-    at cmul_GameJolt.$init0 (app.js:559:16)
-    at cmus_Main_create (app.js:50729:25)
-    at cmus_Main.$create0 (app.js:554:16)
-    at $java.cgxgbw_WebApplication_step (app.js:99928:22)
-    at $java.cgxgbw_WebApplication_run (app.js:99840:23)
+6/7/2023:
+Updated to the snapshot relase ofTeaVM (equivalent to 1.0.0-b5?) and upgraded gdx version to 1.12.  Leaderboard now works
+in HTML version.
+
+Published to game jolt

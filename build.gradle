@@ -35,7 +35,7 @@ configure(subprojects) {
 }
 
 subprojects {
-  version = '1.0.0'
+  version = '1.0.2'
   ext.appName = 'UnderTheSea'
   repositories {
     mavenCentral()

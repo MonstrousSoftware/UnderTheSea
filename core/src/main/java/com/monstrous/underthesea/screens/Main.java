@@ -16,7 +16,7 @@ import com.monstrous.underthesea.terrain.Chunks;
 
 public class Main extends Game {
     public final boolean RELEASE_BUILD = true;
-    public final String VERSION = "Version 1.0.1, July 2023";
+    public final String VERSION = "Version 1.0.2, July 2023";
 
     public Assets assets;
     public Chunks chunks;         // to persist between restarts

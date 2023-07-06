@@ -25,6 +25,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
     private TextButton saveButton;
     private Table nameEntry;
 
+    // note: world can be null for a read-only leaderboard
     public LeaderBoardWindow(String title, Skin skin, World world, LeaderBoard leaderBoard, final Main game ) {
         super(title, skin);
         this.skin = skin;
@@ -97,7 +98,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
     public void rebuild() {
         Gdx.app.log("leader board window", "rebuild");
-        newScore[0] = world.gameComplete && !world.scoreSavedToServer; // completed the game and not saved the score yet?
+        newScore[0] = world != null && world.gameComplete && !world.scoreSavedToServer; // completed the game and not saved the score yet?
 
         clear();
         add(titleLabel).pad(5);

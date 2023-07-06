@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.monstrous.underthesea.Sounds;
+import com.monstrous.underthesea.gui.LeaderBoardWindow;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
@@ -47,6 +48,7 @@ public class MenuScreen extends StdScreenAdapter {
     private boolean banana;
     private Vector3 cameraOffset;
     private Sound click;
+    private LeaderBoardWindow leaderBoardWindow;
     //private boolean isWindowed = true;
 
     public MenuScreen(Main game, boolean banana) {
@@ -126,8 +128,14 @@ public class MenuScreen extends StdScreenAdapter {
     private void rebuild() {
         stage.clear();
 
+        Skin windowSkin = game.assets.get("Particle Park UI Skin/Particle Park UI.json");
+
+        leaderBoardWindow = new LeaderBoardWindow("Leader Board", windowSkin, null, game.leaderBoard, game);
+        leaderBoardWindow.setVisible(false);
+
         TextButton startButton = new TextButton("START", skin, "big" );
         TextButton instructionsButton = new TextButton("INSTRUCTIONS", skin, "big" );
+        TextButton scoresButton = new TextButton("SCORES", skin, "big" );
         TextButton creditsButton = new TextButton("CREDITS", skin, "big" );
         TextButton exitButton = new TextButton("EXIT", skin, "big" );
 
@@ -137,6 +145,7 @@ public class MenuScreen extends StdScreenAdapter {
         Table menuTable = new Table();
         menuTable.add(startButton).height(ht).bottom().center().pad(pd).row();
         menuTable.add(instructionsButton).height(ht).bottom().center().pad(pd).row();
+        menuTable.add(scoresButton).height(ht).bottom().center().pad(pd).row();
         menuTable.add(creditsButton).height(ht).bottom().center().pad(pd).row();
         if(Gdx.app.getType() != Application.ApplicationType.WebGL) {
             menuTable.add(exitButton).height(ht).bottom().center().pad(pd).row();
@@ -151,6 +160,12 @@ public class MenuScreen extends StdScreenAdapter {
         screenTable.pack();
 
         stage.addActor(screenTable);
+
+        Table winTable = new Table();
+        winTable.setFillParent(true);
+        winTable.add(leaderBoardWindow).center();
+        winTable.pack();
+        stage.addActor(winTable);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -168,6 +183,16 @@ public class MenuScreen extends StdScreenAdapter {
                 super.clicked(event, x, y);
                 click.play();
                 game.setScreen(new InstructionsScreen( game ));
+            }
+        });
+
+        scoresButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                click.play();
+                leaderBoardWindow.setVisible(true);
+                //game.setScreen(new CreditsScreen( game ));
             }
         });
 

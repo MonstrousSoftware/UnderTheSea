@@ -20,7 +20,7 @@ public class TeaVMBuilder {
         teaBuildConfiguration.showLoadingLogo = false;
 
         // You can switch this setting during development:
-        teaBuildConfiguration.obfuscate = false;        // was true
+        teaBuildConfiguration.obfuscate = true;
 
 
         // Register any extra classpath assets here:
