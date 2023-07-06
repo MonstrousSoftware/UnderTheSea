@@ -29,7 +29,7 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 
-// screen to showcase the hero model
+// main menu screen, also showcases the hero model
 
 public class MenuScreen extends StdScreenAdapter {
 
@@ -125,8 +125,6 @@ public class MenuScreen extends StdScreenAdapter {
 
     private void rebuild() {
         stage.clear();
-        Label label = new Label(game.VERSION, skin, "small");
-        label.setColor(Color.BLACK);
 
         TextButton startButton = new TextButton("START", skin, "big" );
         TextButton instructionsButton = new TextButton("INSTRUCTIONS", skin, "big" );
@@ -148,7 +146,6 @@ public class MenuScreen extends StdScreenAdapter {
         // root table that fills the whole screen
         Table screenTable = new Table();
         screenTable.setFillParent(true);        // size to match stage size
-        //screenTable.add(label).colspan(2).top().left().expandX().row();
         screenTable.add(menuTable).center().pad(pd);
         screenTable.add().expandX().row();
         screenTable.pack();
@@ -236,7 +233,6 @@ public class MenuScreen extends StdScreenAdapter {
     @Override
     public void dispose() {
         sceneManager.dispose();
-        //sceneAsset.dispose();
         environmentCubemap.dispose();
         diffuseCubemap.dispose();
         specularCubemap.dispose();

@@ -16,7 +16,7 @@ import com.monstrous.underthesea.terrain.Chunks;
 
 public class Main extends Game {
     public final boolean RELEASE_BUILD = true;
-    public final String VERSION = "Under The Sea - June 2023";
+    public final String VERSION = "Version 1.0.1, July 2023";
 
     public Assets assets;
     public Chunks chunks;         // to persist between restarts
@@ -45,10 +45,10 @@ public class Main extends Game {
         leaderBoard = new LeaderBoard();
 
 
-        if( Gdx.app.getType() != Application.ApplicationType.WebGL) {
+       // if( Gdx.app.getType() != Application.ApplicationType.WebGL) {
             gameJolt = new GameJolt();              // disabled because doesn't work on web (teavm) version
             gameJolt.init(leaderBoard);
-        }
+      //  }
 
         if(RELEASE_BUILD)
             setScreen(new TitleScreen(this));

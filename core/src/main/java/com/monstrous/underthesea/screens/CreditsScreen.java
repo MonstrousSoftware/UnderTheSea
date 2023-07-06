@@ -3,6 +3,7 @@ package com.monstrous.underthesea.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,8 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.monstrous.underthesea.screens.Main;
-import com.monstrous.underthesea.screens.MenuScreen;
 
 public class CreditsScreen extends StdScreenAdapter {
 
@@ -28,6 +27,7 @@ public class CreditsScreen extends StdScreenAdapter {
     private Main game;
     private Stage stage;
     private Skin skin;
+    private Sound click;
 
     public CreditsScreen(Main game) {
         this.game = game;
@@ -38,14 +38,14 @@ public class CreditsScreen extends StdScreenAdapter {
         Gdx.app.debug("CreditsScreen", "show()");
 
         skin = new Skin(Gdx.files.internal("blue-pixel-skin/blue-pixel.json"));
-        //skin = new Skin(Gdx.files.internal("sgx.skin/sgx-ui.json"));
         stage = new Stage(new ScreenViewport());
         rebuild();
         Gdx.input.setInputProcessor(stage);
+        click = game.assets.get("sounds/click-for-game-menu.mp3");
     }
 
     private void rebuild() {
-        String explanation = "This game was made for the " +
+        String explanation = game.VERSION +"\n\nThis game was made for the " +
                 "LibGDX Game Jam of June 2023 with " +
                 "the theme: Under Water.\n" +
                 "Models were created with Blender 3.5.\n" +
@@ -53,6 +53,7 @@ public class CreditsScreen extends StdScreenAdapter {
 				"GDX-TeaVM library by xpenatan used for the HTML version.\n"+
                 "ODE4j library by Tilmann Zäschke and Antz used for collision detection.\n"+
                 "UI Skin: Particle Park by Raeleus.\n"+
+                "Leaderboard server: GameJolt.com\n"+
 				"Inspiration: Marching Cubes by Sebastian Lague on YouTube.\n"+
                 "Sound effects from Pixabay.\n"+
                 "Play testing: Jake Snake.\n";
@@ -94,6 +95,7 @@ public class CreditsScreen extends StdScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                click.play();
                 game.setScreen( new MenuScreen(game, true) );
             }
         });

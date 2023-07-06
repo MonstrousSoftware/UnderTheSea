@@ -21,40 +21,44 @@ public class GameJolt {
     private static final String LIMIT = "10";        // top # scores to show
     private String privateKey;
     private LeaderBoard leaderBoard;
-    public boolean onLine;
+    public boolean onLine = false;
 
 
     public void init( LeaderBoard leaderBoard ) {
+        Gdx.app.log("GameJolt", "init");
         this.leaderBoard = leaderBoard;
         onLine = false;
 
-//        testMD5("Message Digest");
-//        testMD5("abcdefghijklmnopqrstuvwxyz");
-//        testMD5("Hello!");
-
         try {
-
-
             FileHandle handle = Gdx.files.internal("private.txt");
-
             String text = handle.readString();
             String words[] = text.split("\\r?\\n");
-            privateKey = words[0];
-            onLine = true;
+            privateKey = mix(words[0], md5("under the sea"));
 
+            onLine = true;
+            Gdx.app.log("GameJolt", "getScores");
             getScores();
 
-            //addScore("Guest3", "00:09:52", 9*60+52);
         } catch (GdxRuntimeException e) {
             Gdx.app.error("Cannot read key file", "private.txt");
         }
+    }
 
+    public String mix(String as, String bs) {
+        byte[] a = MD5.fromHexString(as);
+        byte[] b = MD5.fromHexString(bs);;
+        byte[] res = new byte[a.length];
+        for(int i = 0; i < a.length; i++){
+            res[i] = (byte) (a[i] ^b[i]);
+        }
+        return MD5.toHexString(res);
     }
 
 
     public void addScore(String username, String score, int timeInSeconds ) {
         if(!onLine)
             return;
+        Gdx.app.log("GameJolt", "addScore");
 
         Map<String, String> params = new HashMap<String, String>();
 
@@ -92,6 +96,7 @@ public class GameJolt {
     public void getScores() {
         if(!onLine)
             return;
+        Gdx.app.log("GameJolt", "getScores");
 
         Map<String, String> params = new HashMap<String, String>();
 

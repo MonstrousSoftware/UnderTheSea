@@ -15,8 +15,12 @@ public class TeaVMBuilder {
         TeaBuildConfiguration teaBuildConfiguration = new TeaBuildConfiguration();
         teaBuildConfiguration.assetsPath.add(new File("../assets"));
         teaBuildConfiguration.webappPath = new File("build/dist").getCanonicalPath();
+
+        teaBuildConfiguration.htmlTitle = "Under the Sea";
+        teaBuildConfiguration.showLoadingLogo = false;
+
         // You can switch this setting during development:
-        teaBuildConfiguration.obfuscate = true;
+        teaBuildConfiguration.obfuscate = false;        // was true
 
 
         // Register any extra classpath assets here:
