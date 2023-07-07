@@ -123,6 +123,7 @@ void main() {
 
     vec3 pos = v_worldPosition;
 
+
     // triplanar texture mapping, note we're ignoring the vertex uv coordinates
     vec4 xProjection = texture2D(u_diffuseTexture, pos.yz ) * blendAxes.x;
     vec4 yProjection = texture2D(u_diffuseTexture, pos.xz ) * blendAxes.y;

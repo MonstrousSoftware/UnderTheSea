@@ -130,7 +130,6 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         String style = "window";
 
-
         board.clear();
         for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
             Stack stack = new Stack();
@@ -145,8 +144,20 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
             stack.add(rowBackground);
             stack.add(rowTable);
-
+            stack.pack();
             board.add(stack);
+
+            // bounce the entries in
+            rowTable.addAction(Actions.sequence(
+                Actions.moveTo(0,80),
+                Actions.delay(0.1f),
+                Actions.moveTo(0, 0, 0.8f, Interpolation.bounceOut)));
+            rowBackground.addAction(Actions.sequence(
+                Actions.moveTo(0,80),
+                Actions.delay(0.1f),
+                Actions.moveTo(0, 0, 0.8f, Interpolation.bounceOut)));
+
+
             board.row();
         }
         board.pack();

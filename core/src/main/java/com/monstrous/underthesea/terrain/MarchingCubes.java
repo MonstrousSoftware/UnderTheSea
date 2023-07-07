@@ -119,11 +119,11 @@ public class MarchingCubes {
         this.volumeMap = volumeMap;
 
        // special material attribute to trigger specific shader
-        Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
-        img.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+        //Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
+        //img.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         //mat.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
         //Material mat = new Material(TextureAttribute.createDiffuse(img));
-        Material mat = new Material(TextureAttribute.createDiffuse(img), ColorAttribute.createEmissive(Color.FIREBRICK));
+        Material mat = new Material( ColorAttribute.createEmissive(Color.FIREBRICK));
 
        int primitive = GL20.GL_TRIANGLES;
        if(wireframeMode)
