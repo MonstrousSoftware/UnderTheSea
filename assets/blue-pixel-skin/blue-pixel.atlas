@@ -4,6 +4,15 @@ size: 512, 512
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+blue-ball-64x64
+  rotate: false
+  xy: 233, 88
+  size: 64, 64
+  split: 32, 31, 30, 27
+  pad: 31, 29, 16, 17
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 LilitaOne-Regular
   rotate: false
   xy: 1, 154
@@ -13,23 +22,14 @@ LilitaOne-Regular
   index: -1
 arrow-right
   rotate: false
-  xy: 1, 28
+  xy: 167, 88
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-bubble
-  rotate: false
-  xy: 1, 94
-  size: 86, 58
-  split: 51, 12, 12, 37
-  pad: 8, 8, 9, 34
-  orig: 86, 58
-  offset: 0, 0
-  index: -1
 button-down
   rotate: false
-  xy: 201, 107
+  xy: 167, 41
   size: 50, 45
   split: 7, 7, 11, 7
   pad: 9, 9, 11, 7
@@ -38,7 +38,7 @@ button-down
   index: -1
 button-over
   rotate: false
-  xy: 253, 107
+  xy: 411, 107
   size: 50, 45
   split: 10, 10, 10, 14
   orig: 50, 45
@@ -46,30 +46,16 @@ button-over
   index: -1
 button-up
   rotate: false
-  xy: 305, 107
+  xy: 219, 41
   size: 50, 45
   split: 7, 7, 7, 11
   pad: 10, 11, 7, 11
   orig: 50, 45
   offset: 0, 0
   index: -1
-checkbox-off
-  rotate: false
-  xy: 475, 120
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-checkbox-on
-  rotate: false
-  xy: 201, 73
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 inv-slot-highlight-16x16
   rotate: false
-  xy: 1, 10
+  xy: 271, 70
   size: 16, 16
   split: 3, 3, 3, 3
   orig: 16, 16
@@ -77,20 +63,11 @@ inv-slot-highlight-16x16
   index: -1
 inventory-slot-16x16
   rotate: false
-  xy: 67, 76
+  xy: 35, 18
   size: 16, 16
   split: 3, 3, 3, 4
   pad: 3, 3, 3, 3
   orig: 16, 16
-  offset: 0, 0
-  index: -1
-message
-  rotate: false
-  xy: 357, 107
-  size: 48, 45
-  split: 12, 18, 12, 14
-  pad: 9, 15, 10, 14
-  orig: 48, 45
   offset: 0, 0
   index: -1
 open-sans-bold
@@ -109,7 +86,7 @@ open-sans-regular-12
   index: -1
 slider-bg
   rotate: false
-  xy: 407, 120
+  xy: 1, 2
   size: 32, 32
   split: 13, 15, 10, 12
   pad: 14, 16, 14, 17
@@ -118,7 +95,7 @@ slider-bg
   index: -1
 slider-knob
   rotate: false
-  xy: 441, 120
+  xy: 463, 120
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -132,7 +109,7 @@ white-pixel
   index: -1
 window
   rotate: false
-  xy: 89, 92
+  xy: 299, 92
   size: 54, 60
   split: 13, 15, 37, 14
   pad: 13, 15, 37, 13
@@ -141,10 +118,19 @@ window
   index: -1
 window-grey
   rotate: false
-  xy: 145, 92
+  xy: 355, 92
   size: 54, 60
   split: 13, 15, 37, 14
   pad: 13, 15, 37, 13
   orig: 54, 60
+  offset: 0, 0
+  index: -1
+bubble
+  rotate: false
+  xy: 1, 36
+  size: 164, 116
+  split: 106, 33, 21, 71
+  pad: 32, 33, 22, 69
+  orig: 164, 116
   offset: 0, 0
   index: -1

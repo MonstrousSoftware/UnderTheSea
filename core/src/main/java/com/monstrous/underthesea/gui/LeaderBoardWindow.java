@@ -1,6 +1,8 @@
 package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.monstrous.underthesea.World;
@@ -28,6 +31,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
     private TextButton okButton;
     private TextButton saveButton;
     private Table nameEntry;
+    private NinePatchDrawable ninePatch;
 
     // note: world can be null for a read-only leaderboard
     // we need to pass the stage for animation calculations, the window is not yet in a stage when it is in the constructor, so we cannot use getParent().
@@ -37,6 +41,11 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
         this.leaderBoard = leaderBoard;
         this.game = game;
         this.world = world;
+
+        // background nine patch for rows
+        Texture texture = new Texture("images/blue-ball-32x32.png");
+        NinePatch patch = new NinePatch(texture, 15, 16, 14, 14);
+        ninePatch = new NinePatchDrawable(patch);
 
         getTitleLabel().setAlignment(Align.center);
 
@@ -52,8 +61,6 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         okButton = new TextButton("CLOSE", skin);
         saveButton = new TextButton("SAVE SCORE", skin);
-
-        // let leaderBoardIsUpdated() take care of filling the board
 
         String style = "window";
         TextField nameField = new TextField(game.userName, skin);
@@ -76,8 +83,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
         if(!game.gameJolt.onLine)
             titleLabel = new Label("Server connection offline.\nNo leader board available.", skin, style);
         else
-            titleLabel = new Label("FASTEST TIMES FOR MISSION COMPLETION", skin, style);
-
+            titleLabel = new Label("FASTEST TIMES", skin, style);
 
         rebuild();
 
@@ -94,7 +100,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
                     world.scoreSavedToServer = true;    // don't save the same score multiple times
                     if(game.gameJolt != null ) {
                         game.gameJolt.addScore(game.userName, world.getTimeString(), (int) world.playTime); // send score to the server
-                        // this will also update the leader board
+                        // this will also update the leader board and trigger leaderBoardIsUpdated()
                     }
                     rebuild();
             }
@@ -124,17 +130,28 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         String style = "window";
 
+        float rx = 0;
+        float ry =0;
         board.clear();
         for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
+            Stack stack = new Stack();
+
+
+
             Table rowTable = new Table();
             rowTable.add( new Label( entry.rank, skin, style) ).pad(10);
             rowTable.add( new Label( entry.displayName, skin, style) ).width(120).pad(10);
             rowTable.add( new Label( entry.score, skin, style) ).width(100).pad(10);
 
-//            rowTable.getColor().a = 0;
-//            rowTable.addAction(Actions.fadeIn(0.1f));
-            board.add(rowTable);
+            Table rowBackground = new Table();
+            rowBackground.setBackground(ninePatch);
+
+            stack.add(rowBackground);
+            stack.add(rowTable);
+
+            board.add(stack);
             board.row();
+            ry += rowTable.getHeight();
         }
         board.pack();
 
