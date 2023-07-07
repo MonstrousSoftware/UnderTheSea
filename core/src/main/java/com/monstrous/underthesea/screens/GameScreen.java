@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
+import com.monstrous.underthesea.shaders.MyShaderProvider;
 import com.monstrous.underthesea.terrain.Chunk;
 import com.monstrous.underthesea.terrain.Chunks;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
@@ -51,7 +52,8 @@ public class GameScreen extends StdScreenAdapter {
     @Override
     public void show() {
 
-        sceneManager = new SceneManager();
+        sceneManager = new SceneManager(14);
+        sceneManager.setShaderProvider( new MyShaderProvider());
 
         SubController subController = new SubController();
 

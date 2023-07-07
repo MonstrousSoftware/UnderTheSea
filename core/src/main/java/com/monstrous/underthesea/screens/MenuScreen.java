@@ -69,7 +69,7 @@ public class MenuScreen extends StdScreenAdapter {
         if(banana) {
             SceneAsset sceneAsset = game.assets.get("models/AnthroBanana.gltf");
 
-            Scene sceneSub = new Scene(sceneAsset.scene, "banana");
+            Scene sceneSub = new Scene(sceneAsset.scene, "bananaMan");
             sceneManager.addScene(sceneSub);
             cameraOffset = new Vector3(1.2f, 3.3f, 12.2f);
         }

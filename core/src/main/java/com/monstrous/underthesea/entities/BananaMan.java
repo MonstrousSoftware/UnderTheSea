@@ -20,7 +20,7 @@ public class BananaMan {
 
         SceneAsset sceneAsset = assets.get("models/AnthroBanana.gltf");
 
-        scene = new Scene(sceneAsset.scene, "banana");
+        scene = new Scene(sceneAsset.scene, "bananaMan");
 
         scene.modelInstance.transform.translate(x, y, z);
         scene.modelInstance.transform.rotate(Vector3.Y, 180);

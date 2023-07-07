@@ -3,16 +3,19 @@ package com.monstrous.underthesea.terrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import text.formic.Stringf;
 
 import java.util.HashMap;
@@ -115,7 +118,12 @@ public class MarchingCubes {
     public Model build(VolumeMap volumeMap, int chunkResolution, int chunkHeight, Color color) {
         this.volumeMap = volumeMap;
 
-        Material mat = new Material(ColorAttribute.createDiffuse(color));
+       // special material attribute to trigger specific shader
+        Texture img = new Texture(Gdx.files.internal("images/coral.jpg"), true);
+        img.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+        //mat.set(new PBRTextureAttribute(PBRTextureAttribute.BaseColorTexture, img));
+        //Material mat = new Material(TextureAttribute.createDiffuse(img));
+        Material mat = new Material(TextureAttribute.createDiffuse(img), ColorAttribute.createEmissive(Color.FIREBRICK));
 
        int primitive = GL20.GL_TRIANGLES;
        if(wireframeMode)
