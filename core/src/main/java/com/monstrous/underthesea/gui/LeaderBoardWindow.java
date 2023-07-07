@@ -130,13 +130,10 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         String style = "window";
 
-        float rx = 0;
-        float ry =0;
+
         board.clear();
         for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
             Stack stack = new Stack();
-
-
 
             Table rowTable = new Table();
             rowTable.add( new Label( entry.rank, skin, style) ).pad(10);
@@ -151,7 +148,6 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
             board.add(stack);
             board.row();
-            ry += rowTable.getHeight();
         }
         board.pack();
 
