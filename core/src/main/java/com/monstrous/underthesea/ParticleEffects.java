@@ -33,7 +33,7 @@ public class ParticleEffects implements Disposable {
     public ParticleEffects(Camera cam) {
         // create a particle system
         particleSystem = new ParticleSystem();
-        Gdx.app.debug("ParticleEffects", "constructor");
+        Gdx.app.log("ParticleEffects", "constructor");
 
         BillboardParticleBatch billboardParticleBatch = new BillboardParticleBatch();
 
@@ -59,7 +59,7 @@ public class ParticleEffects implements Disposable {
     // bubbles from the screw
     public void addBubbles(Matrix4 transform) {
         // we cannot use the originalEffect, we must make a copy each time we create new particle effect
-        Gdx.app.debug("ParticleEffects", "addBubbles");
+        Gdx.app.log("ParticleEffects", "addBubbles");
         bubbleTrail = addEffect( bubbleEffect.copy(), transform );
     }
 

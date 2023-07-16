@@ -50,8 +50,8 @@ public class CreditsScreen extends StdScreenAdapter {
                 "the theme: Under Water.\n" +
                 "Models were created with Blender 3.5.\n" +
 				"GDX-GLTF library by mgsx for model loading and PBR rendering.\n"+
-				"GDX-TeaVM library by xpenatan used for the HTML version.\n"+
-                "ODE4j library by Tilmann Zäschke and Antz used for collision detection.\n"+
+				"GDX-TeaVM library by xpenatan for the HTML version.\n"+
+                "ODE4j library by Tilmann Zäschke, adapted for libgdx by Antz.\n"+
                 "UI Skin: Particle Park by Raeleus.\n"+
                 "Leaderboard server: GameJolt.com\n"+
 				"Inspiration: Marching Cubes by Sebastian Lague on YouTube.\n"+

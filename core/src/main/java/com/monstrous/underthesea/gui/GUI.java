@@ -1,6 +1,7 @@
 package com.monstrous.underthesea.gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -209,6 +210,7 @@ public class GUI implements Disposable {
 
 
     public void render(float deltaTime) {
+
         elapsedTime += deltaTime;
         if(elapsedTime > 7 || Gdx.graphics.isFullscreen())
             labelF11.setText("");

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.monstrous.underthesea.*;
 import com.monstrous.underthesea.gui.GUI;
 import com.monstrous.underthesea.shaders.MyShaderProvider;
+import com.monstrous.underthesea.shaders.UnderWaterFilter;
 import com.monstrous.underthesea.terrain.Chunk;
 import com.monstrous.underthesea.terrain.Chunks;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
@@ -38,11 +39,12 @@ public class GameScreen extends StdScreenAdapter {
     private Cubemap environmentCubemap;
     private Cubemap specularCubemap;
     private Texture brdfLUT;
-    private SpriteBatch batch;
-    private ShaderProgram shaderProgram;
+//    private SpriteBatch batch;
+//    private ShaderProgram shaderProgram;
     private FrameBuffer fbo = null;
-    private int u_time;
-    private float time;
+//    private int u_time;
+//    private float time;
+    private UnderWaterFilter postFilter;
 
     public GameScreen(Main game) {
         Gdx.app.log("GameScreen constructor", "");
@@ -111,17 +113,19 @@ public class GameScreen extends StdScreenAdapter {
         sceneManager.environment.set(new ColorAttribute(ColorAttribute.Fog, Settings.backgroundColour));
 
 
-        batch = new SpriteBatch();
+        postFilter = new UnderWaterFilter();
 
-        // full screen post processing shader
-        //ShaderProgram.pedantic = true;
-        shaderProgram = new ShaderProgram(
-            Gdx.files.internal("shaders\\underwater.vertex.glsl"),
-            Gdx.files.internal("shaders\\underwater.fragment.glsl"));
-        if (!shaderProgram.isCompiled())
-            throw new GdxRuntimeException(shaderProgram.getLog());
-        ShaderProgram.pedantic = false;
-        u_time = shaderProgram.getUniformLocation("u_time");
+//        batch = new SpriteBatch();
+//
+//        // full screen post processing shader
+//        //ShaderProgram.pedantic = true;
+//        shaderProgram = new ShaderProgram(
+//            Gdx.files.internal("shaders\\underwater.vertex.glsl"),
+//            Gdx.files.internal("shaders\\underwater.fragment.glsl"));
+//        if (!shaderProgram.isCompiled())
+//            throw new GdxRuntimeException(shaderProgram.getLog());
+//        ShaderProgram.pedantic = false;
+//        u_time = shaderProgram.getUniformLocation("u_time");
 
     }
 
@@ -129,7 +133,7 @@ public class GameScreen extends StdScreenAdapter {
     public void render(float delta) {
         super.render(delta);
 
-        time += delta;
+//        time += delta;
 
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || gui.exitButtonPressed){
             gui.exitDialog(game);
@@ -162,16 +166,17 @@ public class GameScreen extends StdScreenAdapter {
 
         // post-processing of game screen content : vignette effect and underwater wavy effect
 
+        postFilter.render(fbo);
 
-        Sprite s = new Sprite(fbo.getColorBufferTexture());
-        s.flip(false,  true); // coordinate system in buffer differs from screen
-
-        batch.begin();
-        batch.setShader(shaderProgram);						// post-processing shader
-        shaderProgram.setUniformf(u_time, time);
-        batch.draw(s,  0,  0); 	// draw frame buffer as screen filling texture
-        batch.end();
-        batch.setShader(null);
+//        Sprite s = new Sprite(fbo.getColorBufferTexture());
+//        s.flip(false,  true); // coordinate system in buffer differs from screen
+//
+//        batch.begin();
+//        batch.setShader(shaderProgram);						// post-processing shader
+//        shaderProgram.setUniformf(u_time, time);
+//        batch.draw(s,  0,  0); 	// draw frame buffer as screen filling texture
+//        batch.end();
+//        batch.setShader(null);
 
         gui.render(delta);
     }
@@ -185,14 +190,14 @@ public class GameScreen extends StdScreenAdapter {
         cam.viewportWidth = width;
         cam.viewportHeight = height;
         cam.update();
-        batch.getProjectionMatrix().setToOrtho2D(0,0, width, height);   // resize the sprite batch
+        //batch.getProjectionMatrix().setToOrtho2D(0,0, width, height);   // resize the sprite batch
 
         sceneManager.updateViewport(width, height);
         gui.resize(width, height);
         if(fbo != null)
             fbo.dispose();
         fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
-
+        postFilter.resize(width, height);
     }
 
     @Override
@@ -227,6 +232,6 @@ public class GameScreen extends StdScreenAdapter {
         modelBatch.dispose();
         gui.dispose();
         fbo.dispose();
-        batch.dispose();
+        postFilter.dispose();
     }
 }

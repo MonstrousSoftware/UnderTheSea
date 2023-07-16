@@ -17,7 +17,8 @@ public class TeaVMBuilder {
         teaBuildConfiguration.webappPath = new File("build/dist").getCanonicalPath();
 
         teaBuildConfiguration.htmlTitle = "Under the Sea";
-        teaBuildConfiguration.showLoadingLogo = false;
+        teaBuildConfiguration.showLoadingLogo = true;
+
 
         // You can switch this setting during development:
         teaBuildConfiguration.obfuscate = true;

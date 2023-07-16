@@ -10,7 +10,15 @@ However, it doesn't work on the TeaVM version, maybe because the network code re
 
 
 6/7/2023:
-Updated to the snapshot relase ofTeaVM (equivalent to 1.0.0-b5?) and upgraded gdx version to 1.12.  Leaderboard now works
+Updated to the snapshot release ofTeaVM (equivalent to 1.0.0-b5?) and upgraded gdx version to 1.12.  Leaderboard now works
 in HTML version.
 
 Published to game jolt
+
+7/7/2023:
+- added specific shader for the terrain for triplanar mappingto avoid texture stretching, reducing the light levels depending on depth.
+ Still implements shadow, fog, directional light and point light
+ - added bounce effect to leader board, added bouncy window for message text
+
+ 14/7/2023 (v1.0.3)
+ - added God rays shader effect

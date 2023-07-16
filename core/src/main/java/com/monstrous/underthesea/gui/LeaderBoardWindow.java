@@ -130,7 +130,9 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
         String style = "window";
 
+
         board.clear();
+        int n = 0;
         for(LeaderBoardEntry entry : leaderBoard.getEntries() ){ // we rely on leader board to have a sensible nr of entries
             Stack stack = new Stack();
 
@@ -149,16 +151,17 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
 
             // bounce the entries in
             rowTable.addAction(Actions.sequence(
-                Actions.moveTo(0,80),
-                Actions.delay(0.1f),
-                Actions.moveTo(0, 0, 0.8f, Interpolation.bounceOut)));
+                Actions.moveTo(0,32*n+80),
+                Actions.delay(0.3f),
+                Actions.moveTo(0, 0, 0.6f,Interpolation.swingOut)));
             rowBackground.addAction(Actions.sequence(
-                Actions.moveTo(0,80),
-                Actions.delay(0.1f),
-                Actions.moveTo(0, 0, 0.8f, Interpolation.bounceOut)));
+                Actions.moveTo(0,32*n+80),
+                Actions.delay(0.3f),
+                Actions.moveTo(0, 0, 0.6f, Interpolation.swingOut)));
 
 
             board.row();
+            n++;
         }
         board.pack();
 
@@ -174,6 +177,7 @@ public class LeaderBoardWindow extends Window implements LeaderBoardClient {
         }
         else
             add(okButton).width(100);
+        Gdx.input.setOnscreenKeyboardVisible(newScore[0]);  // on mobiles enable on screen keyboard for name entry
         pack();
     }
 

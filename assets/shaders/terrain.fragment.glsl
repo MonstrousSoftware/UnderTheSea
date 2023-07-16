@@ -98,7 +98,7 @@ void main() {
 
          float intensity = clamp(dot(N, L), 0.0, 1.0);
 
-         D *= 1000;      // scaling factor (attenuation is related to world scale)
+         D *= 1000.0;      // scaling factor (attenuation is related to world scale)
          float att =  1.0/(1.0 + 0.001*D + 0.00001*D*D);		// hard coded c1, c2, c3 for attenuation
          //float att =  1.0/(u_attenuation.x+ u_attenuation.y*D + u_attenuation.z*D*D);		//  c1, c2, c3 for attenuation
          att = clamp(att, 0.0, 1.0);
@@ -135,9 +135,8 @@ void main() {
 
     float shadows = getShadow();
 
-
+    // less light as we go deeper, minimum at y=50, max at y=90
     float depthShade = clamp((pos.y -50.0) / 40.0, 0.1, 1.0);
-    //diffuse *= depthShade;
 
     vec3  finalCol       = diffuse.rgb * ((shadows * depthShade * diffuseLight) + diffusePointLight + depthShade * ambientLight);
 

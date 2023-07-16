@@ -23,7 +23,6 @@ public class TeaVMLauncher {
         config.antialiasing = true;
 
 
-
         new TeaApplication(new Main(), config);
     }
 }
